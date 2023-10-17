@@ -20,11 +20,11 @@ public class autoTest1_EK extends LinearOpMode{
     ElapsedTime AutoRightTime = new ElapsedTime();
     ElapsedTime MoveToConeTime = new ElapsedTime();
     private static final double strafeMult = 1.2;
-    private DcMotor backLeft;
-    private DcMotor backRight;
-    private DcMotor frontLeft;
-    private DcMotor frontRight;
-    IMU imu = hardwareMap.get(IMU.class, "imu");
+    private DcMotor backLeft = null;
+    private DcMotor backRight = null;
+    private DcMotor frontLeft = null;
+    private DcMotor frontRight = null;
+    private IMU imu = null;
     private int[] xCords = new int[] {0,1,2}; //right to left (looking from alliance station)
     private int[] yCords = new int[] {0,1,2}; //1:A, 2:B, 3:C, 4:D, 5:E, 6:F | front to back (front being closest row to alliance station)
     private int[] startCords = new int[] {xCords[1],yCords[0]}; //starting locations; Blue: A2(0,1),A5(0,4); Red: F2(5,1),F5(5,4)
@@ -33,7 +33,7 @@ public class autoTest1_EK extends LinearOpMode{
     @Override
     public void runOpMode() {
         Initializtion();
-        rotate(90,50);
+        rotate(90,0.3);
     }
     private void run_to_position_all() {
         frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -90,11 +90,13 @@ public class autoTest1_EK extends LinearOpMode{
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         stop_and_reset_encoders_all();
+        imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
+        waitForStart();
     }
 
     private void move(double movePower, String moveDirection, double moveDistance) {
@@ -178,12 +180,13 @@ public class autoTest1_EK extends LinearOpMode{
             telemetry.addData("angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
             telemetry.addData("target", targetAngle);
             telemetry.update();
-        }
-        // check to make sure the robot is within 1 degree of the target angle
-        if (Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) > 1) {
-            // get angle difference
-            double angleDifference = Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
-            rotate(angleDifference, power);
+            // check to make sure the robot is within 5 degree of the target angle
+            if (Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) > 5) {
+                // get angle difference
+                double angleDifference = Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
+                //rotate(angleDifference, power);
+                angle = angleDifference;
+            }
         }
     }
     private void PointMove(int endPosX, int endPosY) {
