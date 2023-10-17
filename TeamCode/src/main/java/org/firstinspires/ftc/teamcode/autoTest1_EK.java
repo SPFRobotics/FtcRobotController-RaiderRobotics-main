@@ -9,14 +9,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 @Autonomous
 public class autoTest1_EK extends LinearOpMode{
@@ -25,13 +20,11 @@ public class autoTest1_EK extends LinearOpMode{
     ElapsedTime AutoRightTime = new ElapsedTime();
     ElapsedTime MoveToConeTime = new ElapsedTime();
     private static final double strafeMult = 1.2;
-    public BNO055IMU imu;
-    public Orientation lastAngles = new Orientation();
     private DcMotor backLeft;
     private DcMotor backRight;
     private DcMotor frontLeft;
     private DcMotor frontRight;
-
+    IMU imu = hardwareMap.get(IMU.class, "imu");
     private int[] xCords = new int[] {0,1,2}; //right to left (looking from alliance station)
     private int[] yCords = new int[] {0,1,2}; //1:A, 2:B, 3:C, 4:D, 5:E, 6:F | front to back (front being closest row to alliance station)
     private int[] startCords = new int[] {xCords[1],yCords[0]}; //starting locations; Blue: A2(0,1),A5(0,4); Red: F2(5,1),F5(5,4)
@@ -40,6 +33,7 @@ public class autoTest1_EK extends LinearOpMode{
     @Override
     public void runOpMode() {
         Initializtion();
+        rotate(90,50);
     }
     private void run_to_position_all() {
         frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -96,21 +90,11 @@ public class autoTest1_EK extends LinearOpMode{
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         stop_and_reset_encoders_all();
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-        parameters.mode                = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled      = false;
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+        // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
-        telemetry.addData("Mode", "calibrating...");
-        telemetry.update();
-        while (!isStopRequested() && !imu.isGyroCalibrated())
-        {
-            sleep(50);
-            idle();
-        }
     }
 
     private void move(double movePower, String moveDirection, double moveDistance) {
@@ -169,18 +153,18 @@ public class autoTest1_EK extends LinearOpMode{
         telemetry.update();
     }
     private void rotate(double angle, double power) {
-        double startAngle = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+        double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         double targetAngle = startAngle + angle;
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // rotate until the target angle is reached
-        while (opModeIsActive() && Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle - targetAngle) > 1) {
+        while (opModeIsActive() && Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) > 1) {
             // the closer the robot is to the target angle, the slower it rotates
-            power = Range.clip(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle - targetAngle) / 90, 0.1, 0.5);
+            power = Range.clip(Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) / 90, 0.1, 0.5);
 
-            if (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > targetAngle) {
+            if (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) > targetAngle) {
                 backLeft.setPower(-power);
                 backRight.setPower(power);
                 frontLeft.setPower(-power);
@@ -191,14 +175,14 @@ public class autoTest1_EK extends LinearOpMode{
                 frontLeft.setPower(power);
                 frontRight.setPower(-power);
             }
-            telemetry.addData("angle", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
+            telemetry.addData("angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
             telemetry.addData("target", targetAngle);
             telemetry.update();
         }
         // check to make sure the robot is within 1 degree of the target angle
-        if (Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle - targetAngle) > 1) {
+        if (Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) > 1) {
             // get angle difference
-            double angleDifference = Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle - targetAngle);
+            double angleDifference = Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
             rotate(angleDifference, power);
         }
     }
