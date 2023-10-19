@@ -31,7 +31,7 @@ public class autoTest1_EK extends LinearOpMode{
     private int[] endCords = new int[] {xCords[0],yCords[0]}; //change the xCords and yCords value to change defalt end location
     //don't change this, change values in PointMove function instead
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         Initializtion();
         rotate(90,0.3);
     }
@@ -79,10 +79,10 @@ public class autoTest1_EK extends LinearOpMode{
         frontRight.setPower(power);
     }
     private void Initializtion() {
-        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
-        backRight = hardwareMap.get(DcMotor.class, "backRight");
-        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
-        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        backLeft = hardwareMap.dcMotor.get("backLeft");
+        backRight = hardwareMap.dcMotor.get("backRight");
+        frontLeft = hardwareMap.dcMotor.get("frontLeft");
+        frontRight = hardwareMap.dcMotor.get("frontRight");
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -157,36 +157,42 @@ public class autoTest1_EK extends LinearOpMode{
     private void rotate(double angle, double power) {
         double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         double targetAngle = startAngle + angle;
+        double error = Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // rotate until the target angle is reached
-        while (opModeIsActive() && Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) > 1) {
+        while (opModeIsActive() && (error) > 5) {
+        //while (opModeIsActive()) {
+            //powerZero();
+            error = Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
             // the closer the robot is to the target angle, the slower it rotates
-            power = Range.clip(Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) / 90, 0.1, 0.5);
+            //power = Range.clip(Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) / 90, 0.1, 0.5);
+            power = Range.clip((power*(error/360)),-0.5,0.5);
+            telemetry.addData("power",power);
+            telemetry.addData("error",error);
+
 
             if (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) > targetAngle) {
                 backLeft.setPower(-power);
                 backRight.setPower(power);
                 frontLeft.setPower(-power);
                 frontRight.setPower(power);
-            } else {
+            } else if (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) < targetAngle) {
                 backLeft.setPower(power);
                 backRight.setPower(-power);
                 frontLeft.setPower(power);
                 frontRight.setPower(-power);
+            } else {
+                powerZero();
             }
             telemetry.addData("angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
             telemetry.addData("target", targetAngle);
             telemetry.update();
-            // check to make sure the robot is within 5 degree of the target angle
-            if (Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) > 5) {
-                // get angle difference
-                double angleDifference = Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
-                //rotate(angleDifference, power);
-                angle = angleDifference;
-            }
+            double angleDifference = Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
+            //rotate(angleDifference, power);
+            angle = angleDifference;
         }
     }
     private void PointMove(int endPosX, int endPosY) {
