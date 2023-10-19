@@ -96,6 +96,7 @@ public class autoTest1_EK extends LinearOpMode{
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
+        imu.resetYaw();
         waitForStart();
     }
 
@@ -157,34 +158,31 @@ public class autoTest1_EK extends LinearOpMode{
     private void rotate(double angle, double power) {
         double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         double targetAngle = startAngle + angle;
-        double error = Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
+        double error = (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
+        double power1 = 0;
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // rotate until the target angle is reached
-        while (opModeIsActive() && (error) > 5) {
+        System.out.printf("%f start angle = ",imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        System.out.printf("%f error = ", error);
+        while (opModeIsActive() && Math.abs(error) > 5) {
         //while (opModeIsActive()) {
             //powerZero();
-            error = Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
+            error = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
             // the closer the robot is to the target angle, the slower it rotates
             //power = Range.clip(Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) / 90, 0.1, 0.5);
-            power = Range.clip((power*(error/360)),-0.5,0.5);
-            telemetry.addData("power",power);
+            power1 = Range.clip((power*(error/90)),-0.5,0.5);
+            telemetry.addData("power",power1);
+            System.out.printf("%f power = ",power1);
             telemetry.addData("error",error);
 
-
-            if (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) > targetAngle) {
-                backLeft.setPower(-power);
-                backRight.setPower(power);
-                frontLeft.setPower(-power);
-                frontRight.setPower(power);
-            } else if (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) < targetAngle) {
-                backLeft.setPower(power);
-                backRight.setPower(-power);
-                frontLeft.setPower(power);
-                frontRight.setPower(-power);
-            } else {
+            backLeft.setPower(-power1);
+            backRight.setPower(power1);
+            frontLeft.setPower(-power1);
+            frontRight.setPower(power1);
+            if (Math.abs(error) <= 10) {
                 powerZero();
             }
             telemetry.addData("angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
@@ -192,8 +190,8 @@ public class autoTest1_EK extends LinearOpMode{
             telemetry.update();
             double angleDifference = Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
             //rotate(angleDifference, power);
-            angle = angleDifference;
         }
+        powerZero();
     }
     private void PointMove(int endPosX, int endPosY) {
 
