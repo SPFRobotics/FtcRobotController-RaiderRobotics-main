@@ -156,6 +156,7 @@ public class autoTest1_EK extends LinearOpMode{
         telemetry.update();
     }
     private void rotate(double angle, double power) {
+        double Kp = 1/2;
         double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         double targetAngle = startAngle + angle;
         double error = (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
@@ -173,15 +174,15 @@ public class autoTest1_EK extends LinearOpMode{
             error = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
             // the closer the robot is to the target angle, the slower it rotates
             //power = Range.clip(Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) / 90, 0.1, 0.5);
-            power1 = Range.clip((power*(error/90)),-0.5,0.5);
+            power1 = Range.clip((power*(error*Kp)),-0.5,0.5);
             telemetry.addData("power",power1);
             System.out.printf("%f power = ",power1);
             telemetry.addData("error",error);
 
-            backLeft.setPower(-power1);
-            backRight.setPower(power1);
-            frontLeft.setPower(-power1);
-            frontRight.setPower(power1);
+            backLeft.setPower(power1);
+            backRight.setPower(-power1);
+            frontLeft.setPower(power1);
+            frontRight.setPower(-power1);
             if (Math.abs(error) <= 10) {
                 powerZero();
             }
