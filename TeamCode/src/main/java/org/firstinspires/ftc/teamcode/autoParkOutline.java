@@ -24,6 +24,22 @@ public class autoParkOutline extends LinearOpMode { //"extends LinearOpMode" jus
     @Override
     public void runOpMode(){
         Initializtion();
+
+        //moving forward 5 inches
+        backLeft.setTargetPosition((int) inch_convert(5));
+        backRight.setTargetPosition((int) inch_convert(5));
+        frontLeft.setTargetPosition((int) inch_convert(5));
+        frontRight.setTargetPosition((int) inch_convert(5));
+        run_to_position_all();
+        backLeft.setPower(0.25);
+        backRight.setPower(0.25);
+        frontLeft.setPower(0.25);
+        frontRight.setPower(0.25);
+        while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()) {
+            telemetry.addData("test", "attempting to move...");
+            telemetry.update();
+        }
+        powerZero();
     }
     private void Initializtion() {
         //making variables for each DcMotor and defining each variable to their corresponding motor, word in quotes is the name of the motor in the configuration of the robot
