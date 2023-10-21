@@ -15,25 +15,34 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @Autonomous
 public class autoTest1_EK extends LinearOpMode{
-    public static boolean RunAutoRight = false;
-    public static boolean RunMoveToCone = false;
-    ElapsedTime AutoRightTime = new ElapsedTime();
-    ElapsedTime MoveToConeTime = new ElapsedTime();
+    //public static boolean RunAutoRight = false;
+    //public static boolean RunMoveToCone = false;
+    //ElapsedTime AutoRightTime = new ElapsedTime();
+    //ElapsedTime MoveToConeTime = new ElapsedTime();
     private static final double strafeMult = 1.2;
-    private DcMotor backLeft = null;
-    private DcMotor backRight = null;
-    private DcMotor frontLeft = null;
-    private DcMotor frontRight = null;
     private IMU imu = null;
     private int[] xCords = new int[] {0,1,2}; //right to left (looking from alliance station)
     private int[] yCords = new int[] {0,1,2}; //1:A, 2:B, 3:C, 4:D, 5:E, 6:F | front to back (front being closest row to alliance station)
     private int[] startCords = new int[] {xCords[1],yCords[0]}; //starting locations; Blue: A2(0,1),A5(0,4); Red: F2(5,1),F5(5,4)
+    //don't change these values, change the values in the PointMove function instead
     private int[] endCords = new int[] {xCords[0],yCords[0]}; //change the xCords and yCords value to change defalt end location
-    //don't change this, change values in PointMove function instead
+    
     @Override
     public void runOpMode() throws InterruptedException {
         Initializtion();
         rotate(90,0.3);
+    }
+
+    //3.78(in inches, 9.6012 is centimeters) is the diameter of the wheel, and 537.7 is how many motor counts are in 1 full rotation of the motor's axle
+    private double inch_convert(double inch) { return inch * (537.7 / (3.78 * Math.PI)); }
+    private double inToCm(int inches) { return inches * 2.54; }
+    private double cm_convert(double cm) { return cm * (537.7 / (9.6012 / Math.PI)); }
+    
+    private void stop_and_reset_encoders_all() {
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
     private void run_to_position_all() {
         frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -41,55 +50,29 @@ public class autoTest1_EK extends LinearOpMode{
         frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
-    private double inch_convert(double inch) {
-        return inch * (537.7 / (3.78 * Math.PI));
-    }
-
-    private double inToCm(int inches) {
-        return inches * 2.54;
-    }
-    private double cm_convert(double cm) {
-        return cm * (537.7 / (9.6012 / Math.PI));
-    }
-    private void stop_and_reset_encoders_all() {
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
     private void powerZero() {
         backLeft.setPower(0);
         backRight.setPower(0);
         frontLeft.setPower(0);
         frontRight.setPower(0);
     }
-    private void Brake_all_motor() {
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    }
 
-    private void Power_all_motor() {
-        double power = 1;
-
-        backLeft.setPower(power);
-        backRight.setPower(power);
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
-    }
     private void Initializtion() {
-        backLeft = hardwareMap.dcMotor.get("backLeft");
-        backRight = hardwareMap.dcMotor.get("backRight");
-        frontLeft = hardwareMap.dcMotor.get("frontLeft");
-        frontRight = hardwareMap.dcMotor.get("frontRight");
+        DcMotor backLeft = hardwareMap.dcMotor.get("backLeft");
+        DcMotor backRight = hardwareMap.dcMotor.get("backRight");
+        DcMotor frontLeft = hardwareMap.dcMotor.get("frontLeft");
+        DcMotor frontRight = hardwareMap.dcMotor.get("frontRight");
+
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+
         stop_and_reset_encoders_all();
+
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
