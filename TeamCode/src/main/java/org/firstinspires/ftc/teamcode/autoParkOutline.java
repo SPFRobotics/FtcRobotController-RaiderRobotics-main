@@ -1,29 +1,37 @@
 package org.firstinspires.ftc.teamcode;
 
-
+//These are imports for all of the libraries you need to run the program
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.Range;
 import java.util.Arrays;
+//These imports are should be in most if not all programs
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+//For checking time
 import com.qualcomm.robotcore.util.ElapsedTime;
+//IMU imports
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
+//"@Autonomous" puts this program in the autonomous dropdown on the driverhub
 @Autonomous
-public class autoParkOutline extends LinearOpMode{
+public class autoParkOutline extends LinearOpMode { //"extends LinearOpMode" just means that this program can use motors, also only one of the programs running is allowed to have the "LinearOpMode"
+    //these are defining the 4 DcMotors variable names
     private DcMotor backLeft;
     private DcMotor backRight;
     private DcMotor frontLeft;
     private DcMotor frontRight;
+    //"@Override" should be before your runOpMode function
     @Override
     public void runOpMode(){
         Initializtion();
     }
     private void Initializtion() {
+        //assigning each DcMotor variable to their corrisponding motor
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
