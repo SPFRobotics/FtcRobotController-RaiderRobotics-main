@@ -31,11 +31,12 @@ public class autoParkOutline extends LinearOpMode { //"extends LinearOpMode" jus
         Initializtion();
     }
     private void Initializtion() {
-        //assigning each DcMotor variable to their corrisponding motor
-        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
-        backRight = hardwareMap.get(DcMotor.class, "backRight");
-        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
-        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        //assigning each DcMotor variable to their corresponding motor, word in quotes is the name of the motor in the configuration of the robot
+        backLeft = hardwareMap.dcMotor.get("backLeft");
+        backRight = hardwareMap.dcMotor.get("backRight");
+        frontLeft = hardwareMap.dcMotor.get("frontLeft");
+        frontRight = hardwareMap.dcMotor.get("frontRight");
+        //this sets all of the motor's zero power behavior (when the motor is not moving) to brake
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -43,12 +44,17 @@ public class autoParkOutline extends LinearOpMode { //"extends LinearOpMode" jus
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         stop_and_reset_encoders_all();
+        //instializing the IMU
         IMU imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
+                RevHubOrientationOnRobot.LogoFacingDirection.DOWN, 
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
+        //setting yaw to zero incase it isn't already
+        imu.resetYaw();
+        //everything before this will run when you click the "int" button on the driver hub, and when the following line is just waiting until you click start button
+        waitForStart();
     }
     private void run_to_position_all() {
         frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -57,6 +63,7 @@ public class autoParkOutline extends LinearOpMode { //"extends LinearOpMode" jus
         backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     private double inch_convert(double inch) {
+        //3.78 is the diameter of the wheel, and 537.7 is how many motor counts are in 1 full rotation of the motor's axle
         return inch * (537.7 / (3.78 * Math.PI));
     }
 

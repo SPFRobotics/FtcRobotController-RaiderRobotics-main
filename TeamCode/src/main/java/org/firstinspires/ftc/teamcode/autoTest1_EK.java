@@ -156,7 +156,7 @@ public class autoTest1_EK extends LinearOpMode{
         telemetry.update();
     }
     private void rotate(double angle, double power) {
-        double Kp = 1/2;
+        double Kp = 1/2; //this is for porposanal control (ie. the closer you are the target angle the slower you will go)
         double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         double targetAngle = startAngle + angle;
         double error = (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
@@ -169,12 +169,11 @@ public class autoTest1_EK extends LinearOpMode{
         System.out.printf("%f start angle = ",imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
         System.out.printf("%f error = ", error);
         while (opModeIsActive() && Math.abs(error) > 5) {
-        //while (opModeIsActive()) {
             //powerZero();
             error = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
             // the closer the robot is to the target angle, the slower it rotates
             //power = Range.clip(Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) / 90, 0.1, 0.5);
-            power1 = Range.clip((power*(error*Kp)),-0.5,0.5);
+            power1 = Range.clip((power*(error*Kp)),-0.5,0.5); //"Range.clip(value, minium, maxium)" takes the first term and puts it in range of the min and max provided 
             telemetry.addData("power",power1);
             System.out.printf("%f power = ",power1);
             telemetry.addData("error",error);
@@ -183,19 +182,18 @@ public class autoTest1_EK extends LinearOpMode{
             backRight.setPower(-power1);
             frontLeft.setPower(power1);
             frontRight.setPower(-power1);
-            if (Math.abs(error) <= 10) {
+            if (Math.abs(error) <= 5) {
                 powerZero();
             }
             telemetry.addData("angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
             telemetry.addData("target", targetAngle);
             telemetry.update();
-            double angleDifference = Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
+            //double angleDifference = Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
             //rotate(angleDifference, power);
         }
         powerZero();
     }
     private void PointMove(int endPosX, int endPosY) {
-
         int[] pointDifference = new int[] {0,0};
         endCords[0] = xCords[endPosX];
         endCords[1] = yCords[endPosY];
