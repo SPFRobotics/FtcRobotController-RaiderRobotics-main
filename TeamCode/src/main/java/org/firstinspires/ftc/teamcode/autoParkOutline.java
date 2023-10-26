@@ -21,6 +21,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 @Autonomous
 public class autoParkOutline extends LinearOpMode { //"extends LinearOpMode" just means that this program can use motors, also only one of the programs running is allowed to have the "LinearOpMode"
     //"@Override" should be before your runOpMode function
+    private DcMotor backLeft;
+    private DcMotor backRight;
+    private DcMotor frontLeft;
+    private DcMotor frontRight;
+    private  IMU imu;
     @Override
     public void runOpMode(){
         Initializtion();
@@ -60,7 +65,7 @@ public class autoParkOutline extends LinearOpMode { //"extends LinearOpMode" jus
         stop_and_reset_encoders_all();
         
         //instializing the IMU
-        imu = hardwareMap.get(IMU.class, "imu");
+        IMU imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
