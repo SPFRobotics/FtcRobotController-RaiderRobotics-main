@@ -9,7 +9,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @TeleOp
-public class teleOp-FieldOriented1 extends LinearOpMode {
+public class teleOpFieldOriented1 extends LinearOpMode {
     private DcMotor backLeft;
     private DcMotor backRight;
     private DcMotor frontLeft;
