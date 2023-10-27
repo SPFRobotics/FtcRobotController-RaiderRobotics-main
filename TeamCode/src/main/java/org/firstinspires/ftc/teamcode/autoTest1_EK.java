@@ -20,7 +20,13 @@ public class autoTest1_EK extends LinearOpMode{
     //ElapsedTime AutoRightTime = new ElapsedTime();
     //ElapsedTime MoveToConeTime = new ElapsedTime();
     private static final double strafeMult = 1.2;
-    private IMU imu = null;
+    private DcMotor backLeft;
+    private DcMotor backRight;
+    private DcMotor frontLeft;
+    private DcMotor frontRight;
+    private DcMotor liftLeft;
+    private DcMotor liftRight;
+    private IMU imu;
     private int[] xCords = new int[] {0,1,2}; //right to left (looking from alliance station)
     private int[] yCords = new int[] {0,1,2}; //1:A, 2:B, 3:C, 4:D, 5:E, 6:F | front to back (front being closest row to alliance station)
     private int[] startCords = new int[] {xCords[1],yCords[0]}; //starting locations; Blue: A2(0,1),A5(0,4); Red: F2(5,1),F5(5,4)
