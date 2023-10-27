@@ -35,8 +35,13 @@ public class autoTest1_EK extends LinearOpMode{
     
     @Override
     public void runOpMode() throws InterruptedException {
+        //By Friday, have it be able to
         Initializtion();
-        rotate(90,0.3);
+        //rotate(90,0.3);
+        move(.3, "forward", 12);
+        move(.3, "left", 10);
+        move(.3, "right", 8);
+        move(.3, "backward", 6);
     }
 
     //3.78(in inches, 9.6012 is centimeters) is the diameter of the wheel, and 537.7 is how many motor counts are in 1 full rotation of the motor's axle
@@ -89,9 +94,10 @@ public class autoTest1_EK extends LinearOpMode{
         waitForStart();
     }
 
-    private void move(double movePower, String moveDirection, double moveDistance) {
-        stop_and_reset_encoders_all();
-        if (moveDirection.equals("forward")) {
+    private void move(double movePower, String moveDirection, double moveDistance){
+        stop_and_reset_encoders_all(); //Sets encoder count to 0
+        run_to_position_all(); //Tells the motors
+        if (moveDirection.equals("backward")) {
             backLeft.setTargetPosition((int) inch_convert(moveDistance));
             backRight.setTargetPosition((int) inch_convert(moveDistance));
             frontLeft.setTargetPosition((int) inch_convert(moveDistance));
@@ -101,7 +107,7 @@ public class autoTest1_EK extends LinearOpMode{
             backRight.setPower(movePower);
             frontLeft.setPower(movePower);
             frontRight.setPower(movePower);
-        } else if (moveDirection.equals("backward")) {
+        } else if (moveDirection.equals("forward")) {
             backLeft.setTargetPosition((int) inch_convert(-moveDistance));
             backRight.setTargetPosition((int) inch_convert(-moveDistance));
             frontLeft.setTargetPosition((int) inch_convert(-moveDistance));
@@ -111,7 +117,7 @@ public class autoTest1_EK extends LinearOpMode{
             backRight.setPower(-movePower);
             frontLeft.setPower(-movePower);
             frontRight.setPower(-movePower);
-        } else if (moveDirection.equals("right")) {
+        } else if (moveDirection.equals("left")) {
             backLeft.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
             backRight.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
             frontLeft.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
@@ -121,7 +127,7 @@ public class autoTest1_EK extends LinearOpMode{
             backRight.setPower(movePower);
             frontLeft.setPower(movePower);
             frontRight.setPower(-movePower);
-        } else if (moveDirection.equals("left")) {
+        } else if (moveDirection.equals("right")) {
             backLeft.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
             backRight.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
             frontLeft.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
