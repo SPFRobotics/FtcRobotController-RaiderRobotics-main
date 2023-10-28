@@ -31,6 +31,7 @@ public class teleOpCombinedDrives1 extends LinearOpMode {
     private double timeHeldToConfirm = 0.5;
     int maxSpeedDuration = 50;
     private double maxSpeedRange = 1.0;
+    private int liftPosition = 0;
     private Gamepad.RumbleEffect maxSpeedStartUpRumbleEffect = new Gamepad.RumbleEffect.Builder()
             .addStep(0.1,0.1,maxSpeedDuration)
             .addStep(0.2,0.2,maxSpeedDuration)
@@ -74,6 +75,14 @@ public class teleOpCombinedDrives1 extends LinearOpMode {
             } else {
                 robotOriented();
             }
+            if (gamepad1.cross) {
+                liftPosition += 1;
+            }
+            if (gamepad1.circle) {
+                liftPosition-= 1;
+            }
+            liftLeft.setTargetPosition(liftPosition);
+            liftRight.setTargetPosition(-liftPosition);
         }
     }
 
@@ -84,6 +93,8 @@ public class teleOpCombinedDrives1 extends LinearOpMode {
         backLeft = hardwareMap.dcMotor.get("backLeft");
         frontRight = hardwareMap.dcMotor.get("frontRight");
         backRight = hardwareMap.dcMotor.get("backRight");
+        liftLeft = hardwareMap.dcMotor.get("liftLeft");
+        liftRight = hardwareMap.dcMotor.get("liftRight");
 
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -106,12 +117,7 @@ public class teleOpCombinedDrives1 extends LinearOpMode {
     }
     private void Speed() {
         //if (gamepad1.left_trigger > 0) {speed+=0.01;}
-        if (gamepad1.left_trigger > 0 ) { speed = (gamepad1.left_trigger * maxSpeedRange);} else if (currentGamepad1.left_trigger <=0 && previousGamepad1.left_trigger > 0) {speed = 0.5;} else {speed=0.7;}
-        if (gamepad1.right_trigger > 0) {if(currentGamepad1.right_trigger != previousGamepad1.right_trigger){timeRightTriggerHeld.reset();} if(timeRightTriggerHeld.seconds() >= timeHeldToConfirm){maxSpeedRange=gamepad1.right_trigger;gamepad1.rumble(50);gamepad1.setLedColor(0,1,0,-1);}else{gamepad1.setLedColor(0,0,1,-1);}}
-        if (gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0) {iterationsPressed+=1;} else {iterationsPressed=0;}
-        if (iterationsPressed >= 10) {speed=0.5; maxSpeedRange = 1.0; iterationsPressed=0; gamepad1.rumble(100);}
-        if (gamepad1.left_bumper) {if(currentGamepad1.left_bumper && !previousGamepad1.left_bumper){previousSpeed1 = speed; gamepad1.runRumbleEffect(maxSpeedStartUpRumbleEffect); gamepad1.runLedEffect(maxSpeedStartUpLEDEffect);} speed = 1; gamepad1.setLedColor(1,0,0,-1);} else if (!currentGamepad1.left_bumper && previousGamepad1.left_bumper) {speed=previousSpeed1;} else {gamepad1.setLedColor(0,0,1,-1);}
-        if (gamepad1.right_bumper) {speed=0.25;}
+        if (gamepad1.left_trigger > 0 ) { speed = (gamepad1.left_trigger * maxSpeedRange);} else if (currentGamepad1.left_trigger <=0 && previousGamepad1.left_trigger > 0) {speed = 0.5;} else {speed=0.7;}if (gamepad1.right_trigger > 0 && maxSpeedRange != -1) {if(currentGamepad1.right_trigger != previousGamepad1.right_trigger){timeRightTriggerHeld.reset();} if(timeRightTriggerHeld.seconds() >= timeHeldToConfirm){maxSpeedRange=gamepad1.right_trigger;gamepad1.rumble(50);gamepad1.setLedColor(0,1,0,-1);}else{gamepad1.setLedColor(0,0,1,-1);}} if (Math.abs(gamepad1.right_stick_x-0.3) <= 0.04 && Math.abs(gamepad1.left_trigger - 0.4) <= 0.05) {maxSpeedRange = -1;gamepad1.rumble(-1);}if (gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0 && maxSpeedRange != -1) {iterationsPressed+=1;} else {iterationsPressed=0;} if (maxSpeedRange == -1) {speed = 0.2;}if (iterationsPressed >= 10) {speed=0.5; maxSpeedRange = 1.0; iterationsPressed=0; gamepad1.rumble(100);} if (gamepad1.right_bumper && maxSpeedRange != -1) {speed=0.25;} if (gamepad1.left_bumper && maxSpeedRange != -1) {if(currentGamepad1.left_bumper && !previousGamepad1.left_bumper){previousSpeed1 = speed; gamepad1.runRumbleEffect(maxSpeedStartUpRumbleEffect); gamepad1.runLedEffect(maxSpeedStartUpLEDEffect);} speed = 1; gamepad1.setLedColor(1,0,0,-1);} else if (!currentGamepad1.left_bumper && previousGamepad1.left_bumper) {speed=previousSpeed1;} else {gamepad1.setLedColor(0,0,1,-1);}
         speed = Range.clip(speed,0,1);
     }
     private void fieldOriented() {
