@@ -13,7 +13,8 @@ import java.lang.Math;
 public class AutoTestBradley extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
-    private MecanumDrive myDrive = new MecanumDrive(this);
+    //private MecanumDrive myDrive = new MecanumDrive(this);
+    private MecanumDriveBradley myDrive = new MecanumDriveBradley(this);
 
 
     @Override
@@ -26,7 +27,9 @@ public class AutoTestBradley extends LinearOpMode {
         runtime.reset();
 
         if (opModeIsActive()) {
-            myDrive.driveEncoder(MecanumDrive.Direction.RIGHT, 10, 0.3);
+            //also changed because of file name error
+            //myDrive.driveEncoder(MecanumDrive.Direction.RIGHT, 10, 0.3);
+            myDrive.driveEncoder(MecanumDriveBradley.Direction.RIGHT, 10, 0.3);
             sleep(1000);
             while (opModeIsActive() && myDrive.isBusy()){/*Wait until all motors reach their destination*/}
 

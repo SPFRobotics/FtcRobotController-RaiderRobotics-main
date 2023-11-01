@@ -6,7 +6,9 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class MecanumDrive {
+//Mr. Bradley the name of the class was different from name of file and was causing errors, so I corrected it -Eli
+//public class MecanumDrive {
+public class MecanumDriveBradley {
 
     private LinearOpMode opmode = null;
     private ElapsedTime runtime = new ElapsedTime();
@@ -33,7 +35,9 @@ public class MecanumDrive {
         LEFT,
         RIGHT
     }
-    MecanumDrive(LinearOpMode creatingOpMode){
+    //also changed from file name error
+    //MecanumDrive(LinearOpMode creatingOpMode){
+    MecanumDriveBradley(LinearOpMode creatingOpMode){
 
         //need to pass the OpMode that create the object so you can initialize the hardware,
         //monitor OpModeActive and send telemetry
