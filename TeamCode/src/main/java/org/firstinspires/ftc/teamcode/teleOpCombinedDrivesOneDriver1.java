@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import java.util.Arrays;
 
 @TeleOp
-public class teleOpCombinedDrives1 extends LinearOpMode {
+public class teleOpCombinedDrivesOneDriver1 extends LinearOpMode {
     private DcMotor backLeft;
     private DcMotor backRight;
     private DcMotor frontLeft;
