@@ -1,12 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -22,20 +25,40 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
     private DcMotor liftLeft;
     private DcMotor liftRight;
     private DcMotor intake;
+    private Servo wristLeft;
+    private Servo wristRight;
+    private Servo clawLeft;
+    private Servo clawRight;
     private IMU imu;
-    private double speed = 0.5;
+    private double speed1 = 0.5;
+    private double speed1Default = 0.7;
+    private double speed2 = 0.5;
+    private double speed2Default = 0.7;
     private double liftSpeed = 1.0;
+    private double servoSpeed = 0.5;
     private static final int liftMaxMotorCounts = 4062;
+    private static final double minWristPos = 0.0;
+    private static final double maxWristPos = 1.0;
+    private static final double minClawPos = 0.0;
+    private static final double maxClawPos = 0.3;
     private double previousSpeed1;
     private double previousSpeed2;
-    private int iterationsPressed = 0;
+    private int iterationsPressed1 = 0;
+    private int iterationsPressed2 = 0;
     private Gamepad currentGamepad1;
     private Gamepad previousGamepad1;
-    private ElapsedTime timeRightTriggerHeld = new ElapsedTime();
+    private Gamepad currentGamepad2;
+    private Gamepad previousGamepad2;
+    private ElapsedTime timeRightTriggerHeld1 = new ElapsedTime();
+    private ElapsedTime timeRightTriggerHeld2 = new ElapsedTime();
     private double timeHeldToConfirm = 0.5;
     int maxSpeedDuration = 50;
-    private double maxSpeedRange = 1.0;
+    private double maxSpeedRange1 = 1.0;
+    private double maxSpeedRange2 = 1.0;
     private int liftPosition = 0;
+    private double wristPos = 0;
+    private boolean clawLeftToggle = false;
+    private boolean clawRightToggle = false;
     private Gamepad.RumbleEffect maxSpeedStartUpRumbleEffect = new Gamepad.RumbleEffect.Builder()
             .addStep(0.1,0.1,maxSpeedDuration)
             .addStep(0.2,0.2,maxSpeedDuration)
@@ -69,33 +92,23 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
 
         currentGamepad1 = new Gamepad();
         previousGamepad1 = new Gamepad();
+        currentGamepad2 = new Gamepad();
+        previousGamepad2 = new Gamepad();
 
         while (opModeIsActive()) {
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
+            previousGamepad2.copy(currentGamepad2);
+            currentGamepad2.copy(gamepad2);
             Speed();
             if (Math.abs(gamepad1.left_stick_x) <= 0.05 && Math.abs(gamepad1.left_stick_y) <= 0.05) {
                 fieldOriented();
             } else {
                 robotOriented();
             }
-            if (gamepad2.cross) {liftPosition += 55*speed;}
-            if (gamepad2.circle) {liftPosition-= 55*speed;}
-            if (gamepad2.square) {intake.setPower(1);} else if (gamepad2.triangle) {intake.setPower(-1);} else {intake.setPower(0);}
-            liftPosition = Range.clip(liftPosition,0,liftMaxMotorCounts);
-            liftLeft.setTargetPosition(liftPosition);
-            liftRight.setTargetPosition(liftPosition);
-            liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            if (Math.abs(liftLeft.getCurrentPosition() - liftPosition) <= 20 && Math.abs(liftRight.getCurrentPosition() - liftPosition) <= 20) {
-                liftLeft.setPower(0);
-                liftRight.setPower(0);
-            } else {
-                liftLeft.setPower(liftSpeed*speed);
-                liftRight.setPower(liftSpeed*speed);
-            }
-            telemetry.addData("liftPos: ","Left: %d, Right: %d",liftLeft.getCurrentPosition(),liftRight.getCurrentPosition());
-            telemetry.addData("liftPosition: ",liftPosition);
+            Intake();
+            Outtake();
+            LiftHold();
             telemetry.update();
         }
     }
@@ -110,6 +123,10 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
         liftLeft = hardwareMap.dcMotor.get("liftLeft"); /** Port: ExpansionHub MotorPort 3 **/
         liftRight = hardwareMap.dcMotor.get("liftRight"); /** Port: ExpansionHub MotorPort 2 **/
         intake = hardwareMap.dcMotor.get("intake");  /** Port: ExpansionHub MotorPort 1 **/
+        wristLeft = hardwareMap.servo.get("wristLeft"); /** Port: ExpansionHub ServoPort 4 **/
+        wristRight = hardwareMap.servo.get("wristRight"); /** Port: ExpansionHub ServoPort 5 **/
+        clawLeft = hardwareMap.servo.get("clawLeft"); /** Port: ControlHub Servo Port 5 **/
+        clawRight = hardwareMap.servo.get("clawRight"); /** Port: ControlHub Servo Port 4 **/
 
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -123,9 +140,14 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
+        clawRight.setDirection(Servo.Direction.REVERSE);
 
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        wristPos = 0;
+        clawLeftToggle = false;
+        clawRightToggle = false;
 
         // Retrieve the IMU from the hardware map
         imu = hardwareMap.get(IMU.class, "imu");
@@ -140,8 +162,10 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
     }
     private void Speed() {
         //if (gamepad1.left_trigger > 0) {speed+=0.01;}
-        if (gamepad1.left_trigger > 0 ) { speed = (gamepad1.left_trigger * maxSpeedRange);} else if (currentGamepad1.left_trigger <=0 && previousGamepad1.left_trigger > 0) {speed = 0.5;} else {speed=0.7;}if (gamepad1.right_trigger > 0 /*&& maxSpeedRange != -1*/) {if(currentGamepad1.right_trigger != previousGamepad1.right_trigger){timeRightTriggerHeld.reset();} if(timeRightTriggerHeld.seconds() >= timeHeldToConfirm){maxSpeedRange=gamepad1.right_trigger;gamepad1.rumble(50);gamepad1.setLedColor(0,1,0,-1);}else{gamepad1.setLedColor(0,0,1,-1);}} if (Math.abs(gamepad1.right_stick_x-0.3) <= 0.04 && Math.abs(gamepad1.left_trigger - 0.4) <= 0.05) {class Thread1 extends Thread{public Thread1(){this.setName("Thread1");} public void run(){while(!isInterrupted()&&opModeIsActive()){gamepad1.rumble(-1);}}} Thread thread1 = new Thread1(); /*maxSpeedRange = -1;*/thread1.start();}if (gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0 /*&& maxSpeedRange != -1*/) {iterationsPressed+=1;} else {iterationsPressed=0;} /*if (maxSpeedRange == -1) {speed = 0.2;}*/if (iterationsPressed >= 10) {speed=0.5; maxSpeedRange = 1.0; iterationsPressed=0; gamepad1.rumble(100);} if (gamepad1.right_bumper /*&& maxSpeedRange != -1*/) {speed=0.25;} if (gamepad1.left_bumper /*&& maxSpeedRange != -1*/) {if(currentGamepad1.left_bumper && !previousGamepad1.left_bumper){previousSpeed1 = speed; gamepad1.runRumbleEffect(maxSpeedStartUpRumbleEffect); gamepad1.runLedEffect(maxSpeedStartUpLEDEffect);} speed = 1; gamepad1.setLedColor(1,0,0,-1);} else if (!currentGamepad1.left_bumper && previousGamepad1.left_bumper) {speed=previousSpeed1;} else {gamepad1.setLedColor(0,0,1,-1);}
-        speed = Range.clip(speed,0,1);
+        if (gamepad1.left_trigger > 0 ) { speed1 = (gamepad1.left_trigger * maxSpeedRange1);} else if (currentGamepad1.left_trigger <=0 && previousGamepad1.left_trigger > 0) {speed1 = speed1Default;} else {speed1=speed1Default;}if (gamepad1.right_trigger > 0 /*&& maxSpeedRange1 != -1*/) {if(currentGamepad1.right_trigger != previousGamepad1.right_trigger){timeRightTriggerHeld1.reset();} if(timeRightTriggerHeld1.seconds() >= timeHeldToConfirm){maxSpeedRange1=gamepad1.right_trigger;gamepad1.rumble(50);gamepad1.setLedColor(0,1,0,-1);}else{gamepad1.setLedColor(0,0,1,-1);}} if (Math.abs(gamepad1.right_stick_x-0.3) <= 0.04 && Math.abs(gamepad1.left_trigger - 0.4) <= 0.05) {class Thread1 extends Thread{public Thread1(){this.setName("Thread1");} public void run(){while(!isInterrupted()&&opModeIsActive()){gamepad1.rumble(-1);}}} Thread thread1 = new Thread1(); /*maxSpeedRange1 = -1;*/thread1.start();}if (gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0 /*&& maxSpeedRange1 != -1*/) {iterationsPressed1+=1;} else {iterationsPressed1=0;} /*if (maxSpeedRange1 == -1) {speed1 = 0.2;}*/if (iterationsPressed1 >= 10) {speed1=speed1Default; maxSpeedRange1 = 1.0; iterationsPressed1=0; gamepad1.rumble(100);} if (gamepad1.right_bumper /*&& maxSpeedRange1 != -1*/) {speed1=0.25;} if (gamepad1.left_bumper /*&& maxSpeedRange1 != -1*/) {if(currentGamepad1.left_bumper && !previousGamepad1.left_bumper){previousSpeed1 = speed1; gamepad1.runRumbleEffect(maxSpeedStartUpRumbleEffect); gamepad1.runLedEffect(maxSpeedStartUpLEDEffect);} speed1 = 1; gamepad1.setLedColor(1,0,0,-1);} else if (!currentGamepad1.left_bumper && previousGamepad1.left_bumper) {speed1=previousSpeed1;} else {gamepad1.setLedColor(0,0,1,-1);}
+        if (gamepad2.left_trigger > 0 ) { speed2 = (gamepad2.left_trigger * maxSpeedRange2);} else if (currentGamepad2.left_trigger <=0 && previousGamepad2.left_trigger > 0) {speed2 = speed2Default;} else {speed2=speed2Default;}if (gamepad2.right_trigger > 0 /*&& maxSpeedRange2 != -1*/) {if(currentGamepad2.right_trigger != previousGamepad2.right_trigger){timeRightTriggerHeld2.reset();} if(timeRightTriggerHeld2.seconds() >= timeHeldToConfirm){maxSpeedRange2=gamepad2.right_trigger;gamepad2.rumble(50);gamepad2.setLedColor(0,1,0,-1);}else{gamepad2.setLedColor(0,0,1,-1);}} if (Math.abs(gamepad2.right_stick_x-0.3) <= 0.04 && Math.abs(gamepad2.left_trigger - 0.4) <= 0.05) {class Thread1 extends Thread{public Thread1(){this.setName("Thread1");} public void run(){while(!isInterrupted()&&opModeIsActive()){gamepad2.rumble(-1);}}} Thread thread1 = new Thread1(); /*maxSpeedRange2 = -1;*/thread1.start();}if (gamepad2.left_trigger > 0 && gamepad2.right_trigger > 0 /*&& maxSpeedRange2 != -1*/) {iterationsPressed2+=1;} else {iterationsPressed2=0;} /*if (maxSpeedRange2 == -1) {speed2 = 0.2;}*/if (iterationsPressed2 >= 10) {speed2=speed2Default; maxSpeedRange2 = 1.0; iterationsPressed2=0; gamepad2.rumble(100);} if (gamepad2.right_bumper /*&& maxSpeedRange2 != -1*/) {speed2=0.25;} if (gamepad2.left_bumper /*&& maxSpeedRange2 != -1*/) {if(currentGamepad2.left_bumper && !previousGamepad2.left_bumper){previousSpeed2 = speed2; gamepad2.runRumbleEffect(maxSpeedStartUpRumbleEffect); gamepad2.runLedEffect(maxSpeedStartUpLEDEffect);} speed2 = 1; gamepad2.setLedColor(1,0,0,-1);} else if (!currentGamepad2.left_bumper && previousGamepad2.left_bumper) {speed2=previousSpeed2;} else {gamepad2.setLedColor(0,0,1,-1);}
+        speed1 = Range.clip(speed1,0,1);
+        speed2 = Range.clip(speed2,0,1);
     }
     private void fieldOriented() {
         /*double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
@@ -157,9 +181,9 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
         // This button choice was made so that it is hard to hit on accident,
         // it can be freely changed based on preference.
         // The equivalent button is start on Xbox-style controllers.
-        if (gamepad1.options) {
+        /*if (gamepad1.options) {
             imu.resetYaw();
-        }
+        }*/
 
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
@@ -173,10 +197,10 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
         // This ensures all the powers maintain the same ratio,
         // but only if at least one is out of the range [-1, 1]
         double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rxField), 1);
-        double frontLeftPower = speed * (rotY + rotX + rxField) / denominator;
-        double backLeftPower = speed * (rotY - rotX + rxField) / denominator;
-        double frontRightPower = speed * (rotY - rotX - rxField) / denominator;
-        double backRightPower = speed * (rotY + rotX - rxField) / denominator;
+        double frontLeftPower = speed1 * (rotY + rotX + rxField) / denominator;
+        double backLeftPower = speed1 * (rotY - rotX + rxField) / denominator;
+        double frontRightPower = speed1 * (rotY - rotX - rxField) / denominator;
+        double backRightPower = speed1 * (rotY + rotX - rxField) / denominator;
 
         frontLeft.setPower(frontLeftPower);
         backLeft.setPower(backLeftPower);
@@ -185,21 +209,68 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
     }
     private void robotOriented() {
         double yRobot = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
-        double xRobot = gamepad1.left_stick_x * 1.2; // Counteract imperfect strafing
+        double xRobot = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
         double rxRobot = gamepad1.right_stick_x;
 
         // Denominator is the largest motor power (absolute value) or 1
         // This ensures all the powers maintain the same ratio,
         // but only if at least one is out of the range [-1, 1]
         double denominator = Math.max(Math.abs(yRobot) + Math.abs(xRobot) + Math.abs(rxRobot), 1);
-        double frontLeftPower = speed * (yRobot + xRobot + rxRobot) / denominator;
-        double backLeftPower = speed * (yRobot - xRobot + rxRobot) / denominator;
-        double frontRightPower = speed * (yRobot - xRobot - rxRobot) / denominator;
-        double backRightPower = speed * (yRobot + xRobot - rxRobot) / denominator;
+        double frontLeftPower = speed1 * (yRobot + xRobot + rxRobot) / denominator;
+        double backLeftPower = speed1 * (yRobot - xRobot + rxRobot) / denominator;
+        double frontRightPower = speed1 * (yRobot - xRobot - rxRobot) / denominator;
+        double backRightPower = speed1 * (yRobot + xRobot - rxRobot) / denominator;
 
         frontLeft.setPower(frontLeftPower);
         backLeft.setPower(backLeftPower);
         frontRight.setPower(frontRightPower);
         backRight.setPower(backRightPower);
+    }
+    private void Intake() {
+        if (gamepad2.cross) {intake.setPower(1);} else if (gamepad2.circle) {intake.setPower(-1);} else {intake.setPower(0);}
+    }
+    private void Outtake() {
+        if (gamepad2.left_bumper) {clawLeftToggle = !clawLeftToggle;}
+        if (clawLeftToggle) {clawLeft.setPosition(maxClawPos);} else {clawLeft.setPosition(minClawPos);}
+        if (gamepad2.right_bumper) {clawRightToggle = !clawRightToggle;}
+        if (clawRightToggle) {clawRight.setPosition(maxClawPos);} else {clawRight.setPosition(minClawPos);}
+        if (gamepad2.left_stick_y > 0) {wristPos += 5*speed2;}
+        if (gamepad2.left_stick_y < 0) {wristPos -= 5*speed2;}
+        wristPos = Range.clip(wristPos,minWristPos,maxWristPos);
+        wristLeft.setPosition(wristPos);
+        wristRight.setPosition(wristPos);
+        telemetry.addData("wristPos: ","Left: %d, Right: %d",wristLeft.getPosition(),wristRight.getPosition());
+        telemetry.addData("wristPosition: ",wristPos);
+    }
+    private void LiftWorks() {
+        if (gamepad2.cross) {liftPosition += 55*speed2;}
+        if (gamepad2.circle) {liftPosition-= 55*speed2;}
+        liftPosition = Range.clip(liftPosition,0,liftMaxMotorCounts);
+        liftLeft.setTargetPosition(liftPosition);
+        liftRight.setTargetPosition(liftPosition);
+        liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if (Math.abs(liftLeft.getCurrentPosition() - liftPosition) <= 20 && Math.abs(liftRight.getCurrentPosition() - liftPosition) <= 20) {
+            liftLeft.setPower(0);
+            liftRight.setPower(0);
+        } else {
+            liftLeft.setPower(liftSpeed*speed2);
+            liftRight.setPower(liftSpeed*speed2);
+        }
+        telemetry.addData("liftPos: ","Left: %d, Right: %d",liftLeft.getCurrentPosition(),liftRight.getCurrentPosition());
+        telemetry.addData("liftPosition: ",liftPosition);
+    }
+    private void LiftHold() {
+        liftLeft.setTargetPosition(0);
+        liftRight.setTargetPosition(0);
+        liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if (Math.abs(liftLeft.getCurrentPosition() - liftPosition) <= 10 && Math.abs(liftRight.getCurrentPosition() - liftPosition) <= 10) {
+            liftLeft.setPower(0);
+            liftRight.setPower(0);
+        } else {
+            liftLeft.setPower(1);
+            liftRight.setPower(1);
+        }
     }
 }

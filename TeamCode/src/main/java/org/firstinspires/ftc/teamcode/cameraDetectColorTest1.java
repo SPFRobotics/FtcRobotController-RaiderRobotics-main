@@ -1,0 +1,155 @@
+package org.firstinspires.ftc.teamcode;
+
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
+import org.openftc.easyopencv.OpenCvPipeline;
+
+public class cameraDetectColorTest1 extends OpenCvPipeline {
+    public enum GameObjectLocation {
+        LEFT,
+        RIGHT,
+        CENTER,
+        NONE
+    }
+    private static final Point GameObject_BoundingBox_TopLeft_AnchorPoint = new Point(200,200);
+    private static final int BoundingBox_Width = 120;
+    private static final int BoundingBox_Height = 50;
+
+    private static final int LeftLineLocation = 40; //From the left of bounding box
+    private static final int RightLineLocation = 80; //From the left of bounding box
+
+    private static final Scalar
+        lower_red_bounds  = new Scalar(100,100,0,0),
+        upper_red_bounds  = new Scalar(255,100,100,255),
+        lower_blue_bounds = new Scalar(0,0,100,0),
+        upper_blue_bounds = new Scalar(100,100,255,255);
+
+    private final Scalar
+        RED  = new Scalar(255,0,0),
+        BLUE = new Scalar(0,0,255);
+    private Scalar color;
+
+    public double redPercent, bluePercent = 0;
+    private Mat redMat = new Mat(), blueMat = new Mat(), blurredMat = new Mat();
+    public double redPercentLeft, bluePercentLeft, leftPercent = 0;
+    private Mat redMatLeft = new Mat(), blueMatLeft = new Mat(), blurredMatLeft = new Mat();
+    public double redPercentCenter, bluePercentCenter, centerPercent = 0;
+    private Mat redMatCenter = new Mat(), blueMatCenter = new Mat(), blurredMatCenter = new Mat();
+    public double redPercentRight, bluePercentRight, rightPercent = 0;
+    private Mat redMatRight = new Mat(), blueMatRight = new Mat(), blurredMatRight = new Mat();
+
+    Point GameObjectPointA = new Point(
+            GameObject_BoundingBox_TopLeft_AnchorPoint.x,
+            GameObject_BoundingBox_TopLeft_AnchorPoint.y);
+    Point GameObjectPointB = new Point(
+            GameObject_BoundingBox_TopLeft_AnchorPoint.x + BoundingBox_Width,
+            GameObject_BoundingBox_TopLeft_AnchorPoint.y + BoundingBox_Height);
+    Point GameObjectLeftPointA = new Point(
+            GameObject_BoundingBox_TopLeft_AnchorPoint.x,
+            GameObject_BoundingBox_TopLeft_AnchorPoint.y);
+    Point GameObjectLeftPointB = new Point(
+            GameObject_BoundingBox_TopLeft_AnchorPoint.x + LeftLineLocation,
+            GameObject_BoundingBox_TopLeft_AnchorPoint.y + BoundingBox_Height);
+    Point GameObjectCenterPointA = new Point(
+            GameObject_BoundingBox_TopLeft_AnchorPoint.x + LeftLineLocation,
+            GameObject_BoundingBox_TopLeft_AnchorPoint.y);
+    Point GameObjectCenterPointB = new Point(
+            GameObject_BoundingBox_TopLeft_AnchorPoint.x + RightLineLocation,
+            GameObject_BoundingBox_TopLeft_AnchorPoint.y + BoundingBox_Height);
+    Point GameObjectRightPointA = new Point(
+            GameObject_BoundingBox_TopLeft_AnchorPoint.x + RightLineLocation,
+            GameObject_BoundingBox_TopLeft_AnchorPoint.y);
+    Point GameObjectRightPointB = new Point(
+            GameObject_BoundingBox_TopLeft_AnchorPoint.x + BoundingBox_Width,
+            GameObject_BoundingBox_TopLeft_AnchorPoint.y + BoundingBox_Height);
+
+    private volatile GameObjectLocation position = GameObjectLocation.NONE;
+
+    @Override
+    public Mat processFrame(Mat input){
+        // Noise reduction
+        Imgproc.blur(input, blurredMat, new Size(5, 5));
+        blurredMat = blurredMat.submat(new Rect(GameObjectPointA, GameObjectPointB));
+        blurredMatLeft = blurredMat.submat(new Rect(GameObjectLeftPointA, GameObjectLeftPointB));
+        blurredMatCenter = blurredMat.submat(new Rect(GameObjectCenterPointA, GameObjectCenterPointB));
+        blurredMatRight = blurredMat.submat(new Rect(GameObjectRightPointA, GameObjectRightPointB));
+
+        // Apply Morphology
+        Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
+        Imgproc.morphologyEx(blurredMat, blurredMat, Imgproc.MORPH_CLOSE, kernel);
+
+        // Gets channels from given source mat
+        Core.inRange(blurredMat, lower_red_bounds, upper_red_bounds, redMat);
+        Core.inRange(blurredMat, lower_blue_bounds, upper_blue_bounds, blueMat);
+        Core.inRange(blurredMatLeft, lower_red_bounds, upper_red_bounds, redMatLeft);
+        Core.inRange(blurredMatLeft, lower_blue_bounds, upper_blue_bounds, blueMatLeft);
+        Core.inRange(blurredMatCenter, lower_red_bounds, upper_red_bounds, redMatCenter);
+        Core.inRange(blurredMatCenter, lower_blue_bounds, upper_blue_bounds, blueMatCenter);
+        Core.inRange(blurredMatRight, lower_red_bounds, upper_red_bounds, redMatRight);
+        Core.inRange(blurredMatRight, lower_blue_bounds, upper_blue_bounds, blueMatRight);
+
+        // Gets color specific values
+        redPercent = Core.countNonZero(redMat);
+        bluePercent = Core.countNonZero(blueMat);
+        redPercentLeft = Core.countNonZero(redMatLeft);
+        bluePercentLeft = Core.countNonZero(blueMatLeft);
+        leftPercent = redPercentLeft + bluePercentLeft;
+        redPercentCenter = Core.countNonZero(redMatCenter);
+        bluePercentCenter = Core.countNonZero(blueMatCenter);
+        centerPercent = redPercentCenter + bluePercentCenter;
+        redPercentRight = Core.countNonZero(redMatRight);
+        bluePercentRight = Core.countNonZero(blueMatRight);
+        rightPercent = redPercentRight + bluePercentRight;
+
+        // Calculates the highest amount of pixels being covered on each side
+        double maxPercent = Math.max(redPercent, bluePercent);
+        double highestSector = Math.max(Math.max(leftPercent,centerPercent),rightPercent);
+
+        // Checks all percentages, will highlight bounding box in camera preview
+        // based on what color is being detected
+        if (highestSector > 0 && maxPercent > 0) {
+            if (maxPercent == redPercent) {
+                color = RED;
+            } else if (maxPercent == bluePercent) {
+                color = BLUE;
+            }
+            if (highestSector == leftPercent) {
+                position = GameObjectLocation.LEFT;
+                Imgproc.rectangle(input,GameObjectLeftPointA,GameObjectLeftPointB,color,4);
+            } else if (highestSector == centerPercent) {
+                position = GameObjectLocation.CENTER;
+                Imgproc.rectangle(input,GameObjectCenterPointA,GameObjectCenterPointB,color,4);
+            } else if (highestSector == rightPercent) {
+                position = GameObjectLocation.RIGHT;
+                Imgproc.rectangle(input,GameObjectRightPointA,GameObjectRightPointB,color,4);
+            }
+        } else if (maxPercent == 0) {
+            position = GameObjectLocation.NONE;
+        }
+
+        // Memory cleanup
+        blurredMat.release();
+        blurredMatLeft.release();
+        blurredMatCenter.release();
+        blurredMatRight.release();
+        redMat.release();
+        redMatLeft.release();
+        redMatCenter.release();
+        redMatRight.release();
+        blueMat.release();
+        blueMatLeft.release();
+        blueMatCenter.release();
+        blueMatRight.release();
+
+        return input;
+    }
+
+    public GameObjectLocation getPosition() {
+        return position;
+    }
+}
