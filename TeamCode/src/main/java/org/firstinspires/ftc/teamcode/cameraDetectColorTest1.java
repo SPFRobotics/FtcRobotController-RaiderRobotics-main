@@ -17,9 +17,9 @@ public class cameraDetectColorTest1 extends OpenCvPipeline {
         CENTER,
         NONE
     }
-    private static Point GameObject_BoundingBox_TopLeft_AnchorPoint = new Point(0,110);
+    private static Point GameObject_BoundingBox_TopLeft_AnchorPoint = new Point(0,120);
     private static int BoundingBox_Width = 320;
-    private static int BoundingBox_Height = 60;
+    private static int BoundingBox_Height = 80;
 
     private static int LeftLineLocation = 60; //From the left of bounding box
     private static int CenterLeftLineLocation = 120;
@@ -27,10 +27,10 @@ public class cameraDetectColorTest1 extends OpenCvPipeline {
     private static int RightLineLocation = 260; //From the left of bounding box
 
     private static final Scalar
-        lower_red_bounds  = new Scalar(150,0,0,0),
-        upper_red_bounds  = new Scalar(255,50,50,255),
+        lower_red_bounds  = new Scalar(120,0,0,0),
+        upper_red_bounds  = new Scalar(255,70,70,255),
         lower_blue_bounds = new Scalar(0,0,100,0),
-        upper_blue_bounds = new Scalar(100,100,255,255);
+        upper_blue_bounds = new Scalar(80,80,255,255);
 
     private final Scalar
         RED   = new Scalar(255,0,0),
@@ -120,7 +120,7 @@ public class cameraDetectColorTest1 extends OpenCvPipeline {
         double maxPercent = Math.max(redPercent, bluePercent);
         double highestSector = Math.max(Math.max(leftPercent,centerPercent),rightPercent);
 
-        maxPercent = 0;
+        //maxPercent = 0;
 
         // Checks all percentages, will highlight bounding box in camera preview
         // based on what color is being detected
@@ -145,9 +145,9 @@ public class cameraDetectColorTest1 extends OpenCvPipeline {
         } else if (maxPercent == 0) {
             position = GameObjectLocation.NONE;
             //Imgproc.rectangle(input,GameObjectPointA,GameObjectPointB,BLACK,4);
-            Imgproc.rectangle(input,GameObjectLeftPointA,GameObjectLeftPointB,BLACK,4);
-            Imgproc.rectangle(input,GameObjectCenterPointA,GameObjectCenterPointB,RED,4);
-            Imgproc.rectangle(input,GameObjectRightPointA,GameObjectRightPointB,BLUE,4);
+            Imgproc.rectangle(input,GameObjectLeftPointA,GameObjectLeftPointB,BLACK,2);
+            Imgproc.rectangle(input,GameObjectCenterPointA,GameObjectCenterPointB,BLACK,2);
+            Imgproc.rectangle(input,GameObjectRightPointA,GameObjectRightPointB,BLACK,2);
         }
 
         // Memory cleanup
