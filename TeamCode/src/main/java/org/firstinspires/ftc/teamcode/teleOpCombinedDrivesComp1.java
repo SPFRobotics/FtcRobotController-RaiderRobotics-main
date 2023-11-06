@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -34,12 +35,12 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
     private double speed2 = 0.5;
     private double speed2Default = 0.7;
     private double liftSpeed = 1.0;
-    private double servoSpeed = 0.5;
+    private double servoSpeed = 0;
     private static final int liftMaxMotorCounts = 4062;
-    private static final double minWristPos = 0.0;
-    private static final double maxWristPos = 1.0;
-    private static final double minClawPos = 0.0;
-    private static final double maxClawPos = 0.3;
+    private static final double minWristPos = -1.0;
+    private static final double maxWristPos = 0.9;
+    private static final double minClawPos = 0.7;
+    private static final double maxClawPos = 0.5;
     private double previousSpeed1;
     private double previousSpeed2;
     private int iterationsPressed1 = 0;
@@ -55,7 +56,7 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
     private double maxSpeedRange1 = 1.0;
     private double maxSpeedRange2 = 1.0;
     private int liftPosition = 0;
-    private double wristPos = 0;
+    private double wristPos = 0.5;
     private boolean clawLeftToggle = false;
     private boolean clawRightToggle = false;
     private Gamepad.RumbleEffect maxSpeedStartUpRumbleEffect = new Gamepad.RumbleEffect.Builder()
@@ -108,8 +109,8 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
             Intake();
             Outtake();
             LiftHold();
-            telemetry.addData("wristPos: ","Left: %f, Right: %f",wristLeft.getPosition(),wristRight.getPosition());
-            telemetry.addData("wristPos: ",wristPos);
+            //telemetry.addData("wristPos: ","Left: %f, Right: %f",wristLeft.getPosition(),wristRight.getPosition());
+            //telemetry.addData("wristPos: ",wristPos);
             telemetry.update();
         }
     }
@@ -141,17 +142,21 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
-        wristRight.setDirection(Servo.Direction.REVERSE);
+        //wristRight.setDirection(Servo.Direction.REVERSE);
+        wristLeft.setDirection(Servo.Direction.REVERSE);
+        //clawRight.setDirection(Servo.Direction.REVERSE);
+        clawLeft.setDirection(Servo.Direction.REVERSE);
 
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        
 
-        wristLeft.scaleRange(0,1);
-        wristRight.scaleRange(0,1);
-        clawLeft.scaleRange(0,0.3);
-        clawRight.scaleRange(0,0.3);
+        wristLeft.scaleRange(0,2);
+        wristRight.scaleRange(0,2);
+        //clawLeft.scaleRange(0,0.1);
+        //clawRight.scaleRange(0,0.1);
+        //clawLeft.resetDeviceConfigurationForOpMode();
+        //clawRight.resetDeviceConfigurationForOpMode();
 
         wristPos = 0;
         clawLeftToggle = false;
@@ -238,17 +243,17 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
         if (gamepad2.cross) {intake.setPower(1);} else if (gamepad2.circle) {intake.setPower(-1);} else {intake.setPower(0);}
     }
     private void Outtake() {
-        if (gamepad2.left_bumper) {clawLeftToggle = !clawLeftToggle;}
+        if (currentGamepad2.left_bumper && !previousGamepad2.left_bumper) {clawLeftToggle = !clawLeftToggle;}
         if (clawLeftToggle) {clawLeft.setPosition(maxClawPos);} else {clawLeft.setPosition(minClawPos);}
-        if (gamepad2.right_bumper) {clawRightToggle = !clawRightToggle;}
+        if (currentGamepad2.right_bumper && !previousGamepad2.right_bumper) {clawRightToggle = !clawRightToggle;}
         if (clawRightToggle) {clawRight.setPosition(maxClawPos);} else {clawRight.setPosition(minClawPos);}
         if (gamepad2.left_stick_y > 0) {wristPos += 0.01*speed2;}
         if (gamepad2.left_stick_y < 0) {wristPos -= 0.01*speed2;}
         wristPos = Range.clip(wristPos,minWristPos,maxWristPos);
         wristLeft.setPosition(wristPos);
         wristRight.setPosition(wristPos);
-        //telemetry.addData("wristPos: ","Left: %d, Right: %d",wristLeft.getPosition(),wristRight.getPosition());
-        //telemetry.addData("wristPosition: ", wristPos);
+        telemetry.addData("wristPos: ","Left: %f, Right: %f",wristLeft.getPosition(),wristRight.getPosition());
+        telemetry.addData("wristPosition: ", wristPos);
     }
     private void LiftWorks() {
         if (gamepad2.cross) {liftPosition += 55*speed2;}
