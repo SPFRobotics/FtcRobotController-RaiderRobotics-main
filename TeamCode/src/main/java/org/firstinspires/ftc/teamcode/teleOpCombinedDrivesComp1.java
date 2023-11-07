@@ -98,7 +98,7 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
         previousGamepad2 = new Gamepad();
 
         while (opModeIsActive()) {
-            if (currentIMUAngle == imu.getRobotOrientationAsQuaternion()) {
+            /*if (currentIMUAngle == imu.getRobotOrientationAsQuaternion() || currentIMUAngle == null) {
                 imu = hardwareMap.get(IMU.class, "imu");
                 // Adjust the orientation parameters to match your robot
                 IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -107,7 +107,7 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
                 // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
                 imu.initialize(parameters);
                 telemetry.addData("worked","");
-            }
+            }*/
             currentIMUAngle = imu.getRobotOrientationAsQuaternion();
             //telemetry.addData("imu connected: ", imu.getConnectionInfo());
             //telemetry.addData("imu hardware: ", currentIMUAngle);
@@ -178,11 +178,16 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
         clawRightToggle = false;
 
         // Retrieve the IMU from the hardware map
+        //imu = hardwareMap.get(IMU.class, "imu");
         imu = hardwareMap.get(IMU.class, "imu");
         // Adjust the orientation parameters to match your robot
+        //IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                //RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                //RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+        ));
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
         imu.resetYaw();
@@ -262,8 +267,8 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
         if (clawLeftToggle) {clawLeft.setPosition(maxClawPos);} else {clawLeft.setPosition(minClawPos);}
         if (currentGamepad2.right_bumper && !previousGamepad2.right_bumper) {clawRightToggle = !clawRightToggle;}
         if (clawRightToggle) {clawRight.setPosition(maxClawPos);} else {clawRight.setPosition(minClawPos);}
-        if (gamepad2.left_stick_y > 0) {wristPos += 0.01*speed2;}
-        if (gamepad2.left_stick_y < 0) {wristPos -= 0.01*speed2;}
+        if (gamepad2.left_stick_y > 0) {wristPos -= 0.01*speed2;}
+        if (gamepad2.left_stick_y < 0) {wristPos += 0.01*speed2;}
         wristPos = Range.clip(wristPos,minWristPos,maxWristPos);
         wristLeft.setPosition(wristPos);
         wristRight.setPosition(wristPos);
