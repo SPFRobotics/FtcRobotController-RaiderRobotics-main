@@ -151,8 +151,8 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
-        wristLeft.scaleRange(0,2);
-        wristRight.scaleRange(0,2);
+        //wristLeft.scaleRange(0,2);
+        //wristRight.scaleRange(0,2);
         //clawLeft.scaleRange(0,0.1);
         //clawRight.scaleRange(0,0.1);
         //clawLeft.resetDeviceConfigurationForOpMode();
