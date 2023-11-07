@@ -14,7 +14,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @Autonomous
-public class autoTest1_EK extends LinearOpMode{
+public class aidenParkTest extends LinearOpMode{
     //public static boolean RunAutoRight = false;
     //public static boolean RunMoveToCone = false;
     //ElapsedTime AutoRightTime = new ElapsedTime();
@@ -37,17 +37,23 @@ public class autoTest1_EK extends LinearOpMode{
     public void runOpMode() throws InterruptedException {
         //By Friday, have it be able to
         Initializtion();
-        //rotate(90,0.3);
-        move(.3, "forward", 12);
-        move(.3, "left", 10);
-        move(.3, "right", 8);
-        move(.3, "backward", 6);
+        //parkFarRed();
+        parkCloseRed();
     }
 
     //3.78(in inches, 9.6012 is centimeters) is the diameter of the wheel, and 537.7 is how many motor counts are in 1 full rotation of the motor's axle
     private double inch_convert(double inch) { return inch * (537.7 / (3.78 * Math.PI)); }
     private double inToCm(int inches) { return inches * 2.54; }
     private double cm_convert(double cm) { return cm * (537.7 / (9.6012 / Math.PI)); }
+
+    void parkFarRed(){
+        move(.3, "forward", 5.5);
+        move(.3, "right", 96);
+    }
+    void parkCloseRed(){
+        move(.3, "forward", 3);
+        move(.3, "right", 46);
+    }
 
     private void Initializtion() {
         backLeft = hardwareMap.dcMotor.get("backLeft");
