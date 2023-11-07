@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
 
 import java.util.Arrays;
 
@@ -59,6 +60,7 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
     private double wristPos = 0.5;
     private boolean clawLeftToggle = false;
     private boolean clawRightToggle = false;
+    private Quaternion currentIMUAngle;
     private Gamepad.RumbleEffect maxSpeedStartUpRumbleEffect = new Gamepad.RumbleEffect.Builder()
             .addStep(0.1,0.1,maxSpeedDuration)
             .addStep(0.2,0.2,maxSpeedDuration)
@@ -96,6 +98,19 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
         previousGamepad2 = new Gamepad();
 
         while (opModeIsActive()) {
+            if (currentIMUAngle == imu.getRobotOrientationAsQuaternion()) {
+                imu = hardwareMap.get(IMU.class, "imu");
+                // Adjust the orientation parameters to match your robot
+                IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                        RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                        RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+                // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
+                imu.initialize(parameters);
+                telemetry.addData("worked","");
+            }
+            currentIMUAngle = imu.getRobotOrientationAsQuaternion();
+            //telemetry.addData("imu connected: ", imu.getConnectionInfo());
+            //telemetry.addData("imu hardware: ", currentIMUAngle);
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
             previousGamepad2.copy(currentGamepad2);
