@@ -73,7 +73,7 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
             .addStep(0.9,0.9,maxSpeedDuration)
             .addStep(1.0,1.0,(maxSpeedDuration*2))
             .build();
-    private Gamepad.LedEffect maxSpeedStartUpLEDEffect = new Gamepad.LedEffect.Builder()
+    /*private Gamepad.LedEffect maxSpeedStartUpLEDEffect = new Gamepad.LedEffect.Builder()
             .addStep(0.1,0,0,maxSpeedDuration)
             .addStep(0.2,0,0,maxSpeedDuration)
             .addStep(0.3,0,0,maxSpeedDuration)
@@ -84,7 +84,7 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
             .addStep(0.8,0,0,maxSpeedDuration)
             .addStep(0.9,0,0,maxSpeedDuration)
             .addStep(1.0,0,0,(maxSpeedDuration*2))
-            .build();
+            .build();*/
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -187,7 +187,7 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
         //IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 //RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
                 //RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
-        ));
+        //));
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
         imu.resetYaw();
@@ -195,7 +195,7 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
     }
     private void Speed() {
         //if (gamepad1.left_trigger > 0) {speed+=0.01;}
-        if (gamepad1.left_trigger > 0 ) { speed1 = (gamepad1.left_trigger * maxSpeedRange1);} else if (currentGamepad1.left_trigger <=0 && previousGamepad1.left_trigger > 0) {speed1 = speed1Default;} else {speed1=speed1Default;}if (gamepad1.right_trigger > 0 /*&& maxSpeedRange1 != -1*/) {if(currentGamepad1.right_trigger != previousGamepad1.right_trigger){timeRightTriggerHeld1.reset();} if(timeRightTriggerHeld1.seconds() >= timeHeldToConfirm){maxSpeedRange1=gamepad1.right_trigger;gamepad1.rumble(50);gamepad1.setLedColor(0,1,0,-1);}else{gamepad1.setLedColor(0,0,1,-1);}} if (Math.abs(gamepad1.right_stick_x-0.3) <= 0.04 && Math.abs(gamepad1.left_trigger - 0.4) <= 0.05) {class Thread1 extends Thread{public Thread1(){this.setName("Thread1");} public void run(){while(!isInterrupted()&&opModeIsActive()){gamepad1.rumble(-1);}}} Thread thread1 = new Thread1(); /*maxSpeedRange1 = -1;*/thread1.start();}if (gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0 /*&& maxSpeedRange1 != -1*/) {iterationsPressed1+=1;} else {iterationsPressed1=0;} /*if (maxSpeedRange1 == -1) {speed1 = 0.2;}*/if (iterationsPressed1 >= 10) {speed1=speed1Default; maxSpeedRange1 = 1.0; iterationsPressed1=0; gamepad1.rumble(100);} if (gamepad1.right_bumper /*&& maxSpeedRange1 != -1*/) {speed1=0.25;} if (gamepad1.left_bumper /*&& maxSpeedRange1 != -1*/) {if(currentGamepad1.left_bumper && !previousGamepad1.left_bumper){previousSpeed1 = speed1; gamepad1.runRumbleEffect(maxSpeedStartUpRumbleEffect); gamepad1.runLedEffect(maxSpeedStartUpLEDEffect);} speed1 = 1; gamepad1.setLedColor(1,0,0,-1);} else if (!currentGamepad1.left_bumper && previousGamepad1.left_bumper) {speed1=previousSpeed1;} else {gamepad1.setLedColor(0,0,1,-1);}
+        if (gamepad1.left_trigger > 0 ) { speed1 = (gamepad1.left_trigger * maxSpeedRange1);} else if (currentGamepad1.left_trigger <=0 && previousGamepad1.left_trigger > 0) {speed1 = speed1Default;} else {speed1=speed1Default;}if (gamepad1.right_trigger > 0 /*&& maxSpeedRange1 != -1*/) {if(currentGamepad1.right_trigger != previousGamepad1.right_trigger){timeRightTriggerHeld1.reset();} if(timeRightTriggerHeld1.seconds() >= timeHeldToConfirm){maxSpeedRange1=gamepad1.right_trigger;gamepad1.rumble(50);gamepad1.setLedColor(0,1,0,-1);}else{gamepad1.setLedColor(0,0,1,-1);}} if (Math.abs(gamepad1.right_stick_x-0.3) <= 0.04 && Math.abs(gamepad1.left_trigger - 0.4) <= 0.05) {class Thread1 extends Thread{public Thread1(){this.setName("Thread1");} public void run(){while(!isInterrupted()&&opModeIsActive()){gamepad1.rumble(-1);}}} Thread thread1 = new Thread1(); /*maxSpeedRange1 = -1;*/thread1.start();}if (gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0 /*&& maxSpeedRange1 != -1*/) {iterationsPressed1+=1;} else {iterationsPressed1=0;} /*if (maxSpeedRange1 == -1) {speed1 = 0.2;}*/if (iterationsPressed1 >= 10) {speed1=speed1Default; maxSpeedRange1 = 1.0; iterationsPressed1=0; gamepad1.rumble(100);} if (gamepad1.right_bumper /*&& maxSpeedRange1 != -1*/) {speed1=0.25;} if (gamepad1.left_bumper /*&& maxSpeedRange1 != -1*/) {if(currentGamepad1.left_bumper && !previousGamepad1.left_bumper){previousSpeed1 = speed1; gamepad1.runRumbleEffect(maxSpeedStartUpRumbleEffect); /*gamepad1.runLedEffect(maxSpeedStartUpLEDEffect);*/} speed1 = 1; gamepad1.setLedColor(1,0,0,-1);} else if (!currentGamepad1.left_bumper && previousGamepad1.left_bumper) {speed1=previousSpeed1;} else {gamepad1.setLedColor(0,0,1,-1);}
         if (gamepad2.left_trigger > 0 ) { speed2 = (gamepad2.left_trigger * maxSpeedRange2);} else if (currentGamepad2.left_trigger <=0 && previousGamepad2.left_trigger > 0) {speed2 = speed2Default;} else {speed2=speed2Default;}if (gamepad2.right_trigger > 0 /*&& maxSpeedRange2 != -1*/) {if(currentGamepad2.right_trigger != previousGamepad2.right_trigger){timeRightTriggerHeld2.reset();} if(timeRightTriggerHeld2.seconds() >= timeHeldToConfirm){maxSpeedRange2=gamepad2.right_trigger;gamepad2.rumble(50);gamepad2.setLedColor(0,1,0,-1);}else{gamepad2.setLedColor(0,0,1,-1);}} if (Math.abs(gamepad2.right_stick_x-0.3) <= 0.04 && Math.abs(gamepad2.left_trigger - 0.4) <= 0.05) {class Thread1 extends Thread{public Thread1(){this.setName("Thread1");} public void run(){while(!isInterrupted()&&opModeIsActive()){gamepad2.rumble(-1);}}} Thread thread1 = new Thread1(); /*maxSpeedRange2 = -1;*/thread1.start();}if (gamepad2.left_trigger > 0 && gamepad2.right_trigger > 0 /*&& maxSpeedRange2 != -1*/) {iterationsPressed2+=1;} else {iterationsPressed2=0;} /*if (maxSpeedRange2 == -1) {speed2 = 0.2;}*/if (iterationsPressed2 >= 10) {speed2=speed2Default; maxSpeedRange2 = 1.0; iterationsPressed2=0; gamepad2.rumble(100);} /*if (gamepad2.right_bumper && maxSpeedRange2 != -1) {speed2=0.25;}*/ /*if (gamepad2.left_bumper && maxSpeedRange2 != -1) {if(currentGamepad2.left_bumper && !previousGamepad2.left_bumper){previousSpeed2 = speed2; gamepad2.runRumbleEffect(maxSpeedStartUpRumbleEffect); gamepad2.runLedEffect(maxSpeedStartUpLEDEffect);} speed2 = 1; gamepad2.setLedColor(1,0,0,-1);} else if (!currentGamepad2.left_bumper && previousGamepad2.left_bumper) {speed2=previousSpeed2;} else {gamepad2.setLedColor(0,0,1,-1);}*/
         speed1 = Range.clip(speed1,0,1);
         speed2 = Range.clip(speed2,0,1);
