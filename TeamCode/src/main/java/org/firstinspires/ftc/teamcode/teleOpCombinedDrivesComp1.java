@@ -115,7 +115,7 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
             currentGamepad1.copy(gamepad1);
             previousGamepad2.copy(currentGamepad2);
             currentGamepad2.copy(gamepad2);
-            Speed();
+            //Speed();
             if (Math.abs(gamepad1.left_stick_x) <= 0.05 && Math.abs(gamepad1.left_stick_y) <= 0.05) {
                 fieldOriented();
             } else {
