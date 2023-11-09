@@ -111,8 +111,8 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
             }
             Intake();
             Outtake();
-            //LiftHold();
-            LiftWorks();
+            LiftHold();
+            //LiftWorks();
             telemetry.update();
         }
     }
