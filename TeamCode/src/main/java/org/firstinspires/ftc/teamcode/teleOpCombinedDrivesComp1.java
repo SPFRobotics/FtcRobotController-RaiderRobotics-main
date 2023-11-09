@@ -123,7 +123,8 @@ public class teleOpCombinedDrivesComp1 extends LinearOpMode {
             }
             Intake();
             Outtake();
-            LiftHold();
+            //LiftHold();
+            LiftWorks();
             //telemetry.addData("wristPos: ","Left: %f, Right: %f",wristLeft.getPosition(),wristRight.getPosition());
             //telemetry.addData("wristPos: ",wristPos);
             telemetry.update();
