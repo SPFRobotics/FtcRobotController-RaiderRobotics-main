@@ -54,6 +54,14 @@ public class aidenParkTest extends LinearOpMode{
         move(.3, "forward", 3);
         move(.3, "right", 46);
     }
+    void parkFarBlue(){
+        move(.3, "forward", 5.5);
+        move(.3, "left", 96);
+    }
+    void parkCloseBlue(){
+        move(.3, "forward", 3);
+        move(.3, "left", 46);
+    }
 
     private void Initializtion() {
         backLeft = hardwareMap.dcMotor.get("backLeft");

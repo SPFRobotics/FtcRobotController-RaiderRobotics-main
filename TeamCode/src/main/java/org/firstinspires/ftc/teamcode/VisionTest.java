@@ -34,6 +34,7 @@ public class VisionTest extends LinearOpMode {
         camera.setPipeline(gameObjectDetection);
         //camera.setPipeline(new cameraDetectColorTest1());
 
+
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override

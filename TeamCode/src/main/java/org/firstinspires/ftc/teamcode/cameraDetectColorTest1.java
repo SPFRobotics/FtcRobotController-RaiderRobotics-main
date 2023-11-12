@@ -30,7 +30,7 @@ public class cameraDetectColorTest1 extends OpenCvPipeline {
         lower_red_bounds  = new Scalar(120,0,0,0),
         upper_red_bounds  = new Scalar(255,70,70,255),
         lower_blue_bounds = new Scalar(0,0,100,0),
-        upper_blue_bounds = new Scalar(80,80,255,255);
+        upper_blue_bounds = new Scalar(100,100,255,255);
 
     private final Scalar
         RED   = new Scalar(255,0,0),
@@ -85,6 +85,7 @@ public class cameraDetectColorTest1 extends OpenCvPipeline {
         blurredMatLeft = blurredMatLeft.submat(new Rect(GameObjectLeftPointA, GameObjectLeftPointB));
         blurredMatCenter = blurredMatCenter.submat(new Rect(GameObjectCenterPointA, GameObjectCenterPointB));
         blurredMatRight = blurredMatRight.submat(new Rect(GameObjectRightPointA, GameObjectRightPointB));
+
 
         // Apply Morphology
         Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));

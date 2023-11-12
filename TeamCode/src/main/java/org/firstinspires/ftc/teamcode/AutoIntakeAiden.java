@@ -61,38 +61,36 @@ public class AutoIntakeAiden extends LinearOpMode {
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
-    private void intake(double power) {
-        intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        intake.setTargetPosition(1000);
-        intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    private void intake(double power, long sec) {
+        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intake.setPower(power);
-        while(intake.isBusy()){/*Wait*/}
+        sleep(sec * 1000);
         intake.setPower(0);
     }
     public void placeOnSpikeMark(){
         //Move to center of spike marks
-        spikeLocation = "LEFT";
+        //spikeLocation = "LEFT";
+        double power = .3;
         if(spikeLocation.equals("LEFT")) {
             move(.1, "forward", 10);
             sleep(1000);
-            //rotate(90, .3);
+            rotate(90, .3);
             sleep(1000);
-            intake(.3);
+            intake(power, 3);
             sleep(1000);
-            //rotate(-90, .3);
+            rotate(-90, .3);
             sleep(1000);
             move(.3, "backward", 10);
             sleep(1000);
         } else if(spikeLocation.equals("RIGHT")){
             move(.3, "forward", 30);
-
             rotate(-90, .3);
-            intake(.7);
+            intake(power, 3);
             rotate(90, .3);
             move(.3, "backward", 30);
         } else if(spikeLocation.equals("CENTER")){
             move(.3, "forward", 30);
-            intake(.7);
+            intake(power, 3);
             move(.3, "backward", 30);
         } else {
             telemetry.addData("Team Element", "Not Found");
@@ -107,6 +105,7 @@ public class AutoIntakeAiden extends LinearOpMode {
     //3.78(in inches, 9.6012 is centimeters) is the diameter of the wheel, and 537.7 is how many motor counts are in 1 full rotation of the motor's axle
     private double inch_convert(double inch) { return inch * (537.7 / (3.78 * Math.PI)); }
     private double inToCm(int inches) { return inches * 2.54; }
+    private double cmToIn(double cm) { return cm / 2.54; }
     private double cm_convert(double cm) { return cm * (537.7 / (9.6012 / Math.PI)); }
 
     void parkFarRed(){
@@ -144,8 +143,8 @@ public class AutoIntakeAiden extends LinearOpMode {
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
         imu.resetYaw();
@@ -195,7 +194,7 @@ public class AutoIntakeAiden extends LinearOpMode {
             backRight.setPower(-movePower);
             frontLeft.setPower(-movePower);
             frontRight.setPower(-movePower);
-        } else if (moveDirection.equals("left")) {
+        } else if (moveDirection.equals("right")) {
             backLeft.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
             backRight.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
             frontLeft.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
@@ -205,7 +204,7 @@ public class AutoIntakeAiden extends LinearOpMode {
             backRight.setPower(movePower);
             frontLeft.setPower(movePower);
             frontRight.setPower(-movePower);
-        } else if (moveDirection.equals("right")) {
+        } else if (moveDirection.equals("left")) {
             backLeft.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
             backRight.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
             frontLeft.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
@@ -295,7 +294,7 @@ public class AutoIntakeAiden extends LinearOpMode {
         waitForStart();
         if(opModeIsActive()) {
             placeOnSpikeMark();
-            //parkFarRed();
+            parkFarRed();
         }
     }
 }

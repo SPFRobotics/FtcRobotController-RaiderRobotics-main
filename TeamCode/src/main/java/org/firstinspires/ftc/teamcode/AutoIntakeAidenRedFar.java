@@ -1,24 +1,19 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.util.Range;
-import java.util.Arrays;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @Autonomous
-public class autoTest1_EK extends LinearOpMode{
-    //public static boolean RunAutoRight = false;
-    //public static boolean RunMoveToCone = false;
-    //ElapsedTime AutoRightTime = new ElapsedTime();
-    //ElapsedTime MoveToConeTime = new ElapsedTime();
+public class AutoIntakeAidenRedFar extends LinearOpMode {
+    //MOVEMENT MOTOR VARS
     private static final double strafeMult = 1.2;
     private DcMotor backLeft = null;
     private DcMotor backRight = null;
@@ -27,29 +22,98 @@ public class autoTest1_EK extends LinearOpMode{
     private DcMotor liftLeft = null;
     private DcMotor liftRight = null;
     private IMU imu = null;
-    private int[] xCords = new int[] {0,1,2}; //right to left (looking from alliance station)
-    private int[] yCords = new int[] {0,1,2}; //1:A, 2:B, 3:C, 4:D, 5:E, 6:F | front to back (front being closest row to alliance station)
-    private int[] startCords = new int[] {xCords[1],yCords[0]}; //starting locations; Blue: A2(0,1),A5(0,4); Red: F2(5,1),F5(5,4)
-    //don't change these values, change the values in the PointMove function instead
-    private int[] endCords = new int[] {xCords[0],yCords[0]}; //change the xCords and yCords value to change defalt end location
 
-    @Override
-    public void runOpMode() throws InterruptedException {
-        //By Friday, have it be able to
-        Initializtion();
-        //rotate(90,0.3);
-        move(.3, "backward", 12);
-        move(.3, "left", 10);
-        move(.3, "right", 8);
-        move(.3, "forward", 6);
+
+
+
+    //INTAKE MOTOR VARS
+    private DcMotor intake = null;
+    double maxIntakePos = 4062;
+    double minEncoder = 0;
+
+    //Color Vars
+    cameraDetectColorTest1 gameObjectDetection = new cameraDetectColorTest1();
+    /*final*/ String spikeLocation = gameObjectDetection.getPosition().toString();
+
+
+    //Outtake Vars
+    Servo wristLeft = null;
+    Servo wristRight = null;
+    double wristPos = 0;
+    double minWristPos = -1.0;
+    double maxWristPos = 0.9;
+
+
+    //INTAKE FUNCTIONS
+    public void initializeIntake(){
+        intake = hardwareMap.dcMotor.get("intake");
+        intake.setDirection(DcMotorSimple.Direction.REVERSE);
+        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+    private void intake(double power, long sec) {
+        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intake.setPower(power);
+        sleep(sec * 1000);
+        intake.setPower(0);
+    }
+    public void placeOnSpikeMark(){
+        //Move to center of spike marks
+        //spikeLocation = "LEFT";
+        double power = .3;
+        if(spikeLocation.equals("LEFT")) {
+            move(.1, "forward", 10);
+            sleep(1000);
+            rotate(90, .3);
+            sleep(1000);
+            intake(power, 3);
+            sleep(1000);
+            rotate(-90, .3);
+            sleep(1000);
+            move(.3, "backward", 10);
+            sleep(1000);
+        } else if(spikeLocation.equals("RIGHT")){
+            move(.3, "forward", 30);
+            rotate(-90, .3);
+            intake(power, 3);
+            rotate(90, .3);
+            move(.3, "backward", 30);
+        } else if(spikeLocation.equals("CENTER")){
+            move(.3, "forward", 30);
+            intake(power, 3);
+            move(.3, "backward", 30);
+        } else {
+            telemetry.addData("Team Element", "Not Found");
+            telemetry.update();
+        }
     }
 
+
+
+    //MOVEMENT FUNCTIONS
     //3.78(in inches, 9.6012 is centimeters) is the diameter of the wheel, and 537.7 is how many motor counts are in 1 full rotation of the motor's axle
     private double inch_convert(double inch) { return inch * (537.7 / (3.78 * Math.PI)); }
     private double inToCm(int inches) { return inches * 2.54; }
+    private double cmToIn(double cm) { return cm / 2.54; }
     private double cm_convert(double cm) { return cm * (537.7 / (9.6012 / Math.PI)); }
 
-    private void Initializtion() {
+    void parkFarRed(){
+        move(.3, "forward", 5.5);
+        move(.3, "right", 96);
+    }
+    void parkCloseRed(){
+        move(.3, "forward", 3);
+        move(.3, "right", 46);
+    }
+    void parkFarBlue(){
+        move(.3, "forward", 5.5);
+        move(.3, "left", 96);
+    }
+    void parkCloseBlue(){
+        move(.3, "forward", 3);
+        move(.3, "left", 46);
+    }
+
+    private void initializeMovement() {
         backLeft = hardwareMap.dcMotor.get("backLeft");
         backRight = hardwareMap.dcMotor.get("backRight");
         frontLeft = hardwareMap.dcMotor.get("frontLeft");
@@ -67,8 +131,8 @@ public class autoTest1_EK extends LinearOpMode{
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
         imu.resetYaw();
@@ -93,20 +157,21 @@ public class autoTest1_EK extends LinearOpMode{
         frontLeft.setPower(0);
         frontRight.setPower(0);
     }
-
     private void move(double movePower, String moveDirection, double moveDistance){
         stop_and_reset_encoders_all(); //Sets encoder count to 0
-        if (moveDirection.equals("backward")) {
+        if (moveDirection.equals("forward")) {
             backLeft.setTargetPosition((int) inch_convert(moveDistance));
             backRight.setTargetPosition((int) inch_convert(moveDistance));
             frontLeft.setTargetPosition((int) inch_convert(moveDistance));
             frontRight.setTargetPosition((int) inch_convert(moveDistance));
             run_to_position_all();
+            telemetry.addData("Power", movePower);
+            telemetry.update();
             backLeft.setPower(movePower);
             backRight.setPower(movePower);
             frontLeft.setPower(movePower);
             frontRight.setPower(movePower);
-        } else if (moveDirection.equals("forward")) {
+        } else if (moveDirection.equals("backward")) {
             backLeft.setTargetPosition((int) inch_convert(-moveDistance));
             backRight.setTargetPosition((int) inch_convert(-moveDistance));
             frontLeft.setTargetPosition((int) inch_convert(-moveDistance));
@@ -116,7 +181,7 @@ public class autoTest1_EK extends LinearOpMode{
             backRight.setPower(-movePower);
             frontLeft.setPower(-movePower);
             frontRight.setPower(-movePower);
-        } else if (moveDirection.equals("left")) {
+        } else if (moveDirection.equals("right")) {
             backLeft.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
             backRight.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
             frontLeft.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
@@ -126,7 +191,7 @@ public class autoTest1_EK extends LinearOpMode{
             backRight.setPower(movePower);
             frontLeft.setPower(movePower);
             frontRight.setPower(-movePower);
-        } else if (moveDirection.equals("right")) {
+        } else if (moveDirection.equals("left")) {
             backLeft.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
             backRight.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
             frontLeft.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
@@ -143,6 +208,10 @@ public class autoTest1_EK extends LinearOpMode{
         }
         while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()) {
             telemetry.addData("test", "attempting to move...");
+            telemetry.addData("power back right", backRight.getPower());
+            telemetry.addData("power back left", backLeft.getPower());
+            telemetry.addData("power front right", frontRight.getPower());
+            telemetry.addData("power front left", frontLeft.getPower());
             telemetry.update();
         }
         powerZero();
@@ -150,7 +219,7 @@ public class autoTest1_EK extends LinearOpMode{
         telemetry.update();
     }
     private void rotate(double angle, double power) {
-        double Kp = 1/2; //this is for porposanal control (ie. the closer you are the target angle the slower you will go)
+        double Kp = 1/2; //this is for proportional control (ie. the closer you are the target angle the slower you will go)
         double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         double targetAngle = startAngle + angle;
         double error = (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
@@ -187,20 +256,33 @@ public class autoTest1_EK extends LinearOpMode{
         }
         powerZero();
     }
-    private void PointMove(int endPosX, int endPosY) {
-        int[] pointDifference = new int[] {0,0};
-        endCords[0] = xCords[endPosX];
-        endCords[1] = yCords[endPosY];
 
-        stop_and_reset_encoders_all();
+
+    //Claw funcs
+    public void initializeOuttake(){
+        intake = hardwareMap.dcMotor.get("intake");  /** Port: ExpansionHub MotorPort 1 **/
+        wristLeft = hardwareMap.servo.get("wristLeft"); /** Port: ExpansionHub ServoPort 4 **/
+        wristRight = hardwareMap.servo.get("wristRight");
+        wristLeft.setDirection(Servo.Direction.REVERSE);
+    }
+    public void outtake(double targetPos){
+        wristPos = Range.clip(targetPos,minWristPos,maxWristPos);
+        wristLeft.setPosition(targetPos);
+        wristRight.setPosition(targetPos);
+    }
+
+
+    //Run Op Mode
+    public void runOpMode(){
+        initializeIntake();
+        initializeMovement();
+        initializeOuttake();
+
         waitForStart();
-        if (opModeIsActive()) {
-            pointDifference[0] = endCords[0] - startCords[0];
-            pointDifference[1] = endCords[1] - startCords[1];
-            move(0.25, "left", pointDifference[0]*24);
-            move(0.25, "forward", pointDifference[1]*24);
-            startCords[0] = endCords[0];
-            startCords[1] = endCords[1];
+        if(opModeIsActive()) {
+            placeOnSpikeMark();
+            parkFarRed();
+
         }
     }
 }
