@@ -129,7 +129,12 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         intake = hardwareMap.dcMotor.get("intake");  /** Port: ExpansionHub MotorPort 1 **/
         wristLeft = hardwareMap.servo.get("wristLeft"); /** Port: ExpansionHub ServoPort 4 **/
         wristRight = hardwareMap.servo.get("wristRight"); /** Port: ExpansionHub ServoPort 5 **/
-        //clawLeft = hardwareMap.servo.get("clawLeft"); /** Port: ControlHub Servo Port 5 **/
+        //clawLeft = hardwareMap.servo.get("clawLeft
+        //
+        //
+        //
+        //
+        // "); /** Port: ControlHub Servo Port 5 **/
         //clawRight = hardwareMap.servo.get("clawRight"); /** Port: ControlHub Servo Port 4 **/
 
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

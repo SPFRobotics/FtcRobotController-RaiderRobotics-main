@@ -9,7 +9,11 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Autonomous
 public class AutoIntakeAidenRedClose extends LinearOpMode {
@@ -32,6 +36,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
     double minEncoder = 0;
 
     //Color Vars
+    OpenCvCamera camera;
     cameraDetectColorTest1 gameObjectDetection = new cameraDetectColorTest1();
     /*final*/ String spikeLocation = gameObjectDetection.getPosition().toString();
 
@@ -59,34 +64,35 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
     public void placeOnSpikeMark(){
         //Move to center of spike marks
         //spikeLocation = "LEFT";
-        double power = .3;
+        double power = -.3;
         if(spikeLocation.equals("LEFT")) {
-            move(.1, "forward", 10);
-            sleep(1000);
-            rotate(90, .3);
-            sleep(1000);
+            move(.3, "forward", 18);
+            move(.3, "left", 12);
             intake(power, 3);
-            sleep(1000);
-            rotate(-90, .3);
-            sleep(1000);
-            move(.3, "backward", 10);
-            sleep(1000);
+            move(.3, "right", 12);
+            move(.3, "backward", 18);
         } else if(spikeLocation.equals("RIGHT")){
-            move(.3, "forward", 30);
-            rotate(-90, .3);
+            move(.3, "forward", 24);
+            move(.3, "right", 12);
             intake(power, 3);
-            rotate(90, .3);
-            move(.3, "backward", 30);
+            move(.3, "left", 12);
+            move(.3, "backward", 24);
         } else if(spikeLocation.equals("CENTER")){
-            move(.3, "forward", 30);
+            move(.3, "forward", 25);
             intake(power, 3);
-            move(.3, "backward", 30);
-        } else {
+            move(.3, "backward", 25);
+        } else if(!spikeLocation.equals("CENTER") && !spikeLocation.equals("LEFT")) {
+            move(.3, "forward", 18);
+            move(.3, "right", 12);
+            intake(power, 3);
+            move(.3, "left", 12);
+            move(.3, "backward", 18);
+        }else {
             telemetry.addData("Team Element", "Not Found");
             telemetry.update();
-
         }
     }
+
 
 
 
@@ -137,7 +143,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
         imu.resetYaw();
-        waitForStart();
+        //waitForStart();
     }
     private void stop_and_reset_encoders_all() {
         backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -278,7 +284,31 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         initializeIntake();
         initializeMovement();
         initializeOuttake();
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        gameObjectDetection = new cameraDetectColorTest1();
+        camera.setPipeline(gameObjectDetection);
 
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+                telemetry.addData("problem"," error");
+            }
+        });
+
+        while(!isStarted()){
+            spikeLocation = gameObjectDetection.getPosition().toString();
+            telemetry.addData("Test", "working");
+            telemetry.addData("Location", spikeLocation);
+            telemetry.update();
+        }
         waitForStart();
         if(opModeIsActive()) {
             placeOnSpikeMark();
