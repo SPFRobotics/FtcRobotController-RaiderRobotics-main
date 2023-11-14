@@ -9,12 +9,20 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.cameraDetectColorTest1;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+
+import java.util.List;
 
 @Autonomous
 public class AutoIntakeAiden extends LinearOpMode {
@@ -30,11 +38,9 @@ public class AutoIntakeAiden extends LinearOpMode {
 
 
 
-
     //INTAKE MOTOR VARS
     private DcMotor intake = null;
-    double maxIntakePos = 4062;
-    double minEncoder = 0;
+
 
     //Color Vars
     OpenCvCamera camera;
@@ -49,6 +55,9 @@ public class AutoIntakeAiden extends LinearOpMode {
     double minWristPos = -1.0;
     double maxWristPos = 0.9;
 
+    //April Tag vars
+    private AprilTagProcessor aprilTag = null;
+    private VisionPortal visionPortal = null;
 
     //INTAKE FUNCTIONS
     public void initializeIntake(){
@@ -278,6 +287,44 @@ public class AutoIntakeAiden extends LinearOpMode {
         wristRight.setPosition(targetPos);
     }
 
+    public void initializeAprilTag(){
+        aprilTag = new AprilTagProcessor.Builder()
+                .setDrawTagOutline(true)
+                .setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
+                .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+                .build();
+
+        // Create the vision portal by using a builder.
+        VisionPortal.Builder builder = new VisionPortal.Builder();
+
+        // Set the camera (webcam vs. built-in RC phone camera).
+        builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
+        builder.addProcessor(aprilTag);
+        visionPortal = builder.build();
+    }
+    public void placeOnBackdrop(String location, String color){
+        int id = 0;
+        double movePower = .05;
+        if(location.equals("LEFT")){
+            id = 1;
+        } else if(location.equals("CENTER")){
+            id = 2;
+        } else if(location.equals("RIGHT")){
+            id = 3;
+        }
+        if(color.equals("RED")){
+            id+=3;
+        }
+        while(true){
+            move(.1, "left", 6);
+            initializeAprilTag();
+            List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+            for(int i = 0; i<currentDetections.size(); i++){
+
+            }
+        }
+    }
+
 
     //Run Op Mode
     public void runOpMode(){
@@ -312,7 +359,9 @@ public class AutoIntakeAiden extends LinearOpMode {
         }
         waitForStart();
         if(opModeIsActive()) {
+            final String spikeMark = spikeLocation;
             placeOnSpikeMark();
+
             parkFarRed(); //Park method based on position.  Far means far from backdrop, close means close to backdrop
         }
     }
