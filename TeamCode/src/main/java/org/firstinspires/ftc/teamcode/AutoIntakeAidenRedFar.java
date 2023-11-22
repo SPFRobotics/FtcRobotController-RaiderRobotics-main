@@ -36,12 +36,11 @@ public class AutoIntakeAidenRedFar extends LinearOpMode {
     private IMU imu = null;
 
 
-
-
     //INTAKE MOTOR VARS
     private DcMotor intake = null;
     double maxIntakePos = 4062;
     double minEncoder = 0;
+
 
     //Color Vars
     OpenCvCamera camera;
@@ -271,6 +270,37 @@ public class AutoIntakeAidenRedFar extends LinearOpMode {
         powerZero();
     }
 
+    //Cam funcs
+    public void initCam(){
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        gameObjectDetection = new cameraDetectColorTest1();
+        camera.setPipeline(gameObjectDetection);
+    }
+    public void camOn(){
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+                telemetry.addData("problem"," error");
+            }
+        });
+    }
+    public void camOff(){
+        camera.closeCameraDeviceAsync(new OpenCvCamera.AsyncCameraCloseListener() {
+            @Override
+            public void onClose() {
+                camera.stopStreaming();
+            }
+        });
+    }
+
 
     //Claw funcs
     public void initializeOuttake(){
@@ -291,25 +321,8 @@ public class AutoIntakeAidenRedFar extends LinearOpMode {
         initializeIntake();
         initializeMovement();
         initializeOuttake();
-
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        gameObjectDetection = new cameraDetectColorTest1();
-        camera.setPipeline(gameObjectDetection);
-
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode) {
-                telemetry.addData("problem"," error");
-            }
-        });
+        initCam();
+        camOn();
 
         while(!isStarted()){
             spikeLocation = gameObjectDetection.getPosition().toString();
@@ -319,6 +332,7 @@ public class AutoIntakeAidenRedFar extends LinearOpMode {
         }
         waitForStart();
         if(opModeIsActive()) {
+            camOff();
             placeOnSpikeMark();
             parkFarRed();
         }
