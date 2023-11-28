@@ -12,11 +12,9 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.cameraDetectColorTest1;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -38,9 +36,9 @@ public class AutoIntakeAiden extends LinearOpMode {
 
 
 
+
     //INTAKE MOTOR VARS
     private DcMotor intake = null;
-
 
     //Color Vars
     OpenCvCamera camera;
@@ -55,9 +53,12 @@ public class AutoIntakeAiden extends LinearOpMode {
     double minWristPos = -1.0;
     double maxWristPos = 0.9;
 
-    //April Tag vars
-    private AprilTagProcessor aprilTag = null;
-    private VisionPortal visionPortal = null;
+
+    //April Tag
+    private AprilTagProcessor aprilTag;
+    private VisionPortal visionPortal;
+    private int targetId = 0;
+
 
     //INTAKE FUNCTIONS
     public void initializeIntake(){
@@ -91,13 +92,7 @@ public class AutoIntakeAiden extends LinearOpMode {
             move(.3, "forward", 25);
             intake(power, 3);
             move(.3, "backward", 25);
-        } else if(!spikeLocation.equals("CENTER") && !spikeLocation.equals("LEFT")) {
-            move(.3, "forward", 18);
-            move(.3, "right", 12);
-            intake(power, 3);
-            move(.3, "left", 12);
-            move(.3, "backward", 18);
-        }else {
+        } else {
             telemetry.addData("Team Element", "Not Found");
             telemetry.update();
         }
@@ -235,11 +230,11 @@ public class AutoIntakeAiden extends LinearOpMode {
         telemetry.update();
     }
     private void rotate(double angle, double power) {
-        double Kp = 1/2; //this is for proportional control (ie. the closer you are the target angle the slower you will go)
+        double Kp = 0.5; //this is for porposanal control (ie. the closer you are the target angle the slower you will go)
         double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         double targetAngle = startAngle + angle;
         double error = (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
-        double power1 = 0;
+        double power1 = power;
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -252,16 +247,19 @@ public class AutoIntakeAiden extends LinearOpMode {
             error = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
             // the closer the robot is to the target angle, the slower it rotates
             //power = Range.clip(Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) / 90, 0.1, 0.5);
-            power1 = Range.clip((power*(error*Kp)),-0.5,0.5); //"Range.clip(value, minium, maxium)" takes the first term and puts it in range of the min and max provided
-            telemetry.addData("power",power1);
+            power1 = power * error * Kp;
+            power1 = Range.clip(power1,-0.5,0.5); //"Range.clip(value, minium, maxium)" takes the first term and puts it in range of the min and max provided
+            telemetry.addData("power1",power1);
             System.out.printf("%f power = ",power1);
             telemetry.addData("error",error);
+            telemetry.addData("power", power);
+            telemetry.addData("Kp",Kp);
 
             backLeft.setPower(power1);
             backRight.setPower(-power1);
             frontLeft.setPower(power1);
             frontRight.setPower(-power1);
-            if (Math.abs(error) <= 5) {
+            if (Math.abs(error) <= 1) {
                 powerZero();
             }
             telemetry.addData("angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
@@ -287,11 +285,24 @@ public class AutoIntakeAiden extends LinearOpMode {
         wristRight.setPosition(targetPos);
     }
 
-    public void initializeAprilTag(){
+
+    //April Tag Functions
+    private void initializeAprilTag(){
         aprilTag = new AprilTagProcessor.Builder()
-                .setDrawTagOutline(true)
-                .setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
-                .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+                //.setDrawAxes(false)
+                //.setDrawCubeProjection(false)
+                //.setDrawTagOutline(true)
+                //.setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
+                //.setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
+                //.setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+
+                // == CAMERA CALIBRATION ==
+                // If you do not manually specify calibration parameters, the SDK will attempt
+                // to load a predefined calibration for your camera.
+                //.setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
+
+                // ... these parameters are fx, fy, cx, cy.
+
                 .build();
 
         // Create the vision portal by using a builder.
@@ -299,29 +310,49 @@ public class AutoIntakeAiden extends LinearOpMode {
 
         // Set the camera (webcam vs. built-in RC phone camera).
         builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
+
+        // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
+        //builder.enableCameraMonitoring(true);
+
+        // Set the stream format; MJPEG uses less bandwidth than default YUY2.
+        builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
+
         builder.addProcessor(aprilTag);
+
+        // Build the Vision Portal, using the above settings.
         visionPortal = builder.build();
+
+        // Disable or re-enable the aprilTag processor at any time.
+        //visionPortal.setProcessorEnabled(aprilTag, true);
     }
-    public void placeOnBackdrop(String location, String color){
-        int id = 0;
-        double movePower = .05;
+    public AprilTagDetection checkCenter(){
+        //Resolution Camera == 320 | 160
+        //aprilTag.
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        for(int i = 0; i<currentDetections.size(); i++){
+            AprilTagDetection detection = currentDetections.get(i);
+            if(135 < detection.center.x && detection.center.x < 185){
+                return currentDetections.get(i);
+            }
+        }
+        return null;
+    }
+    private void theGoat(){
+        AprilTagDetection detection = checkCenter();
+        if(detection.id == targetId){
+
+        }
+    }
+    private void setTargetId(String location, String color){
         if(location.equals("LEFT")){
-            id = 1;
+            targetId = 1;
         } else if(location.equals("CENTER")){
-            id = 2;
+            targetId = 2;
         } else if(location.equals("RIGHT")){
-            id = 3;
+            targetId = 3;
         }
         if(color.equals("RED")){
-            id+=3;
-        }
-        while(true){
-            move(.1, "left", 6);
-            initializeAprilTag();
-            List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-            for(int i = 0; i<currentDetections.size(); i++){
-
-            }
+            targetId += 3;
         }
     }
 
@@ -359,10 +390,49 @@ public class AutoIntakeAiden extends LinearOpMode {
         }
         waitForStart();
         if(opModeIsActive()) {
-            final String spikeMark = spikeLocation;
             placeOnSpikeMark();
-
             parkFarRed(); //Park method based on position.  Far means far from backdrop, close means close to backdrop
         }
     }
+
+    MecanumChassis mc = new MecanumChassis(this);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
