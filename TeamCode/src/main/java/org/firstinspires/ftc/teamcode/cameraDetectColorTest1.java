@@ -27,7 +27,7 @@ public class cameraDetectColorTest1 extends OpenCvPipeline {
     private static int RightLineLocation = 260; //From the left of bounding box
 
     private static final Scalar
-        lower_red_bounds  = new Scalar(120,0,0,0),
+        lower_red_bounds  = new Scalar(100,0,0,0),
         upper_red_bounds  = new Scalar(255,70,70,255),
         lower_blue_bounds = new Scalar(0,0,100,0),
         upper_blue_bounds = new Scalar(100,100,255,255);
@@ -38,14 +38,16 @@ public class cameraDetectColorTest1 extends OpenCvPipeline {
         BLACK = new Scalar(0,0,0);
     private Scalar color = BLACK;
 
-    public double redPercent, bluePercent = 0;
+    public double minSectorPercent = 144, minTotalPercent = 1040;
+    public double maxPercent = 0, highestSector = 0;
+    public double redPercent = 0, bluePercent = 0;
     private Mat redMat = new Mat(), blueMat = new Mat(), blurredMat = new Mat();
     public double redPercentLeft, bluePercentLeft, leftPercent = 0;
     private Mat redMatLeft = new Mat(), blueMatLeft = new Mat(), blurredMatLeft = new Mat();
     public double redPercentCenter, bluePercentCenter, centerPercent = 0;
     private Mat redMatCenter = new Mat(), blueMatCenter = new Mat(), blurredMatCenter = new Mat();
-    public double redPercentRight, bluePercentRight, rightPercent = 0;
-    private Mat redMatRight = new Mat(), blueMatRight = new Mat(), blurredMatRight = new Mat();
+    //public double redPercentRight, bluePercentRight, rightPercent = 0;
+    //private Mat redMatRight = new Mat(), blueMatRight = new Mat(), blurredMatRight = new Mat();
 
     Point GameObjectPointA = new Point(
             GameObject_BoundingBox_TopLeft_AnchorPoint.x,
@@ -80,11 +82,11 @@ public class cameraDetectColorTest1 extends OpenCvPipeline {
         Imgproc.blur(input, blurredMat, new Size(5, 5));
         Imgproc.blur(input, blurredMatLeft, new Size(5, 5));
         Imgproc.blur(input, blurredMatCenter, new Size(5, 5));
-        Imgproc.blur(input, blurredMatRight, new Size(5, 5));
+        //Imgproc.blur(input, blurredMatRight, new Size(5, 5));
         blurredMat = blurredMat.submat(new Rect(GameObjectPointA, GameObjectPointB));
         blurredMatLeft = blurredMatLeft.submat(new Rect(GameObjectLeftPointA, GameObjectLeftPointB));
         blurredMatCenter = blurredMatCenter.submat(new Rect(GameObjectCenterPointA, GameObjectCenterPointB));
-        blurredMatRight = blurredMatRight.submat(new Rect(GameObjectRightPointA, GameObjectRightPointB));
+        //blurredMatRight = blurredMatRight.submat(new Rect(GameObjectRightPointA, GameObjectRightPointB));
 
 
         // Apply Morphology
@@ -92,7 +94,7 @@ public class cameraDetectColorTest1 extends OpenCvPipeline {
         Imgproc.morphologyEx(blurredMat, blurredMat, Imgproc.MORPH_CLOSE, kernel);
         Imgproc.morphologyEx(blurredMatLeft, blurredMatLeft, Imgproc.MORPH_CLOSE, kernel);
         Imgproc.morphologyEx(blurredMatCenter, blurredMatCenter, Imgproc.MORPH_CLOSE, kernel);
-        Imgproc.morphologyEx(blurredMatRight, blurredMatRight, Imgproc.MORPH_CLOSE, kernel);
+        //Imgproc.morphologyEx(blurredMatRight, blurredMatRight, Imgproc.MORPH_CLOSE, kernel);
 
         // Gets channels from given source mat
         Core.inRange(blurredMat, lower_red_bounds, upper_red_bounds, redMat);
@@ -101,8 +103,8 @@ public class cameraDetectColorTest1 extends OpenCvPipeline {
         Core.inRange(blurredMatLeft, lower_blue_bounds, upper_blue_bounds, blueMatLeft);
         Core.inRange(blurredMatCenter, lower_red_bounds, upper_red_bounds, redMatCenter);
         Core.inRange(blurredMatCenter, lower_blue_bounds, upper_blue_bounds, blueMatCenter);
-        Core.inRange(blurredMatRight, lower_red_bounds, upper_red_bounds, redMatRight);
-        Core.inRange(blurredMatRight, lower_blue_bounds, upper_blue_bounds, blueMatRight);
+        /*Core.inRange(blurredMatRight, lower_red_bounds, upper_red_bounds, redMatRight);
+        Core.inRange(blurredMatRight, lower_blue_bounds, upper_blue_bounds, blueMatRight);*/
 
         // Gets color specific values
         redPercent = Core.countNonZero(redMat);
@@ -113,19 +115,20 @@ public class cameraDetectColorTest1 extends OpenCvPipeline {
         redPercentCenter = Core.countNonZero(redMatCenter);
         bluePercentCenter = Core.countNonZero(blueMatCenter);
         centerPercent = redPercentCenter + bluePercentCenter;
-        redPercentRight = Core.countNonZero(redMatRight);
+        /*redPercentRight = Core.countNonZero(redMatRight);
         bluePercentRight = Core.countNonZero(blueMatRight);
-        rightPercent = redPercentRight + bluePercentRight;
+        rightPercent = redPercentRight + bluePercentRight;*/
 
         // Calculates the highest amount of pixels being covered on each side
-        double maxPercent = Math.max(redPercent, bluePercent);
-        double highestSector = Math.max(Math.max(leftPercent,centerPercent),rightPercent);
+        maxPercent = Math.max(Math.max(redPercent, bluePercent),minTotalPercent);
+        //double highestSector = Math.max(Math.max(leftPercent,centerPercent),rightPercent);
+        highestSector = Math.max(Math.max(leftPercent,centerPercent),minSectorPercent);
 
         //maxPercent = 0;
 
         // Checks all percentages, will highlight bounding box in camera preview
         // based on what color is being detected
-        if (highestSector > 0 && maxPercent > 0) {
+        if (highestSector != minSectorPercent && maxPercent != minTotalPercent) {
             if (maxPercent == redPercent) {
                 color = RED;
             } else if (maxPercent == bluePercent) {
@@ -138,13 +141,18 @@ public class cameraDetectColorTest1 extends OpenCvPipeline {
                 Imgproc.rectangle(input,GameObjectLeftPointA,GameObjectLeftPointB,color,4);
             } else if (highestSector == centerPercent) {
                 position = GameObjectLocation.CENTER;
-                Imgproc.rectangle(input,GameObjectCenterPointA,GameObjectCenterPointB,color,4);
-            } else if (highestSector == rightPercent) {
+                Imgproc.rectangle(input, GameObjectCenterPointA, GameObjectCenterPointB, color, 4);
+            } else {
                 position = GameObjectLocation.RIGHT;
                 Imgproc.rectangle(input,GameObjectRightPointA,GameObjectRightPointB,color,4);
             }
-        } else if (maxPercent == 0) {
-            position = GameObjectLocation.NONE;
+            /*} else if (highestSector == rightPercent) {
+                position = GameObjectLocation.RIGHT;
+                Imgproc.rectangle(input,GameObjectRightPointA,GameObjectRightPointB,color,4);
+            }*/
+        } else if (maxPercent == 0 || maxPercent == minTotalPercent) {
+            //position = GameObjectLocation.NONE;
+            position = GameObjectLocation.RIGHT;
             //Imgproc.rectangle(input,GameObjectPointA,GameObjectPointB,BLACK,4);
             Imgproc.rectangle(input,GameObjectLeftPointA,GameObjectLeftPointB,BLACK,2);
             Imgproc.rectangle(input,GameObjectCenterPointA,GameObjectCenterPointB,BLACK,2);
@@ -155,20 +163,24 @@ public class cameraDetectColorTest1 extends OpenCvPipeline {
         blurredMat.release();
         blurredMatLeft.release();
         blurredMatCenter.release();
-        blurredMatRight.release();
+        //blurredMatRight.release();
         redMat.release();
         redMatLeft.release();
         redMatCenter.release();
-        redMatRight.release();
+        //redMatRight.release();
         blueMat.release();
         blueMatLeft.release();
         blueMatCenter.release();
-        blueMatRight.release();
+        //blueMatRight.release();
 
         return input;
     }
 
     public GameObjectLocation getPosition() {
         return position;
+    }
+    public double[] randomStuffInfo() {
+        double[] info = {maxPercent,highestSector};
+        return info;
     }
 }
