@@ -11,9 +11,11 @@ public class ColorCam {
     LinearOpMode opmode = null;
     OpenCvCamera camera = null;
     cameraDetectColorTest1 gameObjectDetection = new cameraDetectColorTest1();
-    String spikeLocation = gameObjectDetection.getPosition().toString();
+    public String spikeLocation = gameObjectDetection.getPosition().toString();
     public ColorCam(LinearOpMode lom){
         opmode = lom;
+    }
+    public void initCam(){
         int cameraMonitorViewId = opmode.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", opmode.hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(opmode.hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         gameObjectDetection = new cameraDetectColorTest1();

@@ -11,15 +11,14 @@ import java.util.List;
 
 public class AprilTagCam {
     public LinearOpMode opmode = null;
-
     public AprilTagProcessor aprilTag;
     public VisionPortal visionPortal;
     public int targetId = 0;
 
     public AprilTagCam(LinearOpMode lom){
         opmode = lom;
-
-        //Define class variables in constructor instead of initialization
+    }
+    public void initCam(){
         aprilTag = new AprilTagProcessor.Builder().build();
         VisionPortal.Builder builder = new VisionPortal.Builder();
         builder.setCamera(opmode.hardwareMap.get(WebcamName.class, "Webcam 1"));

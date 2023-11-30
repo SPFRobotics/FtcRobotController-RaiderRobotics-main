@@ -173,4 +173,20 @@ public class MecanumChassis {
         }
         powerZero();
     }
+    public void parkFarRed(){
+        move(.3, "forward", 5.5);
+        move(.3, "right", 96);
+    }
+    public void parkCloseRed(){
+        move(.3, "forward", 3);
+        move(.3, "right", 46);
+    }
+    public void parkFarBlue(){
+        move(.3, "forward", 5.5);
+        move(.3, "left", 96);
+    }
+    public void parkCloseBlue(){
+        move(.3, "forward", 3);
+        move(.3, "left", 46);
+    }
 }
