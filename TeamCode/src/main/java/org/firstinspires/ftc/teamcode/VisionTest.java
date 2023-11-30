@@ -51,6 +51,7 @@ public class VisionTest extends LinearOpMode {
 
         while (!isStarted()) {
             telemetry.addData("POSITION: ", gameObjectDetection.getPosition().toString());
+            telemetry.addData("Info: ", "MaxPercent: %f, HighestSector: %f", gameObjectDetection.randomStuffInfo()[0],gameObjectDetection.randomStuffInfo()[1]);
             telemetry.update();
         }
 
