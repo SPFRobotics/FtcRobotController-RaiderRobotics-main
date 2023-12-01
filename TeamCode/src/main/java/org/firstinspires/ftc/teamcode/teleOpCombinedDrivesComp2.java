@@ -42,6 +42,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private static final double maxWristPos = 0.9;
     //private static final double minClawPos = 0.7;
     //private static final double maxClawPos = 0.5;
+    private static final double maxLauncherPos = 120; //Degrees
     private double previousSpeed1;
     private double previousSpeed2;
     private int iterationsPressed1 = 0;
