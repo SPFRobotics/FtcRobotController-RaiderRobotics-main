@@ -44,4 +44,7 @@ public class ColorCam {
         //    }
         //});
     }
+    public void updateSpikeLocation(){
+        spikeLocation = gameObjectDetection.getPosition().toString();
+    }
 }

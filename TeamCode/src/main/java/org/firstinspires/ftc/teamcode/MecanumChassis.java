@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class MecanumChassis {
     public LinearOpMode opmode = null;
-    public static final double strafeMult = 1.2;
+    public static final double strafeMult = 1.1;
     public DcMotor backLeft = null;
     public DcMotor backRight = null;
     public DcMotor frontLeft = null;
@@ -71,10 +71,12 @@ public class MecanumChassis {
         frontLeft.setPower(0);
         frontRight.setPower(0);
     }
+
     public void move(double movePower, String moveDirection, double moveDistance){
         stop_and_reset_encoders_all(); //Sets encoder count to 0
         if (moveDirection.equals("forward")) {
-            backLeft.setTargetPosition((int) inch_convert(moveDistance));
+            //Tell each wheel to move a certain amount
+            backLeft.setTargetPosition((int) inch_convert(moveDistance)); //Converts the
             backRight.setTargetPosition((int) inch_convert(moveDistance));
             frontLeft.setTargetPosition((int) inch_convert(moveDistance));
             frontRight.setTargetPosition((int) inch_convert(moveDistance));
@@ -133,7 +135,7 @@ public class MecanumChassis {
         opmode.telemetry.update();
     }
     public void rotate(double angle, double power) {
-        double Kp = 0.5; //this is for porposanal control (ie. the closer you are the target angle the slower you will go)
+        double Kp = 0.5; //this is for proportional control (ie. the closer you are the target angle the slower you will go)
         double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         double targetAngle = startAngle + angle;
         double error = (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
@@ -189,4 +191,94 @@ public class MecanumChassis {
         move(.3, "forward", 3);
         move(.3, "left", 46);
     }
+    public void goToPixel(int placement){
+        if (placement == 1){
+            move(.3, "forward", 40);
+            rotate(-90, .3);
+            move(.3, "forward", 60);
+        } else if (placement == 2){
+            move(.3, "forward", 40);
+            move(.3, "left", 48);
+            move(.3, "forward", 12);
+            rotate(-90, .3);
+            move(.3, "forward", 24);
+        } else if (placement == 3){
+            move(.3, "forward", 40);
+            move(.3, "left", 48);
+            move(.3, "forward", 24); rotate(-90, .3); move(.3, "forward", 24);
+        } else if (placement == 4){
+            move(.3, "forward", 40);
+            move(.3, "left", 48);
+            move(.3, "forward", 48);
+            rotate(-90, .3);
+            move(.3, "forward", 24);
+        } else if (placement == 5){
+            move(.3, "forward", 40);
+            move(.3, "left", 48);
+            move(.3, "forward", 60);
+            rotate(-90, .3);
+            move(.3, "forward", 24);
+        } else if (placement == 6){
+            move(.3, "forward", 40);
+            move(.3, "left", 50);
+            move(.3, "forward", 72);
+            rotate(-90, .3);
+            move(.3, "forward", 24);
+        }
+    }
+    public void adjust(String direction, double power){
+        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if (direction.equals("forward")){
+            backLeft.setPower(power);
+            backRight.setPower(power);
+            frontLeft.setPower(power);
+            frontRight.setPower(power);
+        }
+        if (direction.equals("backward")){
+            backLeft.setPower(-power);
+            backRight.setPower(-power);
+            frontLeft.setPower(-power);
+            frontRight.setPower(-power);
+        }
+        if (direction.equals("left")){
+            backLeft.setPower(power);
+            backRight.setPower(-power);
+            frontLeft.setPower(-power);
+            frontRight.setPower(power);
+        }
+        if (direction.equals("right")){
+            backLeft.setPower(-power);
+            backRight.setPower(power);
+            frontLeft.setPower(power);
+            frontRight.setPower(-power);
+        }
+        if (direction.equals("backLeft")){
+            backLeft.setPower(0);
+            backRight.setPower(-power);
+            frontLeft.setPower(-power);
+            frontRight.setPower(0);
+        }
+        if (direction.equals("backRight")){
+            backLeft.setPower(-power);
+            backRight.setPower(0);
+            frontLeft.setPower(0);
+            frontRight.setPower(-power);
+        }
+        if (direction.equals("frontLeft")){
+            backLeft.setPower(power);
+            backRight.setPower(0);
+            frontLeft.setPower(0);
+            frontRight.setPower(power);
+        }
+        if (direction.equals("frontRight")){
+            backLeft.setPower(0);
+            backRight.setPower(power);
+            frontLeft.setPower(power);
+            frontRight.setPower(0);
+        }
+    }
 }
+

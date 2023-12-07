@@ -93,9 +93,6 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         }
     }
 
-
-
-
     //MOVEMENT FUNCTIONS
     //3.78(in inches, 9.6012 is centimeters) is the diameter of the wheel, and 537.7 is how many motor counts are in 1 full rotation of the motor's axle
     private double inch_convert(double inch) { return inch * (537.7 / (3.78 * Math.PI)); }
