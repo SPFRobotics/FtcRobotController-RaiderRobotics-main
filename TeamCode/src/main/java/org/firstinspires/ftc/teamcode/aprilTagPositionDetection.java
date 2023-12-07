@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Vector;
 
 @Autonomous
-public class aprilTagDetectionMovement extends LinearOpMode {
+public class aprilTagPositionDetection extends LinearOpMode {
     //public LinearOpMode opmode = null;
     public AprilTagProcessor aprilTag;
     public VisionPortal visionPortal;
@@ -29,16 +29,27 @@ public class aprilTagDetectionMovement extends LinearOpMode {
     public IMU imu = null;
     public static final double strafeMult = 1.2;
 
-    public enum backBoardAprilTags {
+    public enum aprilTags {
         RedAllianceLeft,
         RedAllianceCenter,
         RedAllianceRight,
         BlueAllianceLeft,
         BlueAllianceCenter,
-        BlueAllianceRight
+        BlueAllianceRight,
+        RedAudienceWallSmall,
+        RedAudienceWallLarge,
+        BlueAudienceWallSmall,
+        BlueAudienceWallLarge
     }
-    double[] cameraOffset = new double[] {3.5,5.5}; // x offset (left: positive, right: negative), y(distance) offset; (units: inches from center)
-    double[] robotDistanceToAprilTag = new double[] {0,0};
+    public final static double[] fieldSize = new double[] {144,144};
+    public final static double[] redAprilTagPos = new double[] {34.5,144.5,4};
+    public final static double[] redAprilTagBigPos = new double[] {-5.5,0,1.5};
+    public final static double[] blueAprilTagPos = new double[] {109.5,144.5,4};
+    public final static double[] blueAprilTagBigPos = new double[] {5.5,0,1.5};
+    public final static double[] cameraOffset = new double[] {3.5,5.5}; // x offset (left: positive, right: negative), y(distance) offset; (units: inches from center)
+    //double[] robotDistanceToAprilTag = new double[] {0,0};
+    double[] robotFieldPos = new double[] {0,0};
+    double[][] robotDistancesToAprilTags = new double[][] {{0,0},{0,0},{0,0},{0,0}};
 
     @Override
     public void runOpMode(){
@@ -55,7 +66,7 @@ public class aprilTagDetectionMovement extends LinearOpMode {
             while (opModeIsActive()) {
 
                 //telemetryAprilTag();
-                moveToAprilTag(backBoardAprilTags.RedAllianceLeft);
+                getRobotPosAprilTag(aprilTags.BlueAudienceWallLarge);
 
                 // Push telemetry to the Driver Station.
                 telemetry.update();
@@ -97,7 +108,7 @@ public class aprilTagDetectionMovement extends LinearOpMode {
         imu.initialize(parameters);
         imu.resetYaw();
     }
-    public void moveToAprilTag(backBoardAprilTags tagName) {
+    public void getRobotPosAprilTag(aprilTags tagName) {
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         boolean foundAprilTag = false;
         for (AprilTagDetection detection : currentDetections) {
