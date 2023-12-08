@@ -152,6 +152,7 @@ public class aprilTagPositionDetection {
             robotFieldPos[1] = yPosSum / foundAprilTags.size();
             //telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",robotFieldPos[0],robotFieldPos[1]));
             outputInfo = robotFieldPos;
+            /** ToDo: have an output for when you don't see a april tag */
         }
     }
     private void telemetryAprilTag() {
