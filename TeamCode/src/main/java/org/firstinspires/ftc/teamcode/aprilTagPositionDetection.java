@@ -49,9 +49,11 @@ public class aprilTagPositionDetection extends LinearOpMode {
     Dictionary<aprilTags, double[]> aprilTagsPosDict = new Hashtable<>();
     public final static double[] fieldSize = new double[] {144,144};
     public final static double[] redAprilTagSmallPos = new double[] {34.5,144.5,4};
-    public final static double[] redAprilTagBigPos = new double[] {-5.5,0,1.5};
+    //public final static double[] redAprilTagBigPos = new double[] {-5.5,0,1.5};
+    public final static double[] redAprilTagBigPos = new double[] {29,0,5.5};
     public final static double[] blueAprilTagSmallPos = new double[] {109.5,144.5,4};
-    public final static double[] blueAprilTagBigPos = new double[] {5.5,0,1.5};
+    //public final static double[] blueAprilTagBigPos = new double[] {5.5,0,1.5};
+    public final static double[] blueAprilTagBigPos = new double[] {115,0,5.5};
     public final static double[] cameraOffset = new double[] {3.5,5.5}; // x offset (left: positive, right: negative), y(distance) offset; (units: inches from center)
     //double[] robotDistanceToAprilTag = new double[] {0,0};
     double[] robotFieldPos = new double[] {0,0};
@@ -146,8 +148,8 @@ public class aprilTagPositionDetection extends LinearOpMode {
         if (foundAprilTags.size() > 0) {
             for (aprilTags tagName : foundAprilTags) {
                 int arrayNum1 = aprilTagsDict.get(tagName);
-                calculationAprilTagsDistances[arrayNum1][0] = robotDistancesToAprilTags[arrayNum1][0] + aprilTagsPosDict.get(tagName)[0];
-                calculationAprilTagsDistances[arrayNum1][1] = robotDistancesToAprilTags[arrayNum1][1] + aprilTagsPosDict.get(tagName)[1];
+                calculationAprilTagsDistances[arrayNum1][0] = aprilTagsPosDict.get(tagName)[0] - robotDistancesToAprilTags[arrayNum1][0];
+                calculationAprilTagsDistances[arrayNum1][1] = aprilTagsPosDict.get(tagName)[1] - robotDistancesToAprilTags[arrayNum1][1];
             }
             double xPosSum = 0;
             double yPosSum = 0;
