@@ -14,6 +14,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -50,10 +51,10 @@ public class aprilTagPositionDetection extends LinearOpMode {
     public final static double[] fieldSize = new double[] {144,144};
     public final static double[] redAprilTagSmallPos = new double[] {34.5,144.5,4};
     //public final static double[] redAprilTagBigPos = new double[] {-5.5,0,1.5};
-    public final static double[] redAprilTagBigPos = new double[] {29,0,5.5};
+    public final static double[] redAprilTagBigPos = new double[] {29,144.5,5.5};
     public final static double[] blueAprilTagSmallPos = new double[] {109.5,144.5,4};
     //public final static double[] blueAprilTagBigPos = new double[] {5.5,0,1.5};
-    public final static double[] blueAprilTagBigPos = new double[] {115,0,5.5};
+    public final static double[] blueAprilTagBigPos = new double[] {115,144.5,5.5};
     public final static double[] cameraOffset = new double[] {3.5,5.5}; // x offset (left: positive, right: negative), y(distance) offset; (units: inches from center)
     //double[] robotDistanceToAprilTag = new double[] {0,0};
     double[] robotFieldPos = new double[] {0,0};
@@ -129,11 +130,11 @@ public class aprilTagPositionDetection extends LinearOpMode {
     }
     public void getRobotPosAprilTag(aprilTags[] tagNames) {
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        List<aprilTags> foundAprilTags = null;
+        List<aprilTags> foundAprilTags = new ArrayList<aprilTags>();
         for (AprilTagDetection detection : currentDetections) {
             if (detection.metadata != null) {
                 for (aprilTags tagName : tagNames) {
-                    if (detection.metadata.name == tagName.toString()) {
+                    if (detection.metadata.name.equals(tagName.toString())) {
                         int arrayNum = aprilTagsDict.get(tagName);
                         robotDistancesToAprilTags[arrayNum][0] = detection.ftcPose.x + cameraOffset[0];
                         robotDistancesToAprilTags[arrayNum][1] = detection.ftcPose.y + cameraOffset[1];
@@ -145,6 +146,7 @@ public class aprilTagPositionDetection extends LinearOpMode {
             }
         }
         //telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",robotDistancesToAprilTags[0],robotDistancesToAprilTags[1]));
+        //int foundTagsLength = (int)foundAprilTags.size();
         if (foundAprilTags.size() > 0) {
             for (aprilTags tagName : foundAprilTags) {
                 int arrayNum1 = aprilTagsDict.get(tagName);
