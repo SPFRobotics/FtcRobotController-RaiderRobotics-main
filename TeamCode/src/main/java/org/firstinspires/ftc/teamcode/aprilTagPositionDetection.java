@@ -14,6 +14,9 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
@@ -29,6 +32,7 @@ public class aprilTagPositionDetection extends LinearOpMode {
     public IMU imu = null;
     public static final double strafeMult = 1.2;
 
+
     public enum aprilTags {
         RedAllianceLeft,
         RedAllianceCenter,
@@ -41,19 +45,30 @@ public class aprilTagPositionDetection extends LinearOpMode {
         BlueAudienceWallSmall,
         BlueAudienceWallLarge
     }
+    Dictionary<aprilTags, Integer> aprilTagsDict = new Hashtable<>();
+    Dictionary<aprilTags, double[]> aprilTagsPosDict = new Hashtable<>();
     public final static double[] fieldSize = new double[] {144,144};
-    public final static double[] redAprilTagPos = new double[] {34.5,144.5,4};
+    public final static double[] redAprilTagSmallPos = new double[] {34.5,144.5,4};
     public final static double[] redAprilTagBigPos = new double[] {-5.5,0,1.5};
-    public final static double[] blueAprilTagPos = new double[] {109.5,144.5,4};
+    public final static double[] blueAprilTagSmallPos = new double[] {109.5,144.5,4};
     public final static double[] blueAprilTagBigPos = new double[] {5.5,0,1.5};
     public final static double[] cameraOffset = new double[] {3.5,5.5}; // x offset (left: positive, right: negative), y(distance) offset; (units: inches from center)
     //double[] robotDistanceToAprilTag = new double[] {0,0};
     double[] robotFieldPos = new double[] {0,0};
-    double[][] robotDistancesToAprilTags = new double[][] {{0,0},{0,0},{0,0},{0,0}};
+    double[][] robotDistancesToAprilTags = new double[][] {{0,0},{0,0},{0,0},{0,0}}; // [0][n]: RedAudienceWallLarge, [1][n]: BlueAudienceWallLarge, [2][n]: RedAudienceWallSmall, [3][n]: BlueAudienceWallSmall
+    double[][] calculationAprilTagsDistances = new double[][] {{0,0},{0,0},{0,0},{0,0}}; // [0][n]: RedAudienceWallLarge, [1][n]: BlueAudienceWallLarge, [2][n]: RedAudienceWallSmall, [3][n]: BlueAudienceWallSmall
 
     @Override
     public void runOpMode(){
         initCam();
+        aprilTagsDict.put(aprilTags.RedAudienceWallLarge,0);
+        aprilTagsDict.put(aprilTags.BlueAudienceWallLarge,1);
+        aprilTagsDict.put(aprilTags.RedAudienceWallSmall,2);
+        aprilTagsDict.put(aprilTags.BlueAudienceWallSmall,3);
+        aprilTagsPosDict.put(aprilTags.RedAudienceWallLarge,redAprilTagBigPos);
+        aprilTagsPosDict.put(aprilTags.BlueAudienceWallLarge,blueAprilTagBigPos);
+        aprilTagsPosDict.put(aprilTags.RedAudienceWallSmall,redAprilTagSmallPos);
+        aprilTagsPosDict.put(aprilTags.BlueAudienceWallSmall,blueAprilTagSmallPos);
         while (!isStarted()) {
             List<AprilTagDetection> currentDetections = aprilTag.getDetections();
             telemetry.addData("%f",currentDetections.size());
@@ -66,7 +81,8 @@ public class aprilTagPositionDetection extends LinearOpMode {
             while (opModeIsActive()) {
 
                 //telemetryAprilTag();
-                getRobotPosAprilTag(aprilTags.BlueAudienceWallLarge);
+                aprilTags[] aprilTagsLooking = new aprilTags[] {aprilTags.BlueAudienceWallLarge,aprilTags.RedAudienceWallLarge};
+                getRobotPosAprilTag(aprilTagsLooking);
 
                 // Push telemetry to the Driver Station.
                 telemetry.update();
@@ -90,6 +106,7 @@ public class aprilTagPositionDetection extends LinearOpMode {
         builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
         builder.addProcessor(aprilTag);
         visionPortal = builder.build();
+
         frontLeft = hardwareMap.dcMotor.get("frontLeft"); /** Port: ControlHub MotorPort 0 **/
         backLeft = hardwareMap.dcMotor.get("backLeft"); /** Port: ControlHub MotorPort 2 **/
         frontRight = hardwareMap.dcMotor.get("frontRight"); /** Port: ControlHub MotorPort 1 **/
@@ -108,25 +125,40 @@ public class aprilTagPositionDetection extends LinearOpMode {
         imu.initialize(parameters);
         imu.resetYaw();
     }
-    public void getRobotPosAprilTag(aprilTags tagName) {
+    public void getRobotPosAprilTag(aprilTags[] tagNames) {
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        boolean foundAprilTag = false;
+        List<aprilTags> foundAprilTags = null;
         for (AprilTagDetection detection : currentDetections) {
             if (detection.metadata != null) {
-                if (detection.metadata.name == tagName.toString()) {
-                    robotDistanceToAprilTag[0] = detection.ftcPose.x + cameraOffset[0];
-                    robotDistanceToAprilTag[1] = detection.ftcPose.y + cameraOffset[1];
-                    foundAprilTag = true;
+                for (aprilTags tagName : tagNames) {
+                    if (detection.metadata.name == tagName.toString()) {
+                        int arrayNum = aprilTagsDict.get(tagName);
+                        robotDistancesToAprilTags[arrayNum][0] = detection.ftcPose.x + cameraOffset[0];
+                        robotDistancesToAprilTags[arrayNum][1] = detection.ftcPose.y + cameraOffset[1];
+                        foundAprilTags.add(tagName);
+                    }
                 }
             } else { //add to move on to next step or align to a position
                 break;
             }
         }
-        telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",robotDistanceToAprilTag[0],robotDistanceToAprilTag[1]));
-        if (foundAprilTag) {
-            move(0.5,"right",robotDistanceToAprilTag[0]);
-            rotate(180,0.5);
-            move(0.5,"backward",(robotDistanceToAprilTag[1]-20));
+        //telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",robotDistancesToAprilTags[0],robotDistancesToAprilTags[1]));
+        if (foundAprilTags.size() > 0) {
+            for (aprilTags tagName : foundAprilTags) {
+                int arrayNum1 = aprilTagsDict.get(tagName);
+                calculationAprilTagsDistances[arrayNum1][0] = robotDistancesToAprilTags[arrayNum1][0] + aprilTagsPosDict.get(tagName)[0];
+                calculationAprilTagsDistances[arrayNum1][1] = robotDistancesToAprilTags[arrayNum1][1] + aprilTagsPosDict.get(tagName)[1];
+            }
+            double xPosSum = 0;
+            double yPosSum = 0;
+            for (aprilTags tagName : foundAprilTags) {
+                int arrayNum1 = aprilTagsDict.get(tagName);
+                xPosSum += calculationAprilTagsDistances[arrayNum1][0];
+                yPosSum += calculationAprilTagsDistances[arrayNum1][1];
+            }
+            robotFieldPos[0] = xPosSum / foundAprilTags.size();
+            robotFieldPos[1] = yPosSum / foundAprilTags.size();
+            telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",robotFieldPos[0],robotFieldPos[1]));
         }
     }
     public void stop_and_reset_encoders_all() {
