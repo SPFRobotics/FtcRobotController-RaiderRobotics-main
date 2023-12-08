@@ -26,10 +26,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private DcMotor liftLeft;
     private DcMotor liftRight;
     private DcMotor intake;
-    private Servo wristLeft;
-    private Servo wristRight;
-    //private Servo clawLeft;
-    //private Servo clawRight;
+    private Servo intakeArm;;
     private IMU imu;
     private double speed1 = 0.5;
     private double speed1Default = 0.7;
@@ -38,10 +35,11 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private double liftSpeed = 1.0;
     private double servoSpeed = 0;
     private static final int liftMaxMotorCounts = 4062;
-    private static final double minWristPos = 0;
-    private static final double maxWristPos = 0.9;
+    private static final double minIntakeArmPos = 0;
+    private static final double maxIntakeArmPos = 0.25;
     //private static final double minClawPos = 0.7;
     //private static final double maxClawPos = 0.5;
+    private static final double minLauncherPos = 0;
     private static final double maxLauncherPos = 120; //Degrees
     private double previousSpeed1;
     private double previousSpeed2;
@@ -58,7 +56,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private double maxSpeedRange1 = 1.0;
     private double maxSpeedRange2 = 1.0;
     private int liftPosition = 0;
-    private double wristPos = 0.5;
+    private double intakeArmPos = 0.5;
     //private boolean clawLeftToggle = false;
     //private boolean clawRightToggle = false;
     private Quaternion currentIMUAngle;
@@ -112,7 +110,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
                 robotOriented();
             }
             Intake();
-            Outtake();
+            //Outtake();
             LiftHold();
             //LiftWorks();
             telemetry.update();
@@ -122,17 +120,16 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private void Initialization() {
         // Declare our motors
         // Make sure your ID's match your configuration
-        frontLeft = hardwareMap.dcMotor.get("frontLeft"); /** Port: ControlHub MotorPort 0 **/
-        backLeft = hardwareMap.dcMotor.get("backLeft"); /** Port: ControlHub MotorPort 2 **/
-        frontRight = hardwareMap.dcMotor.get("frontRight"); /** Port: ControlHub MotorPort 1 **/
-        backRight = hardwareMap.dcMotor.get("backRight"); /** Port: ControlHub MotorPort 3 **/
-        liftLeft = hardwareMap.dcMotor.get("liftLeft"); /** Port: ExpansionHub MotorPort 3 **/
-        liftRight = hardwareMap.dcMotor.get("liftRight"); /** Port: ExpansionHub MotorPort 2 **/
-        intake = hardwareMap.dcMotor.get("intake");  /** Port: ExpansionHub MotorPort 1 **/
-        wristLeft = hardwareMap.servo.get("wristLeft"); /** Port: ExpansionHub ServoPort 3 **/
-        wristRight = hardwareMap.servo.get("wristRight"); /** Port: ExpansionHub ServoPort 5 **/
-        //clawLeft = hardwareMap.servo.get("clawLeft"); /** Port: ControlHub Servo Port 5 **/
-        //clawRight = hardwareMap.servo.get("clawRight"); /** Port: ControlHub Servo Port 4 **/
+        frontLeft = hardwareMap.dcMotor.get("frontLeft"); /** Port: ControlHub MotorPort 1 **/
+        backLeft = hardwareMap.dcMotor.get("backLeft"); /** Port: ControlHub MotorPort 0 **/
+        frontRight = hardwareMap.dcMotor.get("frontRight"); /** Port: ExpansionHub MotorPort 3 **/
+        backRight = hardwareMap.dcMotor.get("backRight"); /** Port: ExpansionHub MotorPort 2 **/
+        liftLeft = hardwareMap.dcMotor.get("liftLeft"); /** Port: ControlHub MotorPort 2 **/
+        liftRight = hardwareMap.dcMotor.get("liftRight"); /** Port: ExpansionHub MotorPort 1 **/
+        intake = hardwareMap.dcMotor.get("intake");  /** Port: ControlHub MotorPort 3 **/
+        intakeArm = hardwareMap.servo.get("intakeArm"); /** Port: ControlHub ServoPort 5 **/
+        //wristLeft = hardwareMap.servo.get("wristLeft"); /** Port: ExpansionHub ServoPort 3 **/
+        //wristRight = hardwareMap.servo.get("wristRight"); /** Port: ExpansionHub ServoPort 5 **/
 
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -146,35 +143,19 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
-        //wristRight.setDirection(Servo.Direction.REVERSE);
-        wristLeft.setDirection(Servo.Direction.REVERSE);
-        //clawRight.setDirection(Servo.Direction.REVERSE);
-        //clawLeft.setDirection(Servo.Direction.REVERSE);
 
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-
-        //wristLeft.scaleRange(0,1);
-        //wristRight.scaleRange(0,1);
-        //clawLeft.scaleRange(0,0.1);
-        //clawRight.scaleRange(0,0.1);
-
-        wristPos = 0;
-        //clawLeftToggle = false;
-        //clawRightToggle = false;
+        intakeArmPos = 0;
 
         // Retrieve the IMU from the hardware map
-        //imu = hardwareMap.get(IMU.class, "imu");
         imu = hardwareMap.get(IMU.class, "imu");
         // Adjust the orientation parameters to match your robot
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
-        //IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                //RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                //RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
-        //));
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
+        ));
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
         imu.resetYaw();
@@ -348,19 +329,25 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     }
     private void Intake() {
         if (gamepad2.cross) {intake.setPower(1);} else if (gamepad2.circle) {intake.setPower(-1);} else {intake.setPower(0);}
+        if (gamepad2.left_stick_y > 0) {intakeArmPos -= 0.01*speed2;}
+        if (gamepad2.left_stick_y < 0) {intakeArmPos += 0.01*speed2;}
+        intakeArmPos = Range.clip(intakeArmPos,minIntakeArmPos,maxIntakeArmPos);
+        intakeArm.setPosition(intakeArmPos);
+        telemetry.addData("intakeArmPos: ",intakeArm.getPosition());
+        telemetry.addData("intakeArmPosition: ", intakeArmPos);
     }
     private void Outtake() {
         //if (currentGamepad2.left_bumper && !previousGamepad2.left_bumper) {clawLeftToggle = !clawLeftToggle;}
         //if (clawLeftToggle) {clawLeft.setPosition(maxClawPos);} else {clawLeft.setPosition(minClawPos);}
         //if (currentGamepad2.right_bumper && !previousGamepad2.right_bumper) {clawRightToggle = !clawRightToggle;}
         //if (clawRightToggle) {clawRight.setPosition(maxClawPos);} else {clawRight.setPosition(minClawPos);}
-        if (gamepad2.left_stick_y > 0) {wristPos -= 0.01*speed2;}
+        /*if (gamepad2.left_stick_y > 0) {wristPos -= 0.01*speed2;}
         if (gamepad2.left_stick_y < 0) {wristPos += 0.01*speed2;}
         wristPos = Range.clip(wristPos,minWristPos,maxWristPos);
         wristLeft.setPosition(wristPos);
         wristRight.setPosition(wristPos);
         telemetry.addData("wristPos: ","Left: %f, Right: %f",wristLeft.getPosition(),wristRight.getPosition());
-        telemetry.addData("wristPosition: ", wristPos);
+        telemetry.addData("wristPosition: ", wristPos);*/
     }
     private void LiftWorks() {
         if (gamepad2.cross) {liftPosition += 55*speed2;}

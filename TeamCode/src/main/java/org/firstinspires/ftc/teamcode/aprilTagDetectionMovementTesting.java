@@ -17,16 +17,17 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 import java.util.Vector;
 
-public class aprilTagDetectionMovement {
-    public LinearOpMode opmode = null;
+@Autonomous
+public class aprilTagDetectionMovementTesting extends LinearOpMode {
+    //public LinearOpMode opmode = null;
     public AprilTagProcessor aprilTag;
     public VisionPortal visionPortal;
-    private DcMotor backLeft = null;
-    private DcMotor backRight = null;
-    private DcMotor frontLeft = null;
-    private DcMotor frontRight = null;
-    private IMU imu = null;
-    private static final double strafeMult = 1.2;
+    public DcMotor backLeft = null;
+    public DcMotor backRight = null;
+    public DcMotor frontLeft = null;
+    public DcMotor frontRight = null;
+    public IMU imu = null;
+    public static final double strafeMult = 1.2;
 
     public enum backBoardAprilTags {
         RedAllianceLeft,
@@ -36,18 +37,16 @@ public class aprilTagDetectionMovement {
         BlueAllianceCenter,
         BlueAllianceRight
     }
-    private double[] cameraOffset = new double[] {3.5,5.5}; // x offset (left: positive, right: negative), y(distance) offset; (units: inches from center)
-    private double[] robotDistanceToAprilTag = new double[] {0,0};
-    private double moveOffsetY = 20;
-    public double[] outputInfo = new double[] {};
+    double[] cameraOffset = new double[] {3.5,5.5}; // x offset (left: positive, right: negative), y(distance) offset; (units: inches from center)
+    double[] robotDistanceToAprilTag = new double[] {0,0};
 
-    /*@Override
+    @Override
     public void runOpMode(){
         initCam();
         while (!isStarted()) {
             List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-            opmode.telemetry.addData("%f",currentDetections.size());
-            opmode.telemetry.update();
+            telemetry.addData("%f",currentDetections.size());
+            telemetry.update();
             //wait(1);
         }
         waitForStart();
@@ -55,11 +54,11 @@ public class aprilTagDetectionMovement {
         if (opModeIsActive()) {
             while (opModeIsActive()) {
 
-                //opmode.telemetryAprilTag();
+                //telemetryAprilTag();
                 moveToAprilTag(backBoardAprilTags.RedAllianceLeft);
 
-                // Push opmode.telemetry to the Driver Station.
-                opmode.telemetry.update();
+                // Push telemetry to the Driver Station.
+                telemetry.update();
 
                 // Save CPU resources; can resume streaming when needed.
                 if (gamepad1.dpad_down) {
@@ -72,22 +71,31 @@ public class aprilTagDetectionMovement {
                 sleep(20);
             }
         }
-    }*/
-
-    public aprilTagDetectionMovement(LinearOpMode lom) {opmode = lom;}
+    }
     public void initCam(){
         aprilTag = new AprilTagProcessor.Builder().build();
         VisionPortal.Builder builder = new VisionPortal.Builder();
-        builder.setCamera(opmode.hardwareMap.get(WebcamName.class, "Webcam 1"));
+        builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
         builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
         builder.addProcessor(aprilTag);
         visionPortal = builder.build();
-    }
-    public void camOn() {
-        visionPortal.resumeStreaming();
-    }
-    public void camOff() {
-        visionPortal.stopStreaming();
+        frontLeft = hardwareMap.dcMotor.get("frontLeft"); /** Port: ControlHub MotorPort 0 **/
+        backLeft = hardwareMap.dcMotor.get("backLeft"); /** Port: ControlHub MotorPort 2 **/
+        frontRight = hardwareMap.dcMotor.get("frontRight"); /** Port: ControlHub MotorPort 1 **/
+        backRight = hardwareMap.dcMotor.get("backRight"); /** Port: ControlHub MotorPort 3 **/
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        imu = hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+        // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
+        imu.initialize(parameters);
+        imu.resetYaw();
     }
     public void moveToAprilTag(backBoardAprilTags tagName) {
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
@@ -103,15 +111,14 @@ public class aprilTagDetectionMovement {
                 break;
             }
         }
-        //opmode.opmode.telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",robotDistanceToAprilTag[0],robotDistanceToAprilTag[1]));
-        /*if (foundAprilTag) {
+        telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",robotDistanceToAprilTag[0],robotDistanceToAprilTag[1]));
+        if (foundAprilTag) {
             move(0.5,"right",robotDistanceToAprilTag[0]);
             rotate(180,0.5);
             move(0.5,"backward",(robotDistanceToAprilTag[1]-20));
-        }*/
-        outputInfo = new double[] {robotDistanceToAprilTag[0],(robotDistanceToAprilTag[1] - moveOffsetY)};
+        }
     }
-    /*public void stop_and_reset_encoders_all() {
+    public void stop_and_reset_encoders_all() {
         backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -138,8 +145,8 @@ public class aprilTagDetectionMovement {
             frontLeft.setTargetPosition((int) inch_convert(moveDistance));
             frontRight.setTargetPosition((int) inch_convert(moveDistance));
             run_to_position_all();
-            //opmode.telemetry.addData("Power", movePower);
-            //opmode.telemetry.update();
+            //telemetry.addData("Power", movePower);
+            //telemetry.update();
             backLeft.setPower(movePower);
             backRight.setPower(movePower);
             frontLeft.setPower(movePower);
@@ -175,17 +182,17 @@ public class aprilTagDetectionMovement {
             frontLeft.setPower(movePower);
             frontRight.setPower(movePower);
         } else {
-            opmode.telemetry.addData("Error", "move direction must be forward,backward,left, or right.");
-            //opmode.telemetry.update();
+            telemetry.addData("Error", "move direction must be forward,backward,left, or right.");
+            //telemetry.update();
             terminateOpModeNow();
         }
         while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()) {
-            opmode.telemetry.addData("test", "attempting to move...");
-            //opmode.telemetry.addData("power back right", backRight.getPower());
-            //opmode.telemetry.addData("power back left", backLeft.getPower());
-            //opmode.telemetry.addData("power front right", frontRight.getPower());
-            //opmode.telemetry.addData("power front left", frontLeft.getPower());
-            opmode.telemetry.update();
+            telemetry.addData("test", "attempting to move...");
+            //telemetry.addData("power back right", backRight.getPower());
+            //telemetry.addData("power back left", backLeft.getPower());
+            //telemetry.addData("power front right", frontRight.getPower());
+            //telemetry.addData("power front left", frontLeft.getPower());
+            telemetry.update();
         }
         powerZero();
     }
@@ -209,11 +216,11 @@ public class aprilTagDetectionMovement {
             //power = Range.clip(Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) / 90, 0.1, 0.5);
             power1 = power * error * Kp;
             power1 = Range.clip(power1,-0.5,0.5); //"Range.clip(value, minium, maxium)" takes the first term and puts it in range of the min and max provided
-            opmode.telemetry.addData("power1",power1);
+            telemetry.addData("power1",power1);
             //System.out.printf("%f power = ",power1);
-            opmode.telemetry.addData("error",error);
-            opmode.telemetry.addData("power", power);
-            opmode.telemetry.addData("Kp",Kp);
+            telemetry.addData("error",error);
+            telemetry.addData("power", power);
+            telemetry.addData("Kp",Kp);
 
             backLeft.setPower(power1);
             backRight.setPower(-power1);
@@ -222,36 +229,36 @@ public class aprilTagDetectionMovement {
             if (Math.abs(error) <= 1) {
                 powerZero();
             }
-            opmode.telemetry.addData("angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-            opmode.telemetry.addData("target", targetAngle);
-            opmode.telemetry.update();
+            telemetry.addData("angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+            telemetry.addData("target", targetAngle);
+            telemetry.update();
             //double angleDifference = Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
             //rotate(angleDifference, power);
         }
         powerZero();
-    }*/
+    }
     private void telemetryAprilTag() {
 
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        opmode.telemetry.addData("# AprilTags Detected", currentDetections.size());
+        telemetry.addData("# AprilTags Detected", currentDetections.size());
 
         // Step through the list of detections and display info for each one.
         for (AprilTagDetection detection : currentDetections) {
             if (detection.metadata != null) {
-                opmode.telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
-                opmode.telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
-                opmode.telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
-                opmode.telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
+                telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
+                telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
+                telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
+                telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
             } else {
-                opmode.telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
-                opmode.telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
+                telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
+                telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
             }
         }   // end for() loop
 
-        // Add "key" information to opmode.telemetry
-        opmode.telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
-        opmode.telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
-        opmode.telemetry.addLine("RBE = Range, Bearing & Elevation");
+        // Add "key" information to telemetry
+        telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
+        telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
+        telemetry.addLine("RBE = Range, Bearing & Elevation");
 
-    }   // end method opmode.telemetryAprilTag()
+    }   // end method telemetryAprilTag()
 }
