@@ -118,6 +118,7 @@ public class aprilTagPositionDetection {
         visionPortal.stopStreaming();
     }
     public void getRobotPosAprilTag(aprilTags[] tagNames) {
+        outputInfo = new double[] {};
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         List<aprilTags> foundAprilTags = new ArrayList<aprilTags>();
         for (AprilTagDetection detection : currentDetections) {
@@ -153,6 +154,8 @@ public class aprilTagPositionDetection {
             //telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",robotFieldPos[0],robotFieldPos[1]));
             outputInfo = robotFieldPos;
             /** ToDo: have an output for when you don't see a april tag */
+        } else {
+            outputInfo = new double[] {-1,-1};
         }
     }
     private void telemetryAprilTag() {

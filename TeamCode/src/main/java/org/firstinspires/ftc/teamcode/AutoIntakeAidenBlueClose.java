@@ -47,6 +47,16 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
     OpenCvCamera camera;
     cameraDetectColorTest1 gameObjectDetection = new cameraDetectColorTest1();
     /*final*/ String spikeLocation = gameObjectDetection.getPosition().toString();
+    private aprilTagDetectionMovement backBoardDetection = new aprilTagDetectionMovement(this);
+    public enum backBoardAprilTags {
+        RedAllianceLeft,
+        RedAllianceCenter,
+        RedAllianceRight,
+        BlueAllianceLeft,
+        BlueAllianceCenter,
+        BlueAllianceRight
+    }
+    backBoardAprilTags selectedAprilTag = null;
 
 
     //Outtake Vars
@@ -55,6 +65,7 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
     double wristPos = 0;
     double minWristPos = -1.0;
     double maxWristPos = 0.9;
+    double[] moveDistance = new double[] {};
 
 
     //INTAKE FUNCTIONS
@@ -74,27 +85,43 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
         //spikeLocation = "LEFT";
         double power = -.3;
         if(spikeLocation.equals("LEFT")) {
+            selectedAprilTag = backBoardAprilTags.BlueAllianceLeft;
             move(.3, "forward", 18);
             move(.3, "left", 12);
             intake(power, 3);
             move(.3, "right", 12);
-            move(.3, "backward", 18);
+            //move(.3, "backward", 18);
+            rotate(-90,0.3);
+            backBoardDetection.moveToAprilTag(aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceLeft);
+            moveDistance = backBoardDetection.outputInfo;
         } else if(spikeLocation.equals("RIGHT")){
+            selectedAprilTag = backBoardAprilTags.BlueAllianceRight;
             move(.3, "forward", 18);
             move(.3, "right", 12);
             intake(power, 3);
             move(.3, "left", 12);
-            move(.3, "backward", 18);
+            //move(.3, "backward", 18);
+            rotate(-90,0.3);
+            backBoardDetection.moveToAprilTag(aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceRight);
+            moveDistance = backBoardDetection.outputInfo;
         } else if(spikeLocation.equals("CENTER")){
+            selectedAprilTag = backBoardAprilTags.BlueAllianceCenter;
             move(.3, "forward", 25);
             intake(power, 3);
-            move(.3, "backward", 25);
+            //move(.3, "backward", 25);
+            rotate(-90,0.3);
+            backBoardDetection.moveToAprilTag(aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceCenter);
+            moveDistance = backBoardDetection.outputInfo;
         } else if(!spikeLocation.equals("CENTER") && !spikeLocation.equals("LEFT")) {
+            selectedAprilTag = backBoardAprilTags.BlueAllianceRight;
             move(.3, "forward", 18);
             move(.3, "right", 12);
             intake(power, 3);
             move(.3, "left", 12);
-            move(.3, "backward", 18);
+            //move(.3, "backward", 18);
+            rotate(-90,0.3);
+            backBoardDetection.moveToAprilTag(aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceRight);
+            moveDistance = backBoardDetection.outputInfo;
         }else {
             telemetry.addData("Team Element", "Not Found");
             telemetry.update();
@@ -233,7 +260,7 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
         telemetry.update();
     }
     private void rotate(double angle, double power) {
-        double Kp = 1/2; //this is for proportional control (ie. the closer you are the target angle the slower you will go)
+        double Kp = 0.5; //this is for proportional control (ie. the closer you are the target angle the slower you will go)
         double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         double targetAngle = startAngle + angle;
         double error = (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
@@ -291,6 +318,7 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
         initializeIntake();
         initializeMovement();
         initializeOuttake();
+        //backBoardDetection.initCam();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         gameObjectDetection = new cameraDetectColorTest1();
@@ -318,8 +346,13 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
         }
         waitForStart();
         if(opModeIsActive()) {
+            backBoardDetection.initCam();
             placeOnSpikeMark();
-            parkCloseBlue();
+            //moveDistance = backBoardDetection.outputInfo;
+            move(0.3,"right",moveDistance[0]);
+            rotate(180,0.3);
+            move(0.3,"backward",moveDistance[1]);
+            //parkCloseBlue();
         }
     }
 }
