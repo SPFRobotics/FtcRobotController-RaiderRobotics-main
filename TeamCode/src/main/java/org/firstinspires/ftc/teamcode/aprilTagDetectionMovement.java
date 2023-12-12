@@ -91,6 +91,7 @@ public class aprilTagDetectionMovement {
         visionPortal.stopStreaming();
     }
     public void moveToAprilTag(backBoardAprilTags tagName) {
+        outputInfo = new double[] {};
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         boolean foundAprilTag = false;
         for (AprilTagDetection detection : currentDetections) {
