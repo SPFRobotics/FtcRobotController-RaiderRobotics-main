@@ -328,12 +328,22 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         backRight.setPower(backRightPower);
     }
     private void Intake() {
-        if (gamepad2.cross) {intake.setPower(1);} else if (gamepad2.circle) {intake.setPower(-1);} else {intake.setPower(0);}
-        if (gamepad2.left_stick_y > 0) {intakeArmPos -= 0.01*speed2;}
-        if (gamepad2.left_stick_y < 0) {intakeArmPos += 0.01*speed2;}
-        intakeArmPos = Range.clip(intakeArmPos,minIntakeArmPos,maxIntakeArmPos);
+        if (gamepad2.cross) {
+            intake.setPower(1);
+        } else if (gamepad2.circle) {
+            intake.setPower(-1);
+        } else {
+            intake.setPower(0);
+        }
+        if (gamepad2.left_stick_y > 0) {
+            intakeArmPos -= 0.01 * speed2;
+        }
+        if (gamepad2.left_stick_y < 0) {
+            intakeArmPos += 0.01 * speed2;
+        }
+        intakeArmPos = Range.clip(intakeArmPos, minIntakeArmPos, maxIntakeArmPos);
         intakeArm.setPosition(intakeArmPos);
-        telemetry.addData("intakeArmPos: ",intakeArm.getPosition());
+        telemetry.addData("intakeArmPos: ", intakeArm.getPosition());
         telemetry.addData("intakeArmPosition: ", intakeArmPos);
     }
     private void Outtake() {

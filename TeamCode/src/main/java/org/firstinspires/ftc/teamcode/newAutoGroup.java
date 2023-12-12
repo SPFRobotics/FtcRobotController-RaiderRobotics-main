@@ -7,8 +7,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 public class newAutoGroup extends LinearOpMode {
     MecanumChassis chassis = new MecanumChassis(this);
     Intake intake = new Intake(this);
+    Apecs apecs = new Apecs(this);
+
     ColorCam color = new ColorCam(this);
-    AprilTagCam aTag = new AprilTagCam(this);
+    aprilTagDetectionMovement aTag = new aprilTagDetectionMovement(this);
 
     public void placeOnSpikeMark(){
         //Move to center of spike marks
@@ -34,6 +36,14 @@ public class newAutoGroup extends LinearOpMode {
             telemetry.update();
         }
     }
+    public void placeYellowPixel(String location){
+        aTag.setId(location, "red");
+        aTag.moveToAprilTag(aTag.id);
+        chassis.rotate(180, .7);
+        chassis.move(.5, "left", aTag.outputInfo[0]);
+        chassis.move(.5, "backward", aTag.outputInfo[1]);
+        apecs.open();
+    }
 
     public void runOpMode(){
         chassis.initializeMovement();
@@ -52,8 +62,7 @@ public class newAutoGroup extends LinearOpMode {
         final String location = color.spikeLocation;
         placeOnSpikeMark();
         color.camOff();
-        aTag.setId(location, "red");
-        aTag.moveToAprilTag(aTag.id);
+        placeYellowPixel(location);
 
     }
 
