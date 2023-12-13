@@ -35,7 +35,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private double liftSpeed = 1.0;
     private double servoSpeed = 0;
     private static final int liftMaxMotorCounts = 4062;
-    private static final double minIntakeArmPos = 0.2;
+    private static final double minIntakeArmPos = 0;
     private static final double maxIntakeArmPos = 1.0;
     //private static final double minClawPos = 0.7;
     //private static final double maxClawPos = 0.5;
