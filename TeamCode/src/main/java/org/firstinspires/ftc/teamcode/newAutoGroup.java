@@ -6,11 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous
 public class newAutoGroup extends LinearOpMode {
     MecanumChassis chassis = new MecanumChassis(this);
-    Intake intake = new Intake(this);
-    Apecs apecs = new Apecs(this);
-
+    //Intake intake = new Intake(this);
     ColorCam color = new ColorCam(this);
-    aprilTagDetectionMovement aTag = new aprilTagDetectionMovement(this);
+    AprilTagCam aTag = new AprilTagCam(this);
 
     public void placeOnSpikeMark(){
         //Move to center of spike marks
@@ -18,36 +16,31 @@ public class newAutoGroup extends LinearOpMode {
         if(color.spikeLocation.equals("LEFT")) {
             chassis.move(.3, "forward", 18);
             chassis.move(.3, "left", 12);
-            intake.powerOnTimed(power, 3);
+            //intake.powerOnTimed(power, 3);
             chassis.move(.3, "right", 12);
-            chassis.move(.3, "backward", 18);
+            //chassis.move(.3, "backward", 18);
         } else if(color.spikeLocation.equals("RIGHT")){
             chassis.move(.3, "forward", 18);
             chassis.move(.3, "right", 12);
-            intake.powerOnTimed(power, 3);
+            //intake.powerOnTimed(power, 3);
             chassis.move(.3, "left", 12);
-            chassis.move(.3, "backward", 18);
+            //chassis.move(.3, "backward", 18);
         } else if(color.spikeLocation.equals("CENTER")){
             chassis.move(.3, "forward", 25);
-            intake.powerOnTimed(power, 3);
+            //intake.powerOnTimed(power, 3);
             chassis.move(.3, "backward", 25);
         } else {
             telemetry.addData("Team Element", "Not Found");
             telemetry.update();
         }
     }
-    public void placeYellowPixel(String location){
-        aTag.setId(location, "red");
-        aTag.moveToAprilTag(aTag.id);
-        chassis.rotate(180, .7);
-        chassis.move(.5, "left", aTag.outputInfo[0]);
-        chassis.move(.5, "backward", aTag.outputInfo[1]);
-        apecs.open();
+    public void altAprilTag(){
+
     }
 
     public void runOpMode(){
         chassis.initializeMovement();
-        intake.initIntake();
+        //intake.initIntake();
         color.initCam();
         color.camOn();
         aTag.initCam();
@@ -62,8 +55,10 @@ public class newAutoGroup extends LinearOpMode {
         final String location = color.spikeLocation;
         placeOnSpikeMark();
         color.camOff();
-        placeYellowPixel(location);
-
+        aTag.setId(location, "red");
+        aTag.moveToAprilTag(aTag.id);
+        chassis.rotate(180, .5);
+        chassis.move(.5, "left", aTag.robotDistanceToAprilTag[0]);
+        chassis.move(.5, "backward", aTag.robotDistanceToAprilTag[1]);
     }
-
 }

@@ -9,20 +9,20 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Intake {
     public LinearOpMode opmode = null;
     public DcMotor intakeMotor = null;
-    public Servo deployment = null;
-    public double minPos = 0;
-    public double maxPos = 1;
-
+    public Servo lipServo = null;
     public Intake(LinearOpMode lom){
         opmode = lom;
     }
     public void initIntake(){
         intakeMotor = opmode.hardwareMap.get(DcMotor.class, "intake");
-        deployment = opmode.hardwareMap.get(Servo.class, "intakeArm");
+        lipServo = opmode.hardwareMap.get(Servo.class, ""); //Edit Servo
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
-    public void bringUp(){
-
+    public void raiseLip(){ //Test This Position, .5 is a placeholder
+        lipServo.setPosition(.5);
+    }
+    public void lowerLip(){ //Test This Position, 0 is a placeholder
+        lipServo.setPosition(0);
     }
     public void powerOn(double power){
         intakeMotor.setPower(power);
