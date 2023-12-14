@@ -26,7 +26,8 @@ public class aprilTagDetectionMovement {
     private DcMotor frontLeft = null;
     private DcMotor frontRight = null;
     private IMU imu = null;
-    private static final double strafeMult = 1.2;
+    private static final double strafeMult = 1.1;
+    public int id = 0;
 
     public enum backBoardAprilTags {
         RedAllianceLeft,
@@ -111,6 +112,40 @@ public class aprilTagDetectionMovement {
             move(0.5,"backward",(robotDistanceToAprilTag[1]-20));
         }*/
         outputInfo = new double[] {robotDistanceToAprilTag[0],(robotDistanceToAprilTag[1] - moveOffsetY)};
+    }
+    public void moveToAprilTag(int id) {
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        boolean foundAprilTag = false;
+        for (AprilTagDetection detection : currentDetections) {
+            if (detection.metadata != null) {
+                if (detection.id == id) {
+                    robotDistanceToAprilTag[0] = detection.ftcPose.x + cameraOffset[0];
+                    robotDistanceToAprilTag[1] = detection.ftcPose.y + cameraOffset[1];
+                    foundAprilTag = true;
+                }
+            } else { //add to move on to next step or align to a position
+                break;
+            }
+        }
+        //opmode.opmode.telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",robotDistanceToAprilTag[0],robotDistanceToAprilTag[1]));
+        /*if (foundAprilTag) {
+            move(0.5,"right",robotDistanceToAprilTag[0]);
+            rotate(180,0.5);
+            move(0.5,"backward",(robotDistanceToAprilTag[1]-20));
+        }*/
+        outputInfo = new double[] {robotDistanceToAprilTag[0],(robotDistanceToAprilTag[1] - moveOffsetY)}; //[xPos, yPos]
+    }
+    public void setId(String spikeLocation, String team){
+        if(spikeLocation.equals("left")){
+            id = 1;
+        } else if(spikeLocation.equals("center")){
+            id = 2;
+        } else if(spikeLocation.equals("right")){
+            id = 3;
+        }
+        if(team.equals("red")){
+            id += 3;
+        }
     }
     /*public void stop_and_reset_encoders_all() {
         backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

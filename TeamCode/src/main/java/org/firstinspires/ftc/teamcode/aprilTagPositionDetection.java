@@ -190,4 +190,7 @@ public class aprilTagPositionDetection {
         opmode.telemetry.addLine("RBE = Range, Bearing & Elevation");
 
     }   // end method telemetryAprilTag()
+    public List<AprilTagDetection> getDetections(){
+        return aprilTag.getDetections();
+    }
 }
