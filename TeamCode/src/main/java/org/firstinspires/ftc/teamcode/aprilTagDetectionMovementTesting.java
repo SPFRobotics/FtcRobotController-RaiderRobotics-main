@@ -55,7 +55,7 @@ public class aprilTagDetectionMovementTesting extends LinearOpMode {
             while (opModeIsActive()) {
 
                 //telemetryAprilTag();
-                moveToAprilTag(backBoardAprilTags.RedAllianceLeft);
+                moveToAprilTag(backBoardAprilTags.BlueAllianceLeft);
 
                 // Push telemetry to the Driver Station.
                 telemetry.update();
@@ -113,9 +113,9 @@ public class aprilTagDetectionMovementTesting extends LinearOpMode {
         }
         telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",robotDistanceToAprilTag[0],robotDistanceToAprilTag[1]));
         if (foundAprilTag) {
-            move(0.5,"right",robotDistanceToAprilTag[0]);
-            rotate(180,0.5);
-            move(0.5,"backward",(robotDistanceToAprilTag[1]-20));
+            //move(0.5,"right",robotDistanceToAprilTag[0]);
+            //rotate(180,0.5);
+            //move(0.5,"backward",(robotDistanceToAprilTag[1]-20));
         }
     }
     public void stop_and_reset_encoders_all() {

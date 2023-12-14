@@ -104,6 +104,15 @@ public class aprilTagPositionDetection {
     }*/
     public aprilTagPositionDetection(LinearOpMode lom) {opmode = lom;}
     public void initCam(){
+        aprilTagsDict.put(aprilTags.RedAudienceWallLarge,0);
+        aprilTagsDict.put(aprilTags.BlueAudienceWallLarge,1);
+        aprilTagsDict.put(aprilTags.RedAudienceWallSmall,2);
+        aprilTagsDict.put(aprilTags.BlueAudienceWallSmall,3);
+        aprilTagsPosDict.put(aprilTags.RedAudienceWallLarge,redAprilTagBigPos);
+        aprilTagsPosDict.put(aprilTags.BlueAudienceWallLarge,blueAprilTagBigPos);
+        aprilTagsPosDict.put(aprilTags.RedAudienceWallSmall,redAprilTagSmallPos);
+        aprilTagsPosDict.put(aprilTags.BlueAudienceWallSmall,blueAprilTagSmallPos);
+
         aprilTag = new AprilTagProcessor.Builder().build();
         VisionPortal.Builder builder = new VisionPortal.Builder();
         builder.setCamera(opmode.hardwareMap.get(WebcamName.class, "Webcam 1"));

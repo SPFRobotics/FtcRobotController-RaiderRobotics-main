@@ -34,12 +34,13 @@ public class rotationTest extends LinearOpMode {
         return cm * (537.7 / (9.6012 / Math.PI));
     }
     public void runOpMode(){
-        waitForStart();
         initialize();
+        waitForStart();
+
 
         if (opModeIsActive()){
             //while(opModeIsActive()){
-                alternateRotate(20.0, .1);
+                otherRotateMethod(-90.0, .5);
                 telemetry.addData("Rotate Function","Ended");
                 telemetry.update();
                 stop();
@@ -79,8 +80,49 @@ public class rotationTest extends LinearOpMode {
         frontRight.setPower(0);
 
     }
-    private void otherRotateMethod(double angle, double startAngle, double power){
+    private void otherRotateMethod(double angle, double power){
+        double Kp = 0.5; //this is for proportional control (ie. the closer you are the target angle the slower you will go)
+        double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        double targetAngle = startAngle + angle;
+        double error = (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
+        double power1 = 0;
+        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        // rotate until the target angle is reached
+        //System.out.printf("%f start angle = ",imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        //System.out.printf("%f error = ", error);
+        while (opModeIsActive() && Math.abs(error) > 5) {
+            //powerZero();
+            error = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
+            // the closer the robot is to the target angle, the slower it rotates
+            //power = Range.clip(Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) / 90, 0.1, 0.5);
+            power1 = Range.clip((power*(error*Kp)),-0.5,0.5); //"Range.clip(value, minium, maxium)" takes the first term and puts it in range of the min and max provided
+            telemetry.addData("power",power1);
+            System.out.printf("%f power = ",power1);
+            telemetry.addData("error",error);
 
+            backLeft.setPower(power1);
+            backRight.setPower(-power1);
+            frontLeft.setPower(power1);
+            frontRight.setPower(-power1);
+            if (Math.abs(error) <= 5) {
+                backLeft.setPower(0);
+                backRight.setPower(0);
+                frontLeft.setPower(0);
+                frontRight.setPower(0);
+            }
+            telemetry.addData("angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+            telemetry.addData("target", targetAngle);
+            telemetry.update();
+            //double angleDifference = Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
+            //rotate(angleDifference, power);
+        }
+        backLeft.setPower(0);
+        backRight.setPower(0);
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
     }
     private void rotate(double angle, double power) {
         YawPitchRollAngles robotOrientation = null;
@@ -96,7 +138,7 @@ public class rotationTest extends LinearOpMode {
         double angleDifference = Math.abs(robotOrientation.getYaw(AngleUnit.DEGREES) - targetAngle);
 
         // rotate until the target angle is reached
-        while (opModeIsActive() && angleDifference > 20) {
+        while (opModeIsActive() && angleDifference > 5) {
             // the closer the robot is to the target angle, the slower it rotates
             power = Range.clip(angleDifference / 90, 0.1, 0.5);
             //power = .3;
@@ -118,7 +160,7 @@ public class rotationTest extends LinearOpMode {
             frontRight.setPower(0);
 
             angleDifference = Math.abs(robotOrientation.getYaw(AngleUnit.DEGREES) - targetAngle);
-            if(angleDifference<20){
+            if(angleDifference<5){
                 backLeft.setPower(0);
                 backRight.setPower(0);
                 frontLeft.setPower(0);
@@ -159,5 +201,6 @@ public class rotationTest extends LinearOpMode {
                 )
         );
         imu.initialize(myIMUparameters);
+        imu.resetYaw();
     }
 }

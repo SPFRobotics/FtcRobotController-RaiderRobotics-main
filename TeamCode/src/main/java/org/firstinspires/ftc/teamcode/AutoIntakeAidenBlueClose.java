@@ -11,6 +11,9 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -22,6 +25,8 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
+
+import java.util.List;
 
 @Autonomous
 public class AutoIntakeAidenBlueClose extends LinearOpMode {
@@ -47,7 +52,6 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
     OpenCvCamera camera;
     cameraDetectColorTest1 gameObjectDetection = new cameraDetectColorTest1();
     /*final*/ String spikeLocation = gameObjectDetection.getPosition().toString();
-    private aprilTagDetectionMovement backBoardDetection = new aprilTagDetectionMovement(this);
     public enum backBoardAprilTags {
         RedAllianceLeft,
         RedAllianceCenter,
@@ -56,8 +60,11 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
         BlueAllianceCenter,
         BlueAllianceRight
     }
-    backBoardAprilTags selectedAprilTag = null;
-
+    private double[] cameraOffset = new double[] {3.5,5.5}; // x offset (left: positive, right: negative), y(distance) offset; (units: inches from center)
+    private double[] robotDistanceToAprilTag = new double[] {0,0};
+    private double moveOffsetY = 20;
+    //public double[] outputInfo = new double[] {};
+    public backBoardAprilTags selectedAprilTag = null;
 
     //Outtake Vars
     Servo wristLeft = null;
@@ -65,7 +72,9 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
     double wristPos = 0;
     double minWristPos = -1.0;
     double maxWristPos = 0.9;
-    double[] moveDistance = new double[] {};
+    double[] moveDistance = new double[] {0,0};
+    public AprilTagProcessor aprilTag;
+    public VisionPortal visionPortal;
 
 
     //INTAKE FUNCTIONS
@@ -92,8 +101,8 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
             move(.3, "right", 12);
             //move(.3, "backward", 18);
             rotate(-90,0.3);
-            backBoardDetection.moveToAprilTag(aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceLeft);
-            moveDistance = backBoardDetection.outputInfo;
+            //while (backBoardDetection.aprilTag.getDetections().size() <= 0) {telemetry.addData("%f",backBoardDetection.aprilTag.getDetections().size());telemetry.update();}
+            moveToAprilTag(selectedAprilTag);
         } else if(spikeLocation.equals("RIGHT")){
             selectedAprilTag = backBoardAprilTags.BlueAllianceRight;
             move(.3, "forward", 18);
@@ -102,16 +111,16 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
             move(.3, "left", 12);
             //move(.3, "backward", 18);
             rotate(-90,0.3);
-            backBoardDetection.moveToAprilTag(aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceRight);
-            moveDistance = backBoardDetection.outputInfo;
+            //while (backBoardDetection.aprilTag.getDetections().size() <= 0) {telemetry.addData("%f",backBoardDetection.aprilTag.getDetections().size());telemetry.update();}
+            moveToAprilTag(selectedAprilTag);
         } else if(spikeLocation.equals("CENTER")){
             selectedAprilTag = backBoardAprilTags.BlueAllianceCenter;
             move(.3, "forward", 25);
             intake(power, 3);
             //move(.3, "backward", 25);
             rotate(-90,0.3);
-            backBoardDetection.moveToAprilTag(aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceCenter);
-            moveDistance = backBoardDetection.outputInfo;
+            //while (backBoardDetection.aprilTag.getDetections().size() <= 0) {telemetry.addData("%f",backBoardDetection.aprilTag.getDetections().size());telemetry.update();}
+            moveToAprilTag(selectedAprilTag);
         } else if(!spikeLocation.equals("CENTER") && !spikeLocation.equals("LEFT")) {
             selectedAprilTag = backBoardAprilTags.BlueAllianceRight;
             move(.3, "forward", 18);
@@ -120,8 +129,8 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
             move(.3, "left", 12);
             //move(.3, "backward", 18);
             rotate(-90,0.3);
-            backBoardDetection.moveToAprilTag(aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceRight);
-            moveDistance = backBoardDetection.outputInfo;
+            //while (backBoardDetection.aprilTag.getDetections().size() <= 0) {telemetry.addData("%f",backBoardDetection.aprilTag.getDetections().size());telemetry.update();}
+            moveToAprilTag(selectedAprilTag);
         }else {
             telemetry.addData("Team Element", "Not Found");
             telemetry.update();
@@ -254,6 +263,7 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
             telemetry.addData("power front right", frontRight.getPower());
             telemetry.addData("power front left", frontLeft.getPower());
             telemetry.update();
+            sleep(10);
         }
         powerZero();
         telemetry.addData("test", "done!");
@@ -270,8 +280,8 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // rotate until the target angle is reached
-        System.out.printf("%f start angle = ",imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-        System.out.printf("%f error = ", error);
+        //System.out.printf("%f start angle = ",imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        //System.out.printf("%f error = ", error);
         while (opModeIsActive() && Math.abs(error) > 5) {
             //powerZero();
             error = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
@@ -288,6 +298,7 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
             frontRight.setPower(-power1);
             if (Math.abs(error) <= 5) {
                 powerZero();
+                break;
             }
             telemetry.addData("angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
             telemetry.addData("target", targetAngle);
@@ -296,8 +307,33 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
             //rotate(angleDifference, power);
         }
         powerZero();
+        telemetry.update();
     }
-
+    public void moveToAprilTag(backBoardAprilTags tagName) {
+        //outputInfo = new double[] {};
+        //initCam();
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        while (currentDetections.size() <= 0) {telemetry.addData("%f",currentDetections.size());telemetry.update();sleep(10);}
+        boolean foundAprilTag = false;
+        for (AprilTagDetection detection : currentDetections) {
+            if (detection.metadata != null) {
+                if (detection.metadata.name.equals(tagName.toString())) {
+                    robotDistanceToAprilTag[0] = detection.ftcPose.x + cameraOffset[0];
+                    robotDistanceToAprilTag[1] = detection.ftcPose.y + cameraOffset[1];
+                    foundAprilTag = true;
+                }
+            } else { //add to move on to next step or align to a position
+                break;
+            }
+        }
+        //opmode.telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",robotDistanceToAprilTag[0],robotDistanceToAprilTag[1]));
+        /*if (foundAprilTag) {
+            move(0.5,"right",robotDistanceToAprilTag[0]);
+            rotate(180,0.5);
+            move(0.5,"backward",(robotDistanceToAprilTag[1]-20));
+        }*/
+        moveDistance = new double[] {robotDistanceToAprilTag[0],(robotDistanceToAprilTag[1] - moveOffsetY)};
+    }
 
     //Claw funcs
     public void initializeOuttake(){
@@ -311,6 +347,20 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
         wristLeft.setPosition(targetPos);
         wristRight.setPosition(targetPos);
     }
+    public void initCam(){
+        aprilTag = new AprilTagProcessor.Builder().build();
+        VisionPortal.Builder builder = new VisionPortal.Builder();
+        builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
+        builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
+        builder.addProcessor(aprilTag);
+        visionPortal = builder.build();
+    }
+    public void camOn() {
+        visionPortal.resumeStreaming();
+    }
+    public void camOff() {
+        visionPortal.stopStreaming();
+    }
 
 
     //Run Op Mode
@@ -323,6 +373,7 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         gameObjectDetection = new cameraDetectColorTest1();
         camera.setPipeline(gameObjectDetection);
+        //backBoardDetection.initCam();
 
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
@@ -337,6 +388,7 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
                 telemetry.addData("problem"," error");
             }
         });
+        //initCam();
 
         while(!isStarted()){
             spikeLocation = gameObjectDetection.getPosition().toString();
@@ -346,9 +398,15 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
         }
         waitForStart();
         if(opModeIsActive()) {
-            backBoardDetection.initCam();
+            camera.stopRecordingPipeline();
+            camera.stopStreaming();
+            initCam();
+            camOn();
+            sleep(1000);
             placeOnSpikeMark();
             //moveDistance = backBoardDetection.outputInfo;
+            telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",moveDistance[0],moveDistance[1]));
+            telemetry.update();
             move(0.3,"right",moveDistance[0]);
             rotate(180,0.3);
             move(0.3,"backward",moveDistance[1]);
