@@ -9,6 +9,7 @@ public class newAutoGroup extends LinearOpMode {
     //Intake intake = new Intake(this);
     ColorCam color = new ColorCam(this);
     AprilTagCam aTag = new AprilTagCam(this);
+    //LinearSlide slide = new LinearSlide(this);
 
     public void placeOnSpikeMark(){
         //Move to center of spike marks

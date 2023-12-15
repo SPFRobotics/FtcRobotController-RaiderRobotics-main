@@ -35,8 +35,10 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private double liftSpeed = 1.0;
     private double servoSpeed = 0;
     private static final int liftMaxMotorCounts = 4062;
-    private static final double minIntakeArmPos = 0;
-    private static final double maxIntakeArmPos = 1.0;
+    private static final double minIntakeArmPos = 0.17;
+    private static final double maxIntakeArmPos = 0.7;
+    private static final double startIntakeArmPos = 0.7;
+
     //private static final double minClawPos = 0.7;
     //private static final double maxClawPos = 0.5;
     private static final double minLauncherPos = 0;
@@ -147,7 +149,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        intakeArmPos = 0;
+        intakeArmPos = 0.7;
 
         // Retrieve the IMU from the hardware map
         imu = hardwareMap.get(IMU.class, "imu");

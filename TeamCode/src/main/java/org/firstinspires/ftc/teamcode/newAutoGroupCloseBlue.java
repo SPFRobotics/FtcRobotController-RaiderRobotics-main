@@ -1,30 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvPipeline;
-import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous
-public class AutoIntakeAidenBlueFar extends LinearOpMode {
+public class newAutoGroupCloseBlue extends LinearOpMode {
     MecanumChassis chassis = new MecanumChassis(this);
     //Intake intake = new Intake(this);
     ColorCam color = new ColorCam(this);
@@ -39,13 +19,13 @@ public class AutoIntakeAidenBlueFar extends LinearOpMode {
             chassis.move(.3, "left", 12);
             //intake.powerOnTimed(power, 3);
             chassis.move(.3, "right", 12);
-            chassis.move(.3, "backward", 18);
+            //chassis.move(.3, "backward", 18);
         } else if(color.spikeLocation.equals("RIGHT")){
             chassis.move(.3, "forward", 18);
             chassis.move(.3, "right", 12);
             //intake.powerOnTimed(power, 3);
             chassis.move(.3, "left", 12);
-            chassis.move(.3, "backward", 18);
+            //chassis.move(.3, "backward", 18);
         } else if(color.spikeLocation.equals("CENTER")){
             chassis.move(.3, "forward", 25);
             //intake.powerOnTimed(power, 3);
@@ -75,6 +55,11 @@ public class AutoIntakeAidenBlueFar extends LinearOpMode {
         waitForStart();
         final String location = color.spikeLocation;
         placeOnSpikeMark();
-        chassis.parkFarBlue();
+        color.camOff();
+        aTag.setId(location, "red");
+        aTag.moveToAprilTag(aTag.id);
+        chassis.rotate(180, .5);
+        chassis.move(.5, "left", aTag.robotDistanceToAprilTag[0]);
+        chassis.move(.5, "backward", aTag.robotDistanceToAprilTag[1]);
     }
 }
