@@ -11,305 +11,98 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
+
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
+import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvPipeline;
+import org.openftc.easyopencv.OpenCvWebcam;
+
 
 @Autonomous
 public class AutoIntakeAidenRedClose extends LinearOpMode {
-    //MOVEMENT MOTOR VARS
-    private static final double strafeMult = 1.2;
-    private DcMotor backLeft = null;
-    private DcMotor backRight = null;
-    private DcMotor frontLeft = null;
-    private DcMotor frontRight = null;
-    private DcMotor liftLeft = null;
-    private DcMotor liftRight = null;
-    private IMU imu = null;
+    MecanumChassis chassis = new MecanumChassis(this);
+    //Intake intake = new Intake(this);
+    //ColorCam color = new ColorCam(this);
+    aprilTagDetectionMovement aTag = new aprilTagDetectionMovement(this);
+    //LinearSlide slide = new LinearSlide(this);
 
-
-
-
-    //INTAKE MOTOR VARS
-    private DcMotor intake = null;
-    double maxIntakePos = 4062;
-    double minEncoder = 0;
-
-    //Color Vars
-    OpenCvCamera camera;
-    cameraDetectColorTest1 gameObjectDetection = new cameraDetectColorTest1();
-    /*final*/ String spikeLocation = gameObjectDetection.getPosition().toString();
-
-
-    //Outtake Vars
-    Servo wristLeft = null;
-    Servo wristRight = null;
-    double wristPos = 0;
-    double minWristPos = -1.0;
-    double maxWristPos = 0.9;
-
-
-    //INTAKE FUNCTIONS
-    public void initializeIntake(){
-        intake = hardwareMap.dcMotor.get("intake");
-        intake.setDirection(DcMotorSimple.Direction.REVERSE);
-        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    }
-    private void intake(double power, long sec) {
-        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        intake.setPower(power);
-        sleep(sec * 1000);
-        intake.setPower(0);
-    }
     public void placeOnSpikeMark(){
         //Move to center of spike marks
-        //spikeLocation = "LEFT";
         double power = -.3;
-        if(spikeLocation.equals("LEFT")) {
-            move(.3, "forward", 18);
-            move(.3, "left", 12);
-            intake(power, 3);
-            move(.3, "right", 12);
-            move(.3, "backward", 18);
-        } else if(spikeLocation.equals("RIGHT")){
-            move(.3, "forward", 24);
-            move(.3, "right", 12);
-            intake(power, 3);
-            move(.3, "left", 12);
-            move(.3, "backward", 24);
-        } else if(spikeLocation.equals("CENTER")){
-            move(.3, "forward", 25);
-            intake(power, 3);
-            move(.3, "backward", 25);
-        } else if(!spikeLocation.equals("CENTER") && !spikeLocation.equals("LEFT")) {
-            move(.3, "forward", 18);
-            move(.3, "right", 12);
-            intake(power, 3);
-            move(.3, "left", 12);
-            move(.3, "backward", 18);
-        }else {
+        if(aTag.spikeLocation.equals("LEFT")) {
+            chassis.move(.3, "forward", 18);
+            chassis.move(.3, "left", 12);
+            //intake.powerOnTimed(power, 3);
+            chassis.move(.3, "right", 12);
+            chassis.move(.3, "backward", 18);
+        } else if(aTag.spikeLocation.equals("RIGHT")){
+            chassis.move(.3, "forward", 18);
+            chassis.move(.3, "right", 12);
+            //intake.powerOnTimed(power, 3);
+            chassis.move(.3, "left", 12);
+            chassis.move(.3, "backward", 18);
+        } else if(aTag.spikeLocation.equals("CENTER")){
+            chassis.move(.3, "forward", 25);
+            //intake.powerOnTimed(power, 3);
+            chassis.move(.3, "backward", 25);
+        } else {
             telemetry.addData("Team Element", "Not Found");
             telemetry.update();
         }
     }
-
-    //MOVEMENT FUNCTIONS
-    //3.78(in inches, 9.6012 is centimeters) is the diameter of the wheel, and 537.7 is how many motor counts are in 1 full rotation of the motor's axle
-    private double inch_convert(double inch) { return inch * (537.7 / (3.78 * Math.PI)); }
-    private double inToCm(int inches) { return inches * 2.54; }
-    private double cmToIn(double cm) { return cm / 2.54; }
-    private double cm_convert(double cm) { return cm * (537.7 / (9.6012 / Math.PI)); }
-
-    void parkFarRed(){
-        move(.3, "forward", 5.5);
-        move(.3, "right", 96);
-    }
-    void parkCloseRed(){
-        move(.3, "forward", 3);
-        move(.3, "right", 46);
-    }
-    void parkFarBlue(){
-        move(.3, "forward", 5.5);
-        move(.3, "left", 96);
-    }
-    void parkCloseBlue(){
-        move(.3, "forward", 3);
-        move(.3, "left", 46);
-    }
-
-    private void initializeMovement() {
-        backLeft = hardwareMap.dcMotor.get("backLeft");
-        backRight = hardwareMap.dcMotor.get("backRight");
-        frontLeft = hardwareMap.dcMotor.get("frontLeft");
-        frontRight = hardwareMap.dcMotor.get("frontRight");
-
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        stop_and_reset_encoders_all();
-
-        imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
-        // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
-        imu.initialize(parameters);
-        imu.resetYaw();
-        //waitForStart();
-    }
-    private void stop_and_reset_encoders_all() {
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
-    private void run_to_position_all() {
-        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    }
-
-    private void powerZero() {
-        backLeft.setPower(0);
-        backRight.setPower(0);
-        frontLeft.setPower(0);
-        frontRight.setPower(0);
-    }
-    private void move(double movePower, String moveDirection, double moveDistance){
-        stop_and_reset_encoders_all(); //Sets encoder count to 0
-        if (moveDirection.equals("forward")) {
-            backLeft.setTargetPosition((int) inch_convert(moveDistance));
-            backRight.setTargetPosition((int) inch_convert(moveDistance));
-            frontLeft.setTargetPosition((int) inch_convert(moveDistance));
-            frontRight.setTargetPosition((int) inch_convert(moveDistance));
-            run_to_position_all();
-            telemetry.addData("Power", movePower);
-            telemetry.update();
-            backLeft.setPower(movePower);
-            backRight.setPower(movePower);
-            frontLeft.setPower(movePower);
-            frontRight.setPower(movePower);
-        } else if (moveDirection.equals("backward")) {
-            backLeft.setTargetPosition((int) inch_convert(-moveDistance));
-            backRight.setTargetPosition((int) inch_convert(-moveDistance));
-            frontLeft.setTargetPosition((int) inch_convert(-moveDistance));
-            frontRight.setTargetPosition((int) inch_convert(-moveDistance));
-            run_to_position_all();
-            backLeft.setPower(-movePower);
-            backRight.setPower(-movePower);
-            frontLeft.setPower(-movePower);
-            frontRight.setPower(-movePower);
-        } else if (moveDirection.equals("right")) {
-            backLeft.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
-            backRight.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
-            frontLeft.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
-            frontRight.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
-            run_to_position_all();
-            backLeft.setPower(-movePower);
-            backRight.setPower(movePower);
-            frontLeft.setPower(movePower);
-            frontRight.setPower(-movePower);
-        } else if (moveDirection.equals("left")) {
-            backLeft.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
-            backRight.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
-            frontLeft.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
-            frontRight.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
-            run_to_position_all();
-            backLeft.setPower(movePower);
-            backRight.setPower(-movePower);
-            frontLeft.setPower(-movePower);
-            frontRight.setPower(movePower);
-        } else {
-            telemetry.addData("Error", "move direction must be forward,backward,left, or right.");
-            telemetry.update();
-            terminateOpModeNow();
+    public aprilTagDetectionMovement.backBoardAprilTags altAprilTag(String loc){
+        if(loc.equals("LEFT")){
+            return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceLeft;
         }
-        while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()) {
-            telemetry.addData("test", "attempting to move...");
-            telemetry.addData("power back right", backRight.getPower());
-            telemetry.addData("power back left", backLeft.getPower());
-            telemetry.addData("power front right", frontRight.getPower());
-            telemetry.addData("power front left", frontLeft.getPower());
-            telemetry.update();
+        if(loc.equals("CENTER")){
+            return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceCenter;
         }
-        powerZero();
-        telemetry.addData("test", "done!");
-        telemetry.update();
-    }
-    private void rotate(double angle, double power) {
-        double Kp = 1/2; //this is for proportional control (ie. the closer you are the target angle the slower you will go)
-        double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-        double targetAngle = startAngle + angle;
-        double error = (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
-        double power1 = 0;
-        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        // rotate until the target angle is reached
-        System.out.printf("%f start angle = ",imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-        System.out.printf("%f error = ", error);
-        while (opModeIsActive() && Math.abs(error) > 5) {
-            //powerZero();
-            error = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
-            // the closer the robot is to the target angle, the slower it rotates
-            //power = Range.clip(Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) / 90, 0.1, 0.5);
-            power1 = Range.clip((power*(error*Kp)),-0.5,0.5); //"Range.clip(value, minium, maxium)" takes the first term and puts it in range of the min and max provided
-            telemetry.addData("power",power1);
-            System.out.printf("%f power = ",power1);
-            telemetry.addData("error",error);
-
-            backLeft.setPower(power1);
-            backRight.setPower(-power1);
-            frontLeft.setPower(power1);
-            frontRight.setPower(-power1);
-            if (Math.abs(error) <= 5) {
-                powerZero();
-            }
-            telemetry.addData("angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-            telemetry.addData("target", targetAngle);
-            telemetry.update();
-            //double angleDifference = Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
-            //rotate(angleDifference, power);
+        if(loc.equals("RIGHT")){
+            return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceRight;
         }
-        powerZero();
+        return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceLeft;
     }
 
 
-    //Claw funcs
-    public void initializeOuttake(){
-        intake = hardwareMap.dcMotor.get("intake");  /** Port: ExpansionHub MotorPort 1 **/
-        wristLeft = hardwareMap.servo.get("wristLeft"); /** Port: ExpansionHub ServoPort 4 **/
-        wristRight = hardwareMap.servo.get("wristRight");
-        wristLeft.setDirection(Servo.Direction.REVERSE);
-    }
-    public void outtake(double targetPos){
-        wristPos = Range.clip(targetPos,minWristPos,maxWristPos);
-        wristLeft.setPosition(targetPos);
-        wristRight.setPosition(targetPos);
-    }
-
-
-    //Run Op Mode
     public void runOpMode(){
-        initializeIntake();
-        initializeMovement();
-        initializeOuttake();
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        gameObjectDetection = new cameraDetectColorTest1();
-        camera.setPipeline(gameObjectDetection);
-
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                camera.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode) {
-                telemetry.addData("problem"," error");
-            }
-        });
+        chassis.initializeMovement();
+        //intake.initIntake();
+        aTag.initCam2();
+        aTag.camOn();
 
         while(!isStarted()){
-            spikeLocation = gameObjectDetection.getPosition().toString();
-            telemetry.addData("Test", "working");
-            telemetry.addData("Location", spikeLocation);
+            aTag.updateSpikeLocation();
+            telemetry.addData("Location", aTag.spikeLocation);
             telemetry.update();
         }
+
         waitForStart();
-        if(opModeIsActive()) {
-            placeOnSpikeMark();
-            parkCloseRed();
-        }
+        final String location = aTag.spikeLocation;
+        placeOnSpikeMark();
+        //aTag.camOff();
+        chassis.move(.5, "forward", 25);
+        chassis.rotate(-90, .5);
+        //aTag.initCam2();
+        aTag.camOn();
+
+        aprilTagDetectionMovement.backBoardAprilTags[] array = {altAprilTag(location)};
+        //aTag.moveToAprilTag(array[0]);
+        while (aTag.getDetections().size() <= 0) {telemetry.addData("%f",aTag.getDetections().size());telemetry.update();sleep(10);}
+        aTag.moveToAprilTag(altAprilTag(location));
+
+        //aTag.camOff();
+        chassis.rotate(180, .5);
+
+        chassis.move(.5, "left", aTag.outputInfo[0]);
+        chassis.move(.5, "backward", aTag.outputInfo[1]);
+        telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",aTag.outputInfo[0],aTag.outputInfo[1]));
+        //telemetry.addData("hooray","hooray");
+        telemetry.update();
+        //chassis.parkFarRed();
     }
 }

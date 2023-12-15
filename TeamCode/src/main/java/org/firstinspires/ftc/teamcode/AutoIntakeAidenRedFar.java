@@ -27,26 +27,26 @@ import org.openftc.easyopencv.OpenCvWebcam;
 public class AutoIntakeAidenRedFar extends LinearOpMode {
     MecanumChassis chassis = new MecanumChassis(this);
     //Intake intake = new Intake(this);
-    ColorCam color = new ColorCam(this);
+    //ColorCam color = new ColorCam(this);
     aprilTagDetectionMovement aTag = new aprilTagDetectionMovement(this);
     //LinearSlide slide = new LinearSlide(this);
 
     public void placeOnSpikeMark(){
         //Move to center of spike marks
         double power = -.3;
-        if(color.spikeLocation.equals("LEFT")) {
+        if(aTag.spikeLocation.equals("LEFT")) {
             chassis.move(.3, "forward", 18);
             chassis.move(.3, "left", 12);
             //intake.powerOnTimed(power, 3);
             chassis.move(.3, "right", 12);
             chassis.move(.3, "backward", 18);
-        } else if(color.spikeLocation.equals("RIGHT")){
+        } else if(aTag.spikeLocation.equals("RIGHT")){
             chassis.move(.3, "forward", 18);
             chassis.move(.3, "right", 12);
             //intake.powerOnTimed(power, 3);
             chassis.move(.3, "left", 12);
-            //chassis.move(.3, "backward", 18);
-        } else if(color.spikeLocation.equals("CENTER")){
+            chassis.move(.3, "backward", 18);
+        } else if(aTag.spikeLocation.equals("CENTER")){
             chassis.move(.3, "forward", 25);
             //intake.powerOnTimed(power, 3);
             chassis.move(.3, "backward", 25);
@@ -56,13 +56,13 @@ public class AutoIntakeAidenRedFar extends LinearOpMode {
         }
     }
     public aprilTagDetectionMovement.backBoardAprilTags altAprilTag(String loc){
-        if(loc.equals("left")){
+        if(loc.equals("LEFT")){
             return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceLeft;
         }
-        if(loc.equals("center")){
+        if(loc.equals("CENTER")){
             return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceCenter;
         }
-        if(loc.equals("right")){
+        if(loc.equals("RIGHT")){
             return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceRight;
         }
         return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceLeft;
@@ -72,32 +72,34 @@ public class AutoIntakeAidenRedFar extends LinearOpMode {
     public void runOpMode(){
         chassis.initializeMovement();
         //intake.initIntake();
-        color.initCam();
-        color.camOn();
+        aTag.initCam2();
+        aTag.camOn();
 
         while(!isStarted()){
-            color.updateSpikeLocation();
-            telemetry.addData("Location", color.spikeLocation);
+            aTag.updateSpikeLocation();
+            telemetry.addData("Location", aTag.spikeLocation);
             telemetry.update();
         }
 
         waitForStart();
-        final String location = color.spikeLocation;
+        final String location = aTag.spikeLocation;
         placeOnSpikeMark();
-        color.camOff();
+        //aTag.camOff();
         chassis.move(.5, "forward", 25);
         chassis.rotate(-90, .5);
-        aTag.initCam();
+        //aTag.initCam2();
         aTag.camOn();
 
         aprilTagDetectionMovement.backBoardAprilTags[] array = {altAprilTag(location)};
-        aTag.moveToAprilTag(array[0]);
+        //aTag.moveToAprilTag(array[0]);
+        while (aTag.getDetections().size() <= 0) {telemetry.addData("%f",aTag.getDetections().size());telemetry.update();sleep(10);}
+        aTag.moveToAprilTag(altAprilTag(location));
 
         //aTag.camOff();
         chassis.rotate(180, .5);
 
-        chassis.move(.5, "left", aTag.robotDistanceToAprilTag[0]);
-        chassis.move(.5, "backward", aTag.robotDistanceToAprilTag[1]);
+        chassis.move(.5, "left", aTag.outputInfo[0]);
+        chassis.move(.5, "backward", aTag.outputInfo[1]);
         telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",aTag.outputInfo[0],aTag.outputInfo[1]));
         //telemetry.addData("hooray","hooray");
         telemetry.update();
