@@ -55,6 +55,58 @@ public class AutoIntakeAidenRedFar extends LinearOpMode {
             telemetry.update();
         }
     }
+    public void placeOnSpikeMarkUpdated(String proximity){
+        //Move to center of spike marks
+        double power = -.3;
+        if(proximity.toLowerCase().equals("close")) {
+            //Aligned to the right
+            //Check for center and right
+            if(aTag.spikeLocation.equals("CENTER")) {
+                //Move to the center
+                chassis.move(.5, "left", 6);
+                chassis.move(.5, "forward", 30);
+                //Do Intake Servo
+                chassis.move(.5, "backward", 30);
+                chassis.move(.5, "right", 6);
+            } else if (aTag.spikeLocation.equals("RIGHT")) {
+                //Move to the right
+                chassis.move(.5, "forward", 24);
+                //Do Intake Servo
+                chassis.move(.5, "backward", 24);
+            } else {
+                //Move to the left
+                chassis.move(.5, "left", 18);
+                chassis.move(.5, "forward", 30);
+                //Do Intake Servo
+                chassis.move(.5, "backward", 30);
+                chassis.move(.5, "right", 18);
+            }
+        }
+        if(proximity.toLowerCase().equals("far")) {
+            //Aligned to the left
+            //Check for center and right
+            if (aTag.spikeLocation.equals("CENTER")) {
+                //Move to the left
+                chassis.move(.5, "forward", 24);
+                //Do Intake Servo
+                chassis.move(.5, "backward", 24);
+            } else if (aTag.spikeLocation.equals("RIGHT")) {
+                //move to the center
+                chassis.move(.5, "right", 6);
+                chassis.move(.5, "forward", 30);
+                //Do Intake Servo
+                chassis.move(.5, "backward", 30);
+                chassis.move(.5, "left", 6);
+            } else {
+                //move to the right
+                chassis.move(.5, "right", 18);
+                chassis.move(.5, "forward", 30);
+                //Do Intake Servo
+                chassis.move(.5, "backward", 30);
+                chassis.move(.5, "left", 18);
+            }
+        }
+    }
     public aprilTagDetectionMovement.backBoardAprilTags altAprilTag(String loc){
         if(loc.equals("LEFT")){
             return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceLeft;

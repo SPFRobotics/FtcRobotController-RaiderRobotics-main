@@ -54,7 +54,7 @@ public class aprilTagPositionDetection {
     private final static double[] blueAprilTagSmallPos = new double[] {109.5,144.5,4};
     //public final static double[] blueAprilTagBigPos = new double[] {5.5,0,1.5};
     private final static double[] blueAprilTagBigPos = new double[] {115,144.5,5.5};
-    private final static double[] cameraOffset = new double[] {3.5,5.5}; // x offset (left: positive, right: negative), y(distance) offset; (units: inches from center)
+    private final static double[] cameraOffset = new double[] {7.5,4.5}; // x offset (left: positive, right: negative), y(distance) offset; (units: inches from center)
     //double[] robotDistanceToAprilTag = new double[] {0,0};
     private double[] robotFieldPos = new double[] {0,0};
     private double[][] robotDistancesToAprilTags = new double[][] {{0,0},{0,0},{0,0},{0,0}}; // [0][n]: RedAudienceWallLarge, [1][n]: BlueAudienceWallLarge, [2][n]: RedAudienceWallSmall, [3][n]: BlueAudienceWallSmall

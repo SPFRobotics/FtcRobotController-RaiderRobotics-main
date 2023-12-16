@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -22,7 +23,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.List;
 
-@Autonomous
+@Autonomous @Disabled
 public class AutoIntakeAiden extends LinearOpMode {
     //MOVEMENT MOTOR VARS
     private static final double strafeMult = 1.2;
@@ -71,31 +72,6 @@ public class AutoIntakeAiden extends LinearOpMode {
         intake.setPower(power);
         sleep(sec * 1000);
         intake.setPower(0);
-    }
-    public void placeOnSpikeMark(){
-        //Move to center of spike marks
-        //spikeLocation = "LEFT";
-        double power = -.3;
-        if(spikeLocation.equals("LEFT")) {
-            move(.3, "forward", 18);
-            move(.3, "left", 12);
-            intake(power, 3);
-            move(.3, "right", 12);
-            move(.3, "backward", 18);
-        } else if(spikeLocation.equals("RIGHT")){
-            move(.3, "forward", 18);
-            move(.3, "right", 12);
-            intake(power, 3);
-            move(.3, "left", 12);
-            move(.3, "backward", 18);
-        } else if(spikeLocation.equals("CENTER")){
-            move(.3, "forward", 25);
-            intake(power, 3);
-            move(.3, "backward", 25);
-        } else {
-            telemetry.addData("Team Element", "Not Found");
-            telemetry.update();
-        }
     }
 
 
@@ -390,7 +366,7 @@ public class AutoIntakeAiden extends LinearOpMode {
         }
         waitForStart();
         if(opModeIsActive()) {
-            placeOnSpikeMark();
+            //placeOnSpikeMark();
             parkFarRed(); //Park method based on position.  Far means far from backdrop, close means close to backdrop
         }
     }

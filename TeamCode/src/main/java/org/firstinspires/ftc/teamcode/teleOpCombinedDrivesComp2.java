@@ -26,7 +26,8 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private DcMotor liftLeft;
     private DcMotor liftRight;
     private DcMotor intake;
-    private Servo intakeArm;;
+    private Servo intakeArm;
+    private Servo intakeRamp;
     private IMU imu;
     private double speed1 = 0.5;
     private double speed1Default = 0.7;
@@ -35,9 +36,14 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private double liftSpeed = 1.0;
     private double servoSpeed = 0;
     private static final int liftMaxMotorCounts = 4062;
-    private static final double minIntakeArmPos = 0.1;
-    private static final double maxIntakeArmPos = 0.7;
-    private static final double startIntakeArmPos = 0.7;
+    private static final double minIntakeArmPos = 0; //Arm is all the way up
+    private static final double maxIntakeArmPos = 0.535; //Arm is all the way down
+    private static final double startIntakeArmPos = 0;
+
+    private static final double minIntakeRampPos = 0; //Arm is all the way up
+    private static final double maxIntakeRampPos = 1.2; //Arm is all the way down
+    private static final double startIntakeRampPos = 0;
+
 
     //private static final double minClawPos = 0.7;
     //private static final double maxClawPos = 0.5;
@@ -59,6 +65,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private double maxSpeedRange2 = 1.0;
     private int liftPosition = 0;
     private double intakeArmPos = 0;
+    private double intakeRampPos = 0;
     //private boolean clawLeftToggle = false;
     //private boolean clawRightToggle = false;
     private Quaternion currentIMUAngle;
@@ -130,6 +137,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         liftRight = hardwareMap.dcMotor.get("liftRight"); /** Port: ExpansionHub MotorPort 1 **/
         intake = hardwareMap.dcMotor.get("intake");  /** Port: ControlHub MotorPort 3 **/
         intakeArm = hardwareMap.servo.get("intakeArm"); /** Port: ControlHub ServoPort 5 **/
+        intakeRamp = hardwareMap.servo.get("intakeRamp"); /** Port: **/
         //wristLeft = hardwareMap.servo.get("wristLeft"); /** Port: ExpansionHub ServoPort 3 **/
         //wristRight = hardwareMap.servo.get("wristRight"); /** Port: ExpansionHub ServoPort 5 **/
 
@@ -149,8 +157,9 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        intakeArmPos = 0.7;
-
+        intakeRamp.scaleRange(minIntakeRampPos, maxIntakeRampPos);
+        intakeArmPos = startIntakeArmPos;
+        intakeRampPos = startIntakeRampPos;
         // Retrieve the IMU from the hardware map
         imu = hardwareMap.get(IMU.class, "imu");
         // Adjust the orientation parameters to match your robot
@@ -330,12 +339,23 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         backRight.setPower(backRightPower);
     }
     private void Intake() {
-        if (gamepad2.square) {intake.setPower(1);} else if (gamepad2.triangle) {intake.setPower(-1);} else {intake.setPower(0);}
-        if (gamepad2.left_stick_y > 0) {intakeArmPos -= 0.01*speed2;}
-        if (gamepad2.left_stick_y < 0) {intakeArmPos += 0.01*speed2;}
+        if (gamepad2.square) { intake.setPower(.7); }
+        else if (gamepad2.triangle) { intake.setPower(-.7); }
+        else { intake.setPower(0); }
+
+        if (gamepad2.left_stick_y > 0) {intakeArmPos += 0.01*speed2;}
+        if (gamepad2.left_stick_y < 0) {intakeArmPos -= 0.01*speed2;}
+
+        //if (gamepad2.right_stick_y > 0) {intakeRampPos += 0.01*speed2;}
+        //if (gamepad2.right_stick_y < 0) {intakeRampPos -= 0.01*speed2;}
+
         intakeArmPos = Range.clip(intakeArmPos,minIntakeArmPos,maxIntakeArmPos);
         intakeArm.setPosition(intakeArmPos);
+        //intakeRampPos = Range.clip(intakeRampPos,minIntakeRampPos,maxIntakeRampPos);
+        //intakeRamp.setPosition(intakeRampPos);
+        intakeRamp.setPosition(intakeArmPos);
         telemetry.addData("intakeArmPos: ",intakeArm.getPosition());
+        //telemetry.addData("intakeRAmpPos", intakeRamp.getPosition());
         telemetry.addData("intakeArmPosition: ", intakeArmPos);
     }
     private void Outtake() {

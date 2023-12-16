@@ -26,46 +26,130 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Autonomous
 public class AutoIntakeAidenBlueClose extends LinearOpMode {
     MecanumChassis chassis = new MecanumChassis(this);
-    //Intake intake = new Intake(this);
-    //ColorCam color = new ColorCam(this);
+    Intake intake = new Intake(this);
+    ColorCam color = new ColorCam(this);
     aprilTagDetectionMovement aTag = new aprilTagDetectionMovement(this);
     //LinearSlide slide = new LinearSlide(this);
 
-    public void placeOnSpikeMark(){
+    public void placeOnSpikeMarkUpdated(String proximity){
         //Move to center of spike marks
         double power = -.3;
-        if(aTag.spikeLocation.equals("LEFT")) {
-            chassis.move(.3, "forward", 18);
-            chassis.move(.3, "left", 12);
-            //intake.powerOnTimed(power, 3);
-            chassis.move(.3, "right", 12);
-            chassis.move(.3, "backward", 18);
-        } else if(aTag.spikeLocation.equals("RIGHT")){
-            chassis.move(.3, "forward", 18);
-            chassis.move(.3, "right", 12);
-            //intake.powerOnTimed(power, 3);
-            chassis.move(.3, "left", 12);
-            chassis.move(.3, "backward", 18);
-        } else if(aTag.spikeLocation.equals("CENTER")){
-            chassis.move(.3, "forward", 25);
-            //intake.powerOnTimed(power, 3);
-            chassis.move(.3, "backward", 25);
-        } else {
-            telemetry.addData("Team Element", "Not Found");
-            telemetry.update();
+        if(proximity.toLowerCase().equals("close")) {
+            //Aligned to the right
+            //Check for left and center
+            if(aTag.spikeLocation.equals("LEFT")) {
+                //Move to the center
+                chassis.move(.5, "left", 6);
+                chassis.move(.5, "forward", 30);
+                intake.lowerLip();
+                sleep(1000);
+                intake.raiseLip();
+                chassis.move(.5, "backward", 30);
+                chassis.move(.5, "right", 6);
+            } else if (aTag.spikeLocation.equals("CENTER")) {
+                //Move to the right
+                chassis.move(.5, "right", 8);
+                chassis.move(.5, "forward", 24);
+                //Do Intake Servo
+                intake.lowerLip();
+                sleep(1000);
+                intake.raiseLip();
+                chassis.move(.5, "backward", 24);
+                chassis.move(.5, "left", 8);
+            } else {
+                //Move to the left
+                chassis.move(.5, "left", 18);
+                chassis.move(.5, "forward", 30);
+                //Do Intake Servo
+                intake.lowerLip();
+                sleep(1000);
+                intake.raiseLip();
+                chassis.move(.5, "backward", 30);
+                chassis.move(.5, "right", 18);
+            }
+        }
+        if(proximity.toLowerCase().equals("far")) {
+            //Aligned to the left
+            //Check for center and right
+            if (aTag.spikeLocation.equals("CENTER")) {
+                //Move to the left
+                chassis.move(.5, "left", 8);
+                chassis.move(.5, "forward", 24);
+                //Do Intake Servo
+                intake.lowerLip();
+                sleep(1000);
+                intake.raiseLip();
+                chassis.move(.5, "backward", 24);
+                chassis.move(.5, "right", 8);
+            } else if (aTag.spikeLocation.equals("RIGHT")) {
+                //move to the center
+                chassis.move(.5, "right", 6);
+                chassis.move(.5, "forward", 30);
+                //Do Intake Servo
+                intake.lowerLip();
+                sleep(1000);
+                intake.raiseLip();
+                chassis.move(.5, "backward", 30);
+                chassis.move(.5, "left", 6);
+            } else {
+                //move to the right
+                chassis.move(.5, "right", 18);
+                chassis.move(.5, "forward", 30);
+                //Do Intake Servo
+                intake.lowerLip();
+                sleep(1000);
+                intake.raiseLip();
+                chassis.move(.5, "backward", 30);
+                chassis.move(.5, "left", 18);
+            }
         }
     }
-    public aprilTagDetectionMovement.backBoardAprilTags altAprilTag(String loc){
-        if(loc.equals("LEFT")){
-            return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceLeft;
+    public aprilTagDetectionMovement.backBoardAprilTags altAprilTag(String loc, String proximity, String teamColor){
+        if(teamColor.equals("red")) {
+            if (proximity.equals("close")) {
+                if (loc.equals("LEFT")) {
+                    return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceCenter;
+                }
+                if (loc.equals("CENTER")) {
+                    return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceRight;
+                } else {
+                    return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceLeft;
+                }
+            }
+            if (proximity.equals("far")) {
+                if (loc.equals("RIGHT")) {
+                    return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceCenter;
+                }
+                if (loc.equals("CENTER")) {
+                    return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceLeft;
+                } else {
+                    return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceRight;
+                }
+            }
         }
-        if(loc.equals("CENTER")){
-            return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceCenter;
+        if(teamColor.equals("blue")) {
+            if (proximity.equals("close")) {
+                if (loc.equals("LEFT")) {
+                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceCenter;
+                }
+                if (loc.equals("CENTER")) {
+                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceRight;
+                } else {
+                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceLeft;
+                }
+            }
+            if (proximity.equals("far")) {
+                if (loc.equals("RIGHT")) {
+                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceCenter;
+                }
+                if (loc.equals("CENTER")) {
+                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceLeft;
+                } else {
+                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceRight;
+                }
+            }
         }
-        if(loc.equals("RIGHT")){
-            return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceRight;
-        }
-        return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceLeft;
+        return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceRight;
     }
 
 
@@ -83,17 +167,17 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
 
         waitForStart();
         final String location = aTag.spikeLocation;
-        placeOnSpikeMark();
+        placeOnSpikeMarkUpdated("close");
         //aTag.camOff();
         chassis.move(.5, "forward", 25);
         chassis.rotate(-90, .5);
         //aTag.initCam2();
         aTag.camOn();
 
-        aprilTagDetectionMovement.backBoardAprilTags[] array = {altAprilTag(location)};
+        //aprilTagDetectionMovement.backBoardAprilTags[] array = {altAprilTag(location)};
         //aTag.moveToAprilTag(array[0]);
         while (aTag.getDetections().size() <= 0) {telemetry.addData("%f",aTag.getDetections().size());telemetry.update();sleep(10);}
-        aTag.moveToAprilTag(altAprilTag(location));
+        aTag.moveToAprilTag(altAprilTag(location, "close", "blue"));
 
         //aTag.camOff();
         chassis.rotate(180, .5);

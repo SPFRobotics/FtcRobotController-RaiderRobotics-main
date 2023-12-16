@@ -36,7 +36,7 @@ public class LinearSlide {
             liftRight.setPower(1);
         }
     }
-    private void slide(double distance, double power){ //distance in inches
+    public void slide(double distance, double power){ //distance in inches
         int encoderAmount = (int)(Unit.inch_convert(distance));
         liftLeft.setTargetPosition(encoderAmount);
         liftRight.setTargetPosition(encoderAmount);

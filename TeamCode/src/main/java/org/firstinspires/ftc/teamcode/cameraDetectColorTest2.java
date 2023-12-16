@@ -23,14 +23,14 @@ public class cameraDetectColorTest2 implements VisionProcessor {
         CENTER,
         NONE
     }
-    private static Point GameObject_BoundingBox_TopLeft_AnchorPoint = new Point(0,120);
-    private static int BoundingBox_Width = 320;
-    private static int BoundingBox_Height = 80;
+    private static Point GameObject_BoundingBox_TopLeft_AnchorPoint = new Point(0,240);
+    private static int BoundingBox_Width = 640;
+    private static int BoundingBox_Height = 160;
 
-    private static int LeftLineLocation = 60; //From the left of bounding box
-    private static int CenterLeftLineLocation = 120;
-    private static int CenterRightLineLocation = 200;
-    private static int RightLineLocation = 260; //From the left of bounding box
+    private static int LeftLineLocation = 120; //From the left of bounding box
+    private static int CenterLeftLineLocation = 240;
+    private static int CenterRightLineLocation = 400;
+    private static int RightLineLocation = 520; //From the left of bounding box
 
     private static final Scalar
             lower_red_bounds  = new Scalar(100,0,0,0),
