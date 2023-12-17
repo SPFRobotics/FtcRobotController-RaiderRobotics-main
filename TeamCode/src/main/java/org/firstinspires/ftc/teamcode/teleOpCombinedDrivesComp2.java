@@ -37,7 +37,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private double servoSpeed = 0;
     private static final int liftMaxMotorCounts = 4062;
     private static final double minIntakeArmPos = 0;
-    private static final double maxIntakeArmPos = 0.535;
+    private static final double maxIntakeArmPos = 0.53;
     private static final double startIntakeArmPos = 0;
     private static final double minRampArmPos = 0;
     private static final double maxRampArmPos = 1.2;
@@ -118,6 +118,8 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
             //Outtake();
             //LiftHold();
             LiftWorks();
+            telemetry.addData("speed1", speed1);
+            telemetry.addData("speed2", speed2);
             telemetry.update();
         }
     }
@@ -336,9 +338,9 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         backRight.setPower(backRightPower);
     }
     private void Intake() {
-        if (gamepad2.square) {intake.setPower(1);} else if (gamepad2.triangle) {intake.setPower(-1);} else {intake.setPower(0);}
-        if (gamepad2.left_stick_y > 0) {intakeArmPos -= 0.01*speed2;}
-        if (gamepad2.left_stick_y < 0) {intakeArmPos += 0.01*speed2;}
+        if (gamepad2.square) {intake.setPower(0.6*speed2);} else if (gamepad2.triangle) {intake.setPower(-0.6*speed2);} else {intake.setPower(0);}
+        if (gamepad2.left_stick_y < 0) {intakeArmPos -= 0.01*speed2;}
+        if (gamepad2.left_stick_y > 0) {intakeArmPos += 0.01*speed2;}
         intakeArmPos = Range.clip(intakeArmPos,minIntakeArmPos,maxIntakeArmPos);
         intakeArm.setPosition(intakeArmPos);
         intakeRamp.setPosition(intakeArmPos);
@@ -359,8 +361,8 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         telemetry.addData("wristPosition: ", wristPos);*/
     }
     private void LiftWorks() {
-        if (gamepad2.cross) {liftPosition += 55*speed2;}
-        if (gamepad2.circle) {liftPosition-= 55*speed2;}
+        if (gamepad2.circle) {liftPosition += 55*speed2;}
+        if (gamepad2.cross) {liftPosition-= 55*speed2;}
         liftPosition = Range.clip(liftPosition,0,liftMaxMotorCounts);
         liftLeft.setTargetPosition(liftPosition);
         liftRight.setTargetPosition(liftPosition);

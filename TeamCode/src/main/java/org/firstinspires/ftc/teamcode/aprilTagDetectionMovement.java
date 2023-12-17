@@ -119,7 +119,7 @@ public class aprilTagDetectionMovement {
         if (foundAprilTag) {
             outputInfo = new double[] {robotDistanceToAprilTag[0], (robotDistanceToAprilTag[1] - moveOffsetY)};
         } else {
-            outputInfo = new double[] {-1,-1};
+            outputInfo = new double[] {0,28};
         }
     }
     public void moveToAprilTag(int id) {

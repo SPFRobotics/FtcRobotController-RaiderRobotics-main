@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -30,6 +31,8 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
     //ColorCam color = new ColorCam(this);
     aprilTagDetectionMovement aTag = new aprilTagDetectionMovement(this);
     LinearSlide slide = new LinearSlide(this);
+    private double timeToContinue = 5;
+    private ElapsedTime continueTime = new ElapsedTime();
 
     public void placeOnSpikeMarkUpdated(String proximity){
         //Move to center of spike marks
@@ -39,8 +42,8 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
             //Check for left and center
             if(aTag.spikeLocation.equals("LEFT")) {
                 //Move to the center
+                chassis.move(.5, "forward", 29);
                 chassis.move(.5, "left", 4);
-                chassis.move(.5, "forward", 33);
                 chassis.move(.5,"backward",6);
                 intake.lowerLip();
                 sleep(1000);
@@ -51,8 +54,8 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
                 //chassis.move(.5, "right", 6);
             } else if (aTag.spikeLocation.equals("CENTER")) {
                 //Move to the right
-                chassis.move(.5, "right", 8);
                 chassis.move(.5, "forward", 33);
+                chassis.move(.5, "right", 8);
                 chassis.move(.5,"backward",6);
                 //Do Intake Servo
                 intake.lowerLip();
@@ -64,9 +67,10 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
                 chassis.move(.5,"forward",4);
             } else {
                 //Move to the left
-                chassis.move(.5, "left", 18);
-                chassis.move(.5, "forward", 33);
-                chassis.move(.5,"backward",6);
+                chassis.move(.5, "forward", 25);
+                //chassis.move(.5, "left", 18);
+                chassis.rotate(90,.5);
+                chassis.move(.5,"backward",4);
                 //Do Intake Servo
                 intake.lowerLip();
                 sleep(1000);
@@ -82,8 +86,8 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
             //Check for center and right
             if (aTag.spikeLocation.equals("CENTER")) {
                 //Move to the left
-                chassis.move(.5, "left", 8);
                 chassis.move(.5, "forward", 24);
+                chassis.move(.5, "left", 8);
                 //Do Intake Servo
                 intake.lowerLip();
                 sleep(1000);
@@ -92,8 +96,8 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
                 chassis.move(.5, "right", 8);
             } else if (aTag.spikeLocation.equals("RIGHT")) {
                 //move to the center
-                chassis.move(.5, "right", 6);
                 chassis.move(.5, "forward", 30);
+                chassis.move(.5, "right", 6);
                 //Do Intake Servo
                 intake.lowerLip();
                 sleep(1000);
@@ -102,8 +106,8 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
                 chassis.move(.5, "left", 6);
             } else {
                 //move to the right
-                chassis.move(.5, "right", 18);
                 chassis.move(.5, "forward", 30);
+                chassis.move(.5, "right", 18);
                 //Do Intake Servo
                 intake.lowerLip();
                 sleep(1000);
@@ -182,6 +186,8 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         //aTag.camOff();
         //chassis.move(.5, "forward", 25);
         chassis.rotate(-90, .5);
+        chassis.move(.5, "forward", 24);
+        chassis.move(.5, "left", 6);
         aTag.initCam2(); //Maybe reinitializing will fix the thing?
         aTag.camOn();
 
@@ -189,10 +195,12 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         //aTag.moveToAprilTag(array[0]);
 
         //aTag.initCam2();
-        while (aTag.getDetections().size() < 3) {
+        continueTime.reset();
+        while (aTag.getDetections().size() < 3 && continueTime.seconds() <= timeToContinue) {
 
             telemetry.addData("%f",aTag.getDetections().size());
-            telemetry.update();sleep(10);
+            telemetry.update();
+            sleep(10);
         }
         telemetry.addData("%f",aTag.getDetections().size());
         telemetry.update();
@@ -203,11 +211,13 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         chassis.rotate(180, .5);
 
         telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",aTag.outputInfo[0],aTag.outputInfo[1]));
+        telemetry.update();
         chassis.move(.5, "left", aTag.outputInfo[0]);
         chassis.move(.5, "backward", aTag.outputInfo[1]);
         slide.slide(35,0.5);
         sleep(1000);
         slide.slide(0,0.5);
+        aTag.camOff();
         //telemetry.addData("hooray","hooray");
         telemetry.update();
         //chassis.parkFarRed();
