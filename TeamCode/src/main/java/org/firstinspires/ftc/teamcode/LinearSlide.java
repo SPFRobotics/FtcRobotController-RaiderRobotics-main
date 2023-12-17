@@ -3,12 +3,14 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.Range;
 
 public class LinearSlide {
     public LinearOpMode opmode;
     public DcMotor liftLeft = null;
     public DcMotor liftRight = null;
     public double liftPosition = 0;
+    private static final int liftMaxMotorCounts = 4062;
 
     public LinearSlide(LinearOpMode lom){ opmode = lom; }
     public void initSlides(){
@@ -23,7 +25,7 @@ public class LinearSlide {
     private boolean isBusy(){
         return (liftLeft.isBusy() || liftRight.isBusy());
     }
-    private void LiftHold() {
+    public void LiftHold() {
         liftLeft.setTargetPosition(0);
         liftRight.setTargetPosition(0);
         liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -37,9 +39,11 @@ public class LinearSlide {
         }
     }
     public void slide(double distance, double power){ //distance in inches
-        int encoderAmount = (int)(Unit.inch_convert(distance));
-        liftLeft.setTargetPosition(encoderAmount);
-        liftRight.setTargetPosition(encoderAmount);
+        int encoderAmount = (int)(Unit.inchToLift_convert(distance));
+        liftPosition = encoderAmount;
+        liftPosition = Range.clip(liftPosition,0,liftMaxMotorCounts);
+        liftLeft.setTargetPosition((int)liftPosition);
+        liftRight.setTargetPosition((int)liftPosition);
         liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 

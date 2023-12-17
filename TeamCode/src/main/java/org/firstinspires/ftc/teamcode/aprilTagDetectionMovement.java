@@ -14,7 +14,6 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.teamcode.cameraDetectColorTest2;
-import android.util.Size;
 
 import java.util.List;
 import java.util.Vector;
@@ -41,9 +40,9 @@ public class aprilTagDetectionMovement {
         BlueAllianceCenter,
         BlueAllianceRight
     }
-    private double[] cameraOffset = new double[] {7.5,4.5}; // x offset (left: positive, right: negative), y(distance) offset; (units: inches from center)
+    private double[] cameraOffset = new double[] {3.5,5.5}; // x offset (left: positive, right: negative), y(distance) offset; (units: inches from center)
     public double[] robotDistanceToAprilTag = new double[] {0,0};
-    private double moveOffsetY = 16;
+    private double moveOffsetY = 14;
     public double[] outputInfo = new double[] {};
 
 
@@ -86,7 +85,6 @@ public class aprilTagDetectionMovement {
         aprilTag = new AprilTagProcessor.Builder().build();
         VisionPortal.Builder builder = new VisionPortal.Builder();
         builder.setCamera(opmode.hardwareMap.get(WebcamName.class, "Webcam 1"));
-        builder.setCameraResolution(new Size(640, 480));
         builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
         builder.addProcessors(aprilTag,visionProcessor);
         visionPortal = builder.build();

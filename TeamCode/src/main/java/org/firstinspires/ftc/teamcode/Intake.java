@@ -12,7 +12,7 @@ public class Intake {
     public Servo lipServo = null;
     public Servo armServo = null;
     
-    private double maxLipPos = 1.2;
+    private double maxLipPos = 0.46;
     private double minLipPos = 0;
     private double maxArmPos = .535;
     private double minArmPos = 0;
@@ -41,7 +41,7 @@ public class Intake {
         intakeMotor.setPower(power);
     }
     public void powerOnTimed(double power, int seconds){
-        this.powerOn(.3);
+        this.powerOn(power);
         opmode.sleep(seconds * 1000);
         this.powerOff();
     }
