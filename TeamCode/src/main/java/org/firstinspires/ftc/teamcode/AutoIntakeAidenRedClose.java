@@ -52,7 +52,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
             } else if (aTag.spikeLocation.equals("CENTER")) {
                 //Move to the right
                 chassis.move(.5, "right", 8);
-                chassis.move(.5, "forward", 24);
+                chassis.move(.5, "forward", 33);
                 chassis.move(.5,"backward",6);
                 //Do Intake Servo
                 intake.lowerLip();
@@ -65,7 +65,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
             } else {
                 //Move to the left
                 chassis.move(.5, "left", 18);
-                chassis.move(.5, "forward", 30);
+                chassis.move(.5, "forward", 33);
                 chassis.move(.5,"backward",6);
                 //Do Intake Servo
                 intake.lowerLip();
@@ -98,7 +98,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
                 intake.lowerLip();
                 sleep(1000);
                 intake.raiseLip();
-                chassis.move(.5, "backward", 30);
+                //chassis.move(.5, "backward", 30);
                 chassis.move(.5, "left", 6);
             } else {
                 //move to the right
@@ -108,7 +108,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
                 intake.lowerLip();
                 sleep(1000);
                 intake.raiseLip();
-                chassis.move(.5, "backward", 30);
+                //chassis.move(.5, "backward", 30);
                 chassis.move(.5, "left", 18);
             }
         }
@@ -182,12 +182,18 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         //aTag.camOff();
         //chassis.move(.5, "forward", 25);
         chassis.rotate(-90, .5);
-        //aTag.initCam2();
+        aTag.initCam2(); //Maybe reinitializing will fix the thing?
         aTag.camOn();
 
         //aprilTagDetectionMovement.backBoardAprilTags[] array = {altAprilTag(location)};
         //aTag.moveToAprilTag(array[0]);
-        while (aTag.getDetections().size() < 3) {telemetry.addData("%f",aTag.getDetections().size());telemetry.update();sleep(10);}
+
+        //aTag.initCam2();
+        while (aTag.getDetections().size() < 3) {
+
+            telemetry.addData("%f",aTag.getDetections().size());
+            telemetry.update();sleep(10);
+        }
         telemetry.addData("%f",aTag.getDetections().size());
         telemetry.update();
         sleep(1000);

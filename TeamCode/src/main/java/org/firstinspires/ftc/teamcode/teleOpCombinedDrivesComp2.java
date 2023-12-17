@@ -224,6 +224,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         } else {
             gamepad1.setLedColor(0,0,1,-1);
         }
+
         if (gamepad2.left_trigger > 0 ) {
             speed2 = (gamepad2.left_trigger * maxSpeedRange2);
         } else if (currentGamepad2.left_trigger <=0 && previousGamepad2.left_trigger > 0) {

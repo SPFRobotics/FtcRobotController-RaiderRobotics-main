@@ -182,12 +182,17 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
         //aTag.camOff();
         //chassis.move(.5, "forward", 25);
         chassis.rotate(90, .5);
-        //aTag.initCam2();
+        aTag.initCam2(); //Maybe reinitializing will fix the detection?
         aTag.camOn();
 
         //aprilTagDetectionMovement.backBoardAprilTags[] array = {altAprilTag(location)};
         //aTag.moveToAprilTag(array[0]);
-        while (aTag.getDetections().size() < 3) {telemetry.addData("%f",aTag.getDetections().size());telemetry.update();sleep(10);}
+        while (aTag.getDetections().size() < 3) {
+            //Maybe
+            telemetry.addData("%f",aTag.getDetections().size());
+            telemetry.update();
+            sleep(10);
+        }
         telemetry.addData("%f",aTag.getDetections().size());
         telemetry.update();
         sleep(1000);

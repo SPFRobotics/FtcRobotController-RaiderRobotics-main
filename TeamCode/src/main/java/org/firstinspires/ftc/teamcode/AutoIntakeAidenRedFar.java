@@ -26,60 +26,55 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Autonomous
 public class AutoIntakeAidenRedFar extends LinearOpMode {
     MecanumChassis chassis = new MecanumChassis(this);
-    //Intake intake = new Intake(this);
+    Intake intake = new Intake(this);
     //ColorCam color = new ColorCam(this);
     aprilTagDetectionMovement aTag = new aprilTagDetectionMovement(this);
-    //LinearSlide slide = new LinearSlide(this);
+    LinearSlide slide = new LinearSlide(this);
 
-    public void placeOnSpikeMark(){
-        //Move to center of spike marks
-        double power = -.3;
-        if(aTag.spikeLocation.equals("LEFT")) {
-            chassis.move(.3, "forward", 18);
-            chassis.move(.3, "left", 12);
-            //intake.powerOnTimed(power, 3);
-            chassis.move(.3, "right", 12);
-            chassis.move(.3, "backward", 18);
-        } else if(aTag.spikeLocation.equals("RIGHT")){
-            chassis.move(.3, "forward", 18);
-            chassis.move(.3, "right", 12);
-            //intake.powerOnTimed(power, 3);
-            chassis.move(.3, "left", 12);
-            chassis.move(.3, "backward", 18);
-        } else if(aTag.spikeLocation.equals("CENTER")){
-            chassis.move(.3, "forward", 25);
-            //intake.powerOnTimed(power, 3);
-            chassis.move(.3, "backward", 25);
-        } else {
-            telemetry.addData("Team Element", "Not Found");
-            telemetry.update();
-        }
-    }
     public void placeOnSpikeMarkUpdated(String proximity){
         //Move to center of spike marks
         double power = -.3;
         if(proximity.toLowerCase().equals("close")) {
             //Aligned to the right
-            //Check for center and right
-            if(aTag.spikeLocation.equals("CENTER")) {
+            //Check for left and center
+            if(aTag.spikeLocation.equals("LEFT")) {
                 //Move to the center
-                chassis.move(.5, "left", 6);
-                chassis.move(.5, "forward", 30);
-                //Do Intake Servo
-                chassis.move(.5, "backward", 30);
-                chassis.move(.5, "right", 6);
-            } else if (aTag.spikeLocation.equals("RIGHT")) {
+                chassis.move(.5, "left", 4);
+                chassis.move(.5, "forward", 33);
+                chassis.move(.5,"backward",6);
+                intake.lowerLip();
+                sleep(1000);
+                chassis.move(.5,"backward",4);
+                intake.raiseLip();
+                //chassis.move(.5, "backward", 30);
+                //chassis.move(.5,"backward",2);
+                //chassis.move(.5, "right", 6);
+            } else if (aTag.spikeLocation.equals("CENTER")) {
                 //Move to the right
+                chassis.move(.5, "right", 8);
                 chassis.move(.5, "forward", 24);
+                chassis.move(.5,"backward",6);
                 //Do Intake Servo
-                chassis.move(.5, "backward", 24);
+                intake.lowerLip();
+                sleep(1000);
+                chassis.move(.5,"backward",4);
+                intake.raiseLip();
+                //chassis.move(.5, "backward", 24);
+                chassis.move(.5, "left", 10);
+                chassis.move(.5,"forward",4);
             } else {
                 //Move to the left
                 chassis.move(.5, "left", 18);
                 chassis.move(.5, "forward", 30);
+                chassis.move(.5,"backward",6);
                 //Do Intake Servo
-                chassis.move(.5, "backward", 30);
-                chassis.move(.5, "right", 18);
+                intake.lowerLip();
+                sleep(1000);
+                chassis.move(.5,"backward",4);
+                intake.raiseLip();
+                //chassis.move(.5, "backward", 30);
+                chassis.move(.5, "right", 6);
+                chassis.move(.5,"forward",4);
             }
         }
         if(proximity.toLowerCase().equals("far")) {
@@ -87,14 +82,22 @@ public class AutoIntakeAidenRedFar extends LinearOpMode {
             //Check for center and right
             if (aTag.spikeLocation.equals("CENTER")) {
                 //Move to the left
+                chassis.move(.5, "left", 8);
                 chassis.move(.5, "forward", 24);
                 //Do Intake Servo
+                intake.lowerLip();
+                sleep(1000);
+                intake.raiseLip();
                 chassis.move(.5, "backward", 24);
+                chassis.move(.5, "right", 8);
             } else if (aTag.spikeLocation.equals("RIGHT")) {
                 //move to the center
                 chassis.move(.5, "right", 6);
                 chassis.move(.5, "forward", 30);
                 //Do Intake Servo
+                intake.lowerLip();
+                sleep(1000);
+                intake.raiseLip();
                 chassis.move(.5, "backward", 30);
                 chassis.move(.5, "left", 6);
             } else {
@@ -102,28 +105,67 @@ public class AutoIntakeAidenRedFar extends LinearOpMode {
                 chassis.move(.5, "right", 18);
                 chassis.move(.5, "forward", 30);
                 //Do Intake Servo
+                intake.lowerLip();
+                sleep(1000);
+                intake.raiseLip();
                 chassis.move(.5, "backward", 30);
                 chassis.move(.5, "left", 18);
             }
         }
     }
-    public aprilTagDetectionMovement.backBoardAprilTags altAprilTag(String loc){
-        if(loc.equals("LEFT")){
-            return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceLeft;
+    public aprilTagDetectionMovement.backBoardAprilTags altAprilTag(String loc, String proximity, String teamColor){
+        if(teamColor.equals("red")) {
+            if (proximity.equals("close")) {
+                if (loc.equals("LEFT")) {
+                    return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceCenter;
+                }
+                if (loc.equals("CENTER")) {
+                    return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceRight;
+                } else {
+                    return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceLeft;
+                }
+            }
+            if (proximity.equals("far")) {
+                if (loc.equals("RIGHT")) {
+                    return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceCenter;
+                }
+                if (loc.equals("CENTER")) {
+                    return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceLeft;
+                } else {
+                    return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceRight;
+                }
+            }
         }
-        if(loc.equals("CENTER")){
-            return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceCenter;
+        if(teamColor.equals("blue")) {
+            if (proximity.equals("close")) {
+                if (loc.equals("LEFT")) {
+                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceCenter;
+                }
+                if (loc.equals("CENTER")) {
+                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceRight;
+                } else {
+                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceLeft;
+                }
+            }
+            if (proximity.equals("far")) {
+                if (loc.equals("RIGHT")) {
+                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceCenter;
+                }
+                if (loc.equals("CENTER")) {
+                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceLeft;
+                } else {
+                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceRight;
+                }
+            }
         }
-        if(loc.equals("RIGHT")){
-            return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceRight;
-        }
-        return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceLeft;
+        return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceCenter;
     }
 
 
     public void runOpMode(){
         chassis.initializeMovement();
-        //intake.initIntake();
+        intake.initIntake();
+        slide.initSlides();
         aTag.initCam2();
         aTag.camOn();
 
@@ -135,26 +177,36 @@ public class AutoIntakeAidenRedFar extends LinearOpMode {
 
         waitForStart();
         final String location = aTag.spikeLocation;
-        placeOnSpikeMark();
+        //chassis.rotate(-90,0.5);
+        placeOnSpikeMarkUpdated("far");
+        chassis.parkFarRed();
+        /**
         //aTag.camOff();
-        chassis.move(.5, "forward", 25);
+        //chassis.move(.5, "forward", 25);
         chassis.rotate(-90, .5);
         //aTag.initCam2();
         aTag.camOn();
 
-        aprilTagDetectionMovement.backBoardAprilTags[] array = {altAprilTag(location)};
+        //aprilTagDetectionMovement.backBoardAprilTags[] array = {altAprilTag(location)};
         //aTag.moveToAprilTag(array[0]);
-        while (aTag.getDetections().size() <= 0) {telemetry.addData("%f",aTag.getDetections().size());telemetry.update();sleep(10);}
-        aTag.moveToAprilTag(altAprilTag(location));
+        while (aTag.getDetections().size() < 3) {telemetry.addData("%f",aTag.getDetections().size());telemetry.update();sleep(10);}
+        telemetry.addData("%f",aTag.getDetections().size());
+        telemetry.update();
+        sleep(1000);
+        aTag.moveToAprilTag(altAprilTag(location, "close", "red"));
 
         //aTag.camOff();
         chassis.rotate(180, .5);
 
+        telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",aTag.outputInfo[0],aTag.outputInfo[1]));
         chassis.move(.5, "left", aTag.outputInfo[0]);
         chassis.move(.5, "backward", aTag.outputInfo[1]);
-        telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",aTag.outputInfo[0],aTag.outputInfo[1]));
+        slide.slide(35,0.5);
+        sleep(1000);
+        slide.slide(0,0.5);
         //telemetry.addData("hooray","hooray");
         telemetry.update();
         //chassis.parkFarRed();
+         **/
     }
 }
