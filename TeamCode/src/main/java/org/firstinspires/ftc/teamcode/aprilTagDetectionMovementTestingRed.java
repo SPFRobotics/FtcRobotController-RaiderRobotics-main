@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Vector;
 
 @Autonomous
-public class aprilTagDetectionMovementTesting extends LinearOpMode {
+public class aprilTagDetectionMovementTestingRed extends LinearOpMode {
     //public LinearOpMode opmode = null;
     public AprilTagProcessor aprilTag;
     public VisionPortal visionPortal;
@@ -54,8 +54,8 @@ public class aprilTagDetectionMovementTesting extends LinearOpMode {
         if (opModeIsActive()) {
             while (opModeIsActive()) {
 
-                telemetryAprilTag();
-                //moveToAprilTag(backBoardAprilTags.BlueAllianceLeft);
+                //telemetryAprilTag();
+                moveToAprilTag(backBoardAprilTags.RedAllianceLeft);
 
                 // Push telemetry to the Driver Station.
                 telemetry.update();

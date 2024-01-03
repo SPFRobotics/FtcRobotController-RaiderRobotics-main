@@ -40,7 +40,7 @@ public class aprilTagDetectionMovement {
         BlueAllianceCenter,
         BlueAllianceRight
     }
-    private double[] cameraOffset = new double[] {3.5,5.5}; // x offset (left: positive, right: negative), y(distance) offset; (units: inches from center)
+    private double[] cameraOffset = new double[] {7.5,3.5}; // x offset (left: positive, right: negative), y(distance) offset; (units: inches from center)
     public double[] robotDistanceToAprilTag = new double[] {0,0};
     private double moveOffsetY = 14;
     public double[] outputInfo = new double[] {};
@@ -83,6 +83,7 @@ public class aprilTagDetectionMovement {
     public void initCam2(){
         visionProcessor = new cameraDetectColorTest2();
         aprilTag = new AprilTagProcessor.Builder().build();
+        aprilTag.setDecimation(2);
         VisionPortal.Builder builder = new VisionPortal.Builder();
         builder.setCamera(opmode.hardwareMap.get(WebcamName.class, "Webcam 1"));
         builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);

@@ -10,7 +10,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-public class AprilTagCam {
+public class AprilTagCam{
     public LinearOpMode opmode = null;
     public AprilTagProcessor aprilTag;
     public VisionPortal visionPortal;

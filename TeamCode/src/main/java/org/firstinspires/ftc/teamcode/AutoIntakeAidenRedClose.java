@@ -42,43 +42,45 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
             //Check for left and center
             if(aTag.spikeLocation.equals("LEFT")) {
                 //Move to the center
-                chassis.move(.5, "forward", 29);
-                chassis.move(.5, "left", 4);
-                chassis.move(.5,"backward",6);
+                chassis.move(.5, "forward", 23+10);
+                //chassis.move(.5, "left", 0);
+                chassis.move(.5,"backward",4);
                 intake.lowerLip();
                 sleep(1000);
-                chassis.move(.5,"backward",4);
+                chassis.move(.5,"backward",6);
                 intake.raiseLip();
                 //chassis.move(.5, "backward", 30);
                 //chassis.move(.5,"backward",2);
                 //chassis.move(.5, "right", 6);
             } else if (aTag.spikeLocation.equals("CENTER")) {
                 //Move to the right
-                chassis.move(.5, "forward", 33);
-                chassis.move(.5, "right", 8);
-                chassis.move(.5,"backward",6);
+                chassis.move(.5, "forward", 23+4);
+                //chassis.move(.5, "right", 8);
+                chassis.move(.5,"backward",4);
                 //Do Intake Servo
                 intake.lowerLip();
                 sleep(1000);
-                chassis.move(.5,"backward",4);
+                chassis.move(.5,"backward",6);
                 intake.raiseLip();
                 //chassis.move(.5, "backward", 24);
-                chassis.move(.5, "left", 10);
-                chassis.move(.5,"forward",4);
+                //chassis.move(.5, "left", 0);
+                chassis.move(.5,"forward",6);
             } else {
                 //Move to the left
-                chassis.move(.5, "forward", 25);
-                //chassis.move(.5, "left", 18);
+                chassis.move(.5, "forward", 23);
+                //chassis.move(.5, "left", 4);
                 chassis.rotate(90,.5);
-                chassis.move(.5,"backward",4);
+                chassis.move(.5,"forward",0+8);
+                chassis.move(.5,"backward",2);
                 //Do Intake Servo
                 intake.lowerLip();
                 sleep(1000);
-                chassis.move(.5,"backward",4);
+                chassis.move(.5,"backward",6);
                 intake.raiseLip();
                 //chassis.move(.5, "backward", 30);
-                chassis.move(.5, "right", 6);
-                chassis.move(.5,"forward",4);
+                //chassis.move(.5, "right", 6);
+                //chassis.move(.5,"forward",4);
+                chassis.rotate(-90,.5);
             }
         }
         if(proximity.toLowerCase().equals("far")) {
@@ -186,18 +188,19 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         //aTag.camOff();
         //chassis.move(.5, "forward", 25);
         chassis.rotate(-90, .5);
-        chassis.move(.5, "forward", 24);
-        chassis.move(.5, "left", 6);
-        aTag.initCam2(); //Maybe reinitializing will fix the thing?
-        aTag.camOn();
+        //chassis.move(.5, "forward", 24);
+        //chassis.move(.5, "left", 6);
+        chassis.move(.5,"left",8);
+        //aTag.initCam2(); //Maybe reinitializing will fix the thing?
+        //aTag.camOn();
 
         //aprilTagDetectionMovement.backBoardAprilTags[] array = {altAprilTag(location)};
         //aTag.moveToAprilTag(array[0]);
 
         //aTag.initCam2();
         continueTime.reset();
-        while (aTag.getDetections().size() < 3 && continueTime.seconds() <= timeToContinue) {
-
+        while (aTag.getDetections().size() < 3) {
+        //while (aTag.getDetections().size() < 3 && continueTime.seconds() <= timeToContinue) {
             telemetry.addData("%f",aTag.getDetections().size());
             telemetry.update();
             sleep(10);
