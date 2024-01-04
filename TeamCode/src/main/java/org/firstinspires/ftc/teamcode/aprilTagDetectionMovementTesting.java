@@ -74,6 +74,7 @@ public class aprilTagDetectionMovementTesting extends LinearOpMode {
     }
     public void initCam(){
         aprilTag = new AprilTagProcessor.Builder().build();
+        aprilTag.setDecimation(2);
         VisionPortal.Builder builder = new VisionPortal.Builder();
         builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
         builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);

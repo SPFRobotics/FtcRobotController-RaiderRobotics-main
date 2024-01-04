@@ -86,36 +86,47 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         if(proximity.toLowerCase().equals("far")) {
             //Aligned to the left
             //Check for center and right
-            if (aTag.spikeLocation.equals("CENTER")) {
-                //Move to the left
-                chassis.move(.5, "forward", 24);
-                chassis.move(.5, "left", 8);
-                //Do Intake Servo
+            if(aTag.spikeLocation.equals("RIGHT")) {
+                //Move to the center
+                chassis.move(.5, "forward", 23+10);
+                //chassis.move(.5, "left", 0);
+                chassis.move(.5,"backward",4);
                 intake.lowerLip();
                 sleep(1000);
-                intake.raiseLip();
-                chassis.move(.5, "backward", 24);
-                chassis.move(.5, "right", 8);
-            } else if (aTag.spikeLocation.equals("RIGHT")) {
-                //move to the center
-                chassis.move(.5, "forward", 30);
-                chassis.move(.5, "right", 6);
-                //Do Intake Servo
-                intake.lowerLip();
-                sleep(1000);
+                chassis.move(.5,"backward",6);
                 intake.raiseLip();
                 //chassis.move(.5, "backward", 30);
-                chassis.move(.5, "left", 6);
+                //chassis.move(.5,"backward",2);
+                //chassis.move(.5, "right", 6);
+            } else if (aTag.spikeLocation.equals("CENTER")) {
+                //Move to the right
+                chassis.move(.5, "forward", 23+4);
+                //chassis.move(.5, "right", 8);
+                chassis.move(.5,"backward",4);
+                //Do Intake Servo
+                intake.lowerLip();
+                sleep(1000);
+                chassis.move(.5,"backward",6);
+                intake.raiseLip();
+                //chassis.move(.5, "backward", 24);
+                //chassis.move(.5, "left", 0);
+                chassis.move(.5,"forward",6);
             } else {
-                //move to the right
-                chassis.move(.5, "forward", 30);
-                chassis.move(.5, "right", 18);
+                //Move to the left
+                chassis.move(.5, "forward", 23);
+                //chassis.move(.5, "left", 4);
+                chassis.rotate(90,.5);
+                chassis.move(.5,"forward",0+8);
+                chassis.move(.5,"backward",2);
                 //Do Intake Servo
                 intake.lowerLip();
                 sleep(1000);
+                chassis.move(.5,"backward",6);
                 intake.raiseLip();
                 //chassis.move(.5, "backward", 30);
-                chassis.move(.5, "left", 18);
+                //chassis.move(.5, "right", 6);
+                //chassis.move(.5,"forward",4);
+                chassis.rotate(-90,.5);
             }
         }
     }
@@ -144,16 +155,6 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         }
         if(teamColor.equals("blue")) {
             if (proximity.equals("close")) {
-                if (loc.equals("LEFT")) {
-                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceCenter;
-                }
-                if (loc.equals("CENTER")) {
-                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceRight;
-                } else {
-                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceLeft;
-                }
-            }
-            if (proximity.equals("far")) {
                 if (loc.equals("RIGHT")) {
                     return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceCenter;
                 }
@@ -161,6 +162,16 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
                     return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceLeft;
                 } else {
                     return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceRight;
+                }
+            }
+            if (proximity.equals("far")) {
+                if (loc.equals("LEFT")) {
+                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceCenter;
+                }
+                if (loc.equals("CENTER")) {
+                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceRight;
+                } else {
+                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceLeft;
                 }
             }
         }
@@ -199,15 +210,16 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
 
         //aTag.initCam2();
         continueTime.reset();
-        while (aTag.getDetections().size() < 3) {
-        //while (aTag.getDetections().size() < 3 && continueTime.seconds() <= timeToContinue) {
+        while (aTag.getDetections().size() < 3 && opModeIsActive()) {
+        //while (aTag.getDetections().size() < 3 && continueTime.seconds() <= timeToContinue && opModeIsActive()) {
             telemetry.addData("%f",aTag.getDetections().size());
             telemetry.update();
             sleep(10);
         }
         telemetry.addData("%f",aTag.getDetections().size());
         telemetry.update();
-        sleep(1000);
+        //sleep(1000);
+        aTag.camOff();
         aTag.moveToAprilTag(altAprilTag(location, "close", "red"));
 
         //aTag.camOff();
@@ -220,7 +232,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         slide.slide(35,0.5);
         sleep(1000);
         slide.slide(0,0.5);
-        aTag.camOff();
+        //aTag.camOff();
         //telemetry.addData("hooray","hooray");
         telemetry.update();
         //chassis.parkFarRed();
