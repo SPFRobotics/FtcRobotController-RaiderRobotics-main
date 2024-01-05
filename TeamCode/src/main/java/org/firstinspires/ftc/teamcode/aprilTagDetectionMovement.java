@@ -40,7 +40,8 @@ public class aprilTagDetectionMovement {
         BlueAllianceCenter,
         BlueAllianceRight
     }
-    private double[] cameraOffset = new double[] {7.5,3.5}; // x offset (left: positive, right: negative), y(distance) offset; (units: inches from center)
+    //private double[] cameraOffset = new double[] {7.5,3.5}; // x offset (left: negative, right: positive), y(distance) offset; (units: inches from center)
+    private double[] cameraOffset = new double[] {2.5,3.5}; // x offset (left: negative, right: positive), y(distance) offset; (units: inches from center)
     public double[] robotDistanceToAprilTag = new double[] {0,0};
     private double moveOffsetY = 14;
     public double[] outputInfo = new double[] {};

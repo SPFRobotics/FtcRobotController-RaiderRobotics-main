@@ -129,6 +129,7 @@ public class MecanumChassis {
             opmode.telemetry.update();
         }
         powerZero();
+        opmode.sleep(500);
         opmode.telemetry.addData("test", "done!");
         opmode.telemetry.update();
     }
@@ -173,6 +174,7 @@ public class MecanumChassis {
             //rotate(angleDifference, power);
         }
         powerZero();
+        opmode.sleep(500);
     }
     public void parkFarRed(){
         move(.3, "forward", 5.5);

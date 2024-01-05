@@ -81,7 +81,8 @@ public class rotationTest extends LinearOpMode {
 
     }
     private void otherRotateMethod(double angle, double power){
-        double Kp = 0.5; //this is for proportional control (ie. the closer you are the target angle the slower you will go)
+        double minPower = 0.3;
+        double Kp = 0.04; //this is for proportional control (ie. the closer you are the target angle the slower you will go)
         double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         double targetAngle = startAngle + angle;
         double error = (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
@@ -98,7 +99,11 @@ public class rotationTest extends LinearOpMode {
             error = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
             // the closer the robot is to the target angle, the slower it rotates
             //power = Range.clip(Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) / 90, 0.1, 0.5);
-            power1 = Range.clip((power*(error*Kp)),-0.5,0.5); //"Range.clip(value, minium, maxium)" takes the first term and puts it in range of the min and max provided
+            telemetry.addData("real power", power*(error*Kp));
+            power1 = Range.clip((power*(error*Kp)),-0.8,0.8); //"Range.clip(value, minium, maxium)" takes the first term and puts it in range of the min and max provided
+            if (Math.abs(power1) < minPower) {
+                power1 = minPower * (power1/Math.abs(power1));
+            }
             telemetry.addData("power",power1);
             System.out.printf("%f power = ",power1);
             telemetry.addData("error",error);

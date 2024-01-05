@@ -67,7 +67,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
                 chassis.move(.5,"forward",6);
             } else {
                 //Move to the left
-                chassis.move(.5, "forward", 23);
+                chassis.move(.5, "forward", 26);
                 //chassis.move(.5, "left", 4);
                 chassis.rotate(90,.5);
                 chassis.move(.5,"forward",0+8);
@@ -114,6 +114,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
             } else {
                 //Move to the left
                 chassis.move(.5, "forward", 23);
+                //sleep(500);
                 //chassis.move(.5, "left", 4);
                 chassis.rotate(90,.5);
                 chassis.move(.5,"forward",0+8);
@@ -216,9 +217,10 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
             telemetry.update();
             sleep(10);
         }
-        telemetry.addData("%f",aTag.getDetections().size());
-        telemetry.update();
-        //sleep(1000);
+        //telemetry.addData("%f",aTag.getDetections().size());
+        //telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",aTag.outputInfo[0],aTag.outputInfo[1]));
+        //telemetry.update();
+        //sleep(5000);
         aTag.camOff();
         aTag.moveToAprilTag(altAprilTag(location, "close", "red"));
 
@@ -227,6 +229,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
 
         telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",aTag.outputInfo[0],aTag.outputInfo[1]));
         telemetry.update();
+        sleep(5000);
         chassis.move(.5, "left", aTag.outputInfo[0]);
         chassis.move(.5, "backward", aTag.outputInfo[1]);
         slide.slide(30,0.5);

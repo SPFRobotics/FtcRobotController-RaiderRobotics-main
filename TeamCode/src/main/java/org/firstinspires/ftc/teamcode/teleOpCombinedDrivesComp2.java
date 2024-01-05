@@ -28,6 +28,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private DcMotor intake;
     private Servo intakeArm;
     private Servo intakeRamp;
+    private Servo droneLauncher;
     private IMU imu;
     private double speed1 = 0.5;
     private double speed1Default = 0.7;
@@ -62,6 +63,11 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private double maxSpeedRange2 = 1.0;
     private int liftPosition = 0;
     private double intakeArmPos = 0;
+    double fingerStartX = 0;
+    double fingerStartY = 0;
+    boolean fingerTouching = false;
+    double changeInY = 1;
+    boolean launchRequested = false;
     //private boolean clawLeftToggle = false;
     //private boolean clawRightToggle = false;
     private Quaternion currentIMUAngle;
@@ -118,8 +124,15 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
             //Outtake();
             //LiftHold();
             LiftWorks();
+            droneLauncher.setPosition(0.42);
+            if (launchRequested) {
+                droneLauncher.setPosition(0.5);
+            }
             telemetry.addData("speed1", speed1);
             telemetry.addData("speed2", speed2);
+            //telemetry.addData("touchpad X: ", currentGamepad2.touchpad_finger_1_x);
+            //telemetry.addData("touchpad Y: ", currentGamepad2.touchpad_finger_1_y);
+            telemetry.addData("launch Requested", launchRequested);
             telemetry.update();
         }
     }
@@ -136,6 +149,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         intake = hardwareMap.dcMotor.get("intake");  /** Port: ControlHub MotorPort 3 **/
         intakeArm = hardwareMap.servo.get("intakeArm"); /** Port: ExpansionHub ServoPort 5 **/
         intakeRamp = hardwareMap.servo.get("intakeRamp"); /** Port: ControlHub ServoPort 5 **/
+        droneLauncher = hardwareMap.servo.get("droneLauncher"); /** Port: Control ServoPort 3 **/
         //wristLeft = hardwareMap.servo.get("wristLeft"); /** Port: ExpansionHub ServoPort 3 **/
         //wristRight = hardwareMap.servo.get("wristRight"); /** Port: ExpansionHub ServoPort 5 **/
 
@@ -258,6 +272,18 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
             maxSpeedRange2 = 1.0;
             iterationsPressed2=0;
             gamepad2.rumble(100);
+        }
+        if (previousGamepad2.touchpad_finger_1 && !currentGamepad2.touchpad_finger_1) {
+            fingerTouching = false;
+        }
+        if (!previousGamepad2.touchpad_finger_1 && currentGamepad2.touchpad_finger_1) {
+            fingerStartY = currentGamepad2.touchpad_finger_1_y;
+            fingerTouching = true;
+        }
+        if (fingerTouching) {
+            if (currentGamepad2.touchpad_finger_1_y > (fingerStartY + changeInY)) {
+                launchRequested = true;
+            }
         }
         /*if (gamepad2.right_bumper && maxSpeedRange2 != -1) {
             speed2=0.25;

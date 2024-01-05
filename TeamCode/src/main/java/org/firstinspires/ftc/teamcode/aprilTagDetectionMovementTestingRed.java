@@ -39,6 +39,7 @@ public class aprilTagDetectionMovementTestingRed extends LinearOpMode {
     }
     double[] cameraOffset = new double[] {7.5,3.5}; // x offset (left: positive, right: negative), y(distance) offset; (units: inches from center)
     double[] robotDistanceToAprilTag = new double[] {0,0};
+    private double moveOffsetY = 14;
 
     @Override
     public void runOpMode(){
@@ -111,7 +112,7 @@ public class aprilTagDetectionMovementTestingRed extends LinearOpMode {
                 break;
             }
         }
-        telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",robotDistanceToAprilTag[0],robotDistanceToAprilTag[1]));
+        telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",robotDistanceToAprilTag[0],robotDistanceToAprilTag[1]-moveOffsetY));
         if (foundAprilTag) {
             //move(0.5,"right",robotDistanceToAprilTag[0]);
             //rotate(180,0.5);
