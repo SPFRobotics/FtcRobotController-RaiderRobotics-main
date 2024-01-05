@@ -229,7 +229,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         telemetry.update();
         chassis.move(.5, "left", aTag.outputInfo[0]);
         chassis.move(.5, "backward", aTag.outputInfo[1]);
-        slide.slide(35,0.5);
+        slide.slide(30,0.5);
         sleep(1000);
         slide.slide(0,0.5);
         //aTag.camOff();

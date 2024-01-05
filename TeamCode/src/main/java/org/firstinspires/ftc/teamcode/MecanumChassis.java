@@ -133,6 +133,7 @@ public class MecanumChassis {
         opmode.telemetry.update();
     }
     public void rotate(double angle, double power) {
+        double stopError = 0.5;
         double Kp = 0.5; //this is for proportional control (ie. the closer you are the target angle the slower you will go)
         double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         double targetAngle = startAngle + angle;
@@ -145,7 +146,7 @@ public class MecanumChassis {
         // rotate until the target angle is reached
         System.out.printf("%f start angle = ",imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
         System.out.printf("%f error = ", error);
-        while (opmode.opModeIsActive() && Math.abs(error) > 5) {
+        while (opmode.opModeIsActive() && Math.abs(error) > stopError) {
             //powerZero();
             error = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
             // the closer the robot is to the target angle, the slower it rotates
@@ -162,7 +163,7 @@ public class MecanumChassis {
             backRight.setPower(-power1);
             frontLeft.setPower(power1);
             frontRight.setPower(-power1);
-            if (Math.abs(error) <= 1) {
+            if (Math.abs(error) <= stopError) {
                 powerZero();
             }
             opmode.telemetry.addData("angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
