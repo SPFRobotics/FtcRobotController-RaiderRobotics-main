@@ -134,6 +134,56 @@ public class MecanumChassis {
         opmode.telemetry.update();
     }
     public void rotate(double angle, double power) {
+        double minPower = 0.3;
+        double Kp = 0.04; //this is for proportional control (ie. the closer you are the target angle the slower you will go)
+        double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        double targetAngle = startAngle + angle;
+        double error = (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
+        double power1 = 0;
+        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        // rotate until the target angle is reached
+        //System.out.printf("%f start angle = ",imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        //System.out.printf("%f error = ", error);
+        while (opmode.opModeIsActive() && Math.abs(error) > .5) {
+            //powerZero();
+            error = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
+            // the closer the robot is to the target angle, the slower it rotates
+            //power = Range.clip(Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) / 90, 0.1, 0.5);
+            opmode.telemetry.addData("real power", power*(error*Kp));
+            power1 = Range.clip((power*(error*Kp)),-0.8,0.8); //"Range.clip(value, minium, maxium)" takes the first term and puts it in range of the min and max provided
+            if (Math.abs(power1) < minPower) {
+                power1 = minPower * (power1/Math.abs(power1));
+            }
+            opmode.telemetry.addData("power",power1);
+            System.out.printf("%f power = ",power1);
+            opmode.telemetry.addData("error",error);
+
+            backLeft.setPower(power1);
+            backRight.setPower(-power1);
+            frontLeft.setPower(power1);
+            frontRight.setPower(-power1);
+            if (Math.abs(error) <= .5) {
+                backLeft.setPower(0);
+                backRight.setPower(0);
+                frontLeft.setPower(0);
+                frontRight.setPower(0);
+            }
+            opmode.telemetry.addData("angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+            opmode.telemetry.addData("target", targetAngle);
+            opmode. telemetry.update();
+            //double angleDifference = Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
+            //rotate(angleDifference, power);
+        }
+        backLeft.setPower(0);
+        backRight.setPower(0);
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        opmode.sleep(500);
+    }
+    /* public void rotate(double angle, double power) {
         double stopError = 0.5;
         double Kp = 0.5; //this is for proportional control (ie. the closer you are the target angle the slower you will go)
         double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
@@ -175,7 +225,7 @@ public class MecanumChassis {
         }
         powerZero();
         opmode.sleep(500);
-    }
+    } */
     public void parkFarRed(){
         move(.3, "forward", 5.5);
         move(.3, "right", 96);

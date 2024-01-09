@@ -239,5 +239,6 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         //telemetry.addData("hooray","hooray");
         telemetry.update();
         //chassis.parkFarRed();
+        terminateOpModeNow();
     }
 }
