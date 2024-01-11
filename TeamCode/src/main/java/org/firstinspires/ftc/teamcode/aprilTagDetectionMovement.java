@@ -41,9 +41,10 @@ public class aprilTagDetectionMovement {
         BlueAllianceRight
     }
     //private double[] cameraOffset = new double[] {7.5,3.5}; // x offset (left: negative, right: positive), y(distance) offset; (units: inches from center)
-    private double[] cameraOffset = new double[] {12.5,3.5}; // x offset (left: negative, right: positive), y(distance) offset; (units: inches from center)
+    private double[] cameraOffset = new double[] {12,3.5}; // x offset (left: negative, right: positive), y(distance) offset; (units: inches from center)
     public double[] robotDistanceToAprilTag = new double[] {0,0};
     private double moveOffsetY = 10.5;
+    private double moveOffsetX = 1;
     public double[] outputInfo = new double[] {};
 
 
@@ -119,7 +120,7 @@ public class aprilTagDetectionMovement {
             move(0.5,"backward",(robotDistanceToAprilTag[1]-20));
         }*/
         if (foundAprilTag) {
-            outputInfo = new double[] {robotDistanceToAprilTag[0], (robotDistanceToAprilTag[1] - moveOffsetY)};
+            outputInfo = new double[] {(robotDistanceToAprilTag[0] - moveOffsetX), (robotDistanceToAprilTag[1] - moveOffsetY)};
         } else {
             outputInfo = new double[] {0,28};
         }

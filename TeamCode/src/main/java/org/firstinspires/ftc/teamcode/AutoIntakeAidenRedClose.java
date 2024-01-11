@@ -44,7 +44,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
                 //Move to the center
                 chassis.move(.5, "forward", 23+10);
                 //chassis.move(.5, "left", 0);
-                chassis.move(.5,"backward",4);
+                chassis.move(.5,"backward",6);
                 intake.lowerLip();
                 sleep(1000);
                 chassis.move(.5,"backward",6);
@@ -55,7 +55,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
             } else if (aTag.spikeLocation.equals("CENTER")) {
                 //Move to the right
                 chassis.move(.5, "forward", 23+4);
-                //chassis.move(.5, "right", 8);
+                chassis.move(.5, "right", 8);
                 chassis.move(.5,"backward",4);
                 //Do Intake Servo
                 intake.lowerLip();
@@ -63,7 +63,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
                 chassis.move(.5,"backward",6);
                 intake.raiseLip();
                 //chassis.move(.5, "backward", 24);
-                //chassis.move(.5, "left", 0);
+                chassis.move(.5, "left", 10);
                 chassis.move(.5,"forward",6);
             } else {
                 //Move to the left
@@ -71,11 +71,11 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
                 //chassis.move(.5, "left", 4);
                 chassis.rotate(90,.5);
                 chassis.move(.5,"forward",0+8);
-                chassis.move(.5,"backward",2);
+                chassis.move(.5,"backward",4);
                 //Do Intake Servo
                 intake.lowerLip();
                 sleep(1000);
-                chassis.move(.5,"backward",6);
+                chassis.move(.5,"backward",4);
                 intake.raiseLip();
                 //chassis.move(.5, "backward", 30);
                 //chassis.move(.5, "right", 6);
@@ -102,14 +102,14 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
                 //Move to the right
                 chassis.move(.5, "forward", 23+4);
                 //chassis.move(.5, "right", 8);
-                chassis.move(.5,"backward",4);
+                //chassis.move(.5,"backward",4);
                 //Do Intake Servo
                 intake.lowerLip();
                 sleep(1000);
                 chassis.move(.5,"backward",6);
                 intake.raiseLip();
                 //chassis.move(.5, "backward", 24);
-                //chassis.move(.5, "left", 0);
+                //chassis.move(.5, "left", 10);
                 chassis.move(.5,"forward",6);
             } else {
                 //Move to the left
@@ -202,7 +202,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         chassis.rotate(-90, .5);
         //chassis.move(.5, "forward", 24);
         //chassis.move(.5, "left", 6);
-        chassis.move(.5,"left",8);
+        chassis.move(.5,"left",6);
         //aTag.initCam2(); //Maybe reinitializing will fix the thing?
         //aTag.camOn();
 
@@ -221,24 +221,27 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         //telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",aTag.outputInfo[0],aTag.outputInfo[1]));
         //telemetry.update();
         //sleep(5000);
-        aTag.camOff();
+        //aTag.camOff();
         aTag.moveToAprilTag(altAprilTag(location, "close", "red"));
 
-        //aTag.camOff();
+        aTag.camOff();
+        chassis.move(.5,"right",10);
         chassis.rotate(180, .5);
 
         telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",aTag.outputInfo[0],aTag.outputInfo[1]));
         telemetry.update();
         sleep(5000);
-        chassis.move(.5, "left", aTag.outputInfo[0]);
         chassis.move(.5, "backward", aTag.outputInfo[1]);
-        slide.slide(30,0.5);
+        chassis.move(.5, "left", aTag.outputInfo[0] + 10);
+        slide.slide(25,0.5);
         sleep(1000);
         slide.slide(0,0.5);
         //aTag.camOff();
         //telemetry.addData("hooray","hooray");
         telemetry.update();
         //chassis.parkFarRed();
+        telemetry.addData("finishing","");
+        telemetry.update();
         terminateOpModeNow();
     }
 }

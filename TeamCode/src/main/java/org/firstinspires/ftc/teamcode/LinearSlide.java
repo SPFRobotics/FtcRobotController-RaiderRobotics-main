@@ -50,7 +50,10 @@ public class LinearSlide {
         liftLeft.setPower(power);
         liftRight.setPower(power);
 
-        while(isBusy()){/*Wait Til The Motors Stop Moving*/}
+        while(isBusy()){
+            opmode.telemetry.addLine(String.format("Left: %6.1f, Right: %6.1f", (float)liftLeft.getCurrentPosition(),(float)liftRight.getCurrentPosition()));
+            opmode.telemetry.update();
+        }
 
         liftLeft.setPower(0);
         liftRight.setPower(0);
