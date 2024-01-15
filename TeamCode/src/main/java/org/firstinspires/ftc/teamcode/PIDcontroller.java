@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 public class PIDcontroller {
   // Parameters you define when creating the object, DONT'T TOUCH "dT" UNLESS YOU KNOW WHAT YOU ARE DOING
   public LinearOpMode opmode;
@@ -9,7 +11,7 @@ public class PIDcontroller {
   public double targetPoint;
   /** For fine tuning P, I, and D, read link that is below **/
   // Eli needs to add link, so yell at him
-  public double dT = 20; //(Units: milliSeconds) time between cycles
+  public long dT = 20; //(Units: milliSeconds) time between cycles
 
   // Predefined constants, also don't touch
   private double maxIntegral = 50000000;
@@ -19,11 +21,19 @@ public class PIDcontroller {
   // Changing variables
   private double error = 0;
   private double prevError = 0;
-  private double integral 0;
+  private double integral = 0;
   private double derivative = 0;
   private double power = 0;
-  
-  public PIDcontroller(LinearOpMode lom, double targetVal, double kPval, double kIval, double kDval, double dTval = dT) {
+
+  public PIDcontroller(LinearOpMode lom, double targetVal, double kPval, double kIval, double kDval) {
+    opmode = lom;
+    targetPoint = targetVal;
+    kP = kPval;
+    kI = kIval;
+    kD = kDval;
+    dT = 20;
+  }
+  public PIDcontroller(LinearOpMode lom, double targetVal, double kPval, double kIval, double kDval, long dTval) {
     opmode = lom;
     targetPoint = targetVal;
     kP = kPval;
@@ -31,7 +41,8 @@ public class PIDcontroller {
     kD = kDval;
     dT = dTval;
   }
-  public void controller(double sensorVal) {
+
+  public double controller(double sensorVal) {
     error = targetPoint - sensorVal;
     integral = integral + error;
     if (Math.abs(error) > maxErrorReset) {
@@ -47,8 +58,8 @@ public class PIDcontroller {
     opmode.telemetry.addData("integral: ", integral);
     opmode.telemetry.addData("derivative: ", derivative);
     opmode.telemetry.addData("power: ", power);
-    return power;
-    opmode.sleep(dT);
     //return power;
+    opmode.sleep(dT);
+    return power;
   }
 }
