@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Range;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public class PIDcontroller {
@@ -50,6 +52,23 @@ public class PIDcontroller {
     }
     if (Math.abs(error) < minErrorReset) {
       integral = 0;
+    }
+    derivative = error - prevError;
+    prevError = error;
+    power = error*kP + integral*kI + derivative*kD;
+    opmode.telemetry.addData("error: ", error);
+    opmode.telemetry.addData("integral: ", integral);
+    opmode.telemetry.addData("derivative: ", derivative);
+    opmode.telemetry.addData("power: ", power);
+    //return power;
+    opmode.sleep(dT);
+    return power;
+  }
+  public double controller(double sensorVal, boolean useIntegralMax) {
+    error = targetPoint - sensorVal;
+    integral = integral + error;
+    if (useIntegralMax) {
+      integral = com.qualcomm.robotcore.util.Range.clip(integral,maxIntegral,-maxIntegral);
     }
     derivative = error - prevError;
     prevError = error;
