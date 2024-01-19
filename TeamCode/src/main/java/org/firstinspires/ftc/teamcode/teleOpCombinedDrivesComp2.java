@@ -29,6 +29,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private Servo intakeArm;
     private Servo intakeRamp;
     private Servo droneLauncher;
+    private Servo droneServo;
     private IMU imu;
     private double speed1 = 0.5;
     private double speed1Default = 0.7;
@@ -42,11 +43,11 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private static final double startIntakeArmPos = 0;
     private static final double minRampArmPos = 0;
     private static final double maxRampArmPos = 1.2;
-
     //private static final double minClawPos = 0.7;
     //private static final double maxClawPos = 0.5;
     private static final double minLauncherPos = 0;
-    private static final double maxLauncherPos = 120; //Degrees
+    private static final double maxLauncherPos = 0.5;
+    private static final double launchAngle = 0.25;
     private double previousSpeed1;
     private double previousSpeed2;
     private int iterationsPressed1 = 0;
@@ -57,6 +58,8 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private Gamepad previousGamepad2;
     private ElapsedTime timeRightTriggerHeld1 = new ElapsedTime();
     private ElapsedTime timeRightTriggerHeld2 = new ElapsedTime();
+    private ElapsedTime endGameTimer = new ElapsedTime();
+    private double timeToEndGame = 120;
     private double timeHeldToConfirm = 0.5;
     int maxSpeedDuration = 50;
     private double maxSpeedRange1 = 1.0;
@@ -108,6 +111,8 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         currentGamepad2 = new Gamepad();
         previousGamepad2 = new Gamepad();
 
+        endGameTimer.reset();
+
         while (opModeIsActive()) {
             //currentIMUAngle = imu.getRobotOrientationAsQuaternion();
             previousGamepad1.copy(currentGamepad1); /** copies the previous loop's gamepad1 state **/
@@ -124,15 +129,11 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
             //Outtake();
             //LiftHold();
             LiftWorks();
-            droneLauncher.setPosition(0.42);
-            if (launchRequested) {
-                droneLauncher.setPosition(0.5);
-            }
+            Drone();
             telemetry.addData("speed1", speed1);
             telemetry.addData("speed2", speed2);
             //telemetry.addData("touchpad X: ", currentGamepad2.touchpad_finger_1_x);
             //telemetry.addData("touchpad Y: ", currentGamepad2.touchpad_finger_1_y);
-            telemetry.addData("launch Requested", launchRequested);
             telemetry.update();
         }
     }
@@ -149,7 +150,8 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         intake = hardwareMap.dcMotor.get("intake");  /** Port: ControlHub MotorPort 3 **/
         intakeArm = hardwareMap.servo.get("intakeArm"); /** Port: ExpansionHub ServoPort 5 **/
         intakeRamp = hardwareMap.servo.get("intakeRamp"); /** Port: ControlHub ServoPort 5 **/
-        droneLauncher = hardwareMap.servo.get("droneLauncher"); /** Port: Control ServoPort 3 **/
+        droneLauncher = hardwareMap.servo.get("droneLauncher"); /** Port: ControlHub ServoPort 3 **/
+        droneServo = hardwareMap.servo.get("droneServo"); /** Port: ExpansionHub ServoPort **/
         //wristLeft = hardwareMap.servo.get("wristLeft"); /** Port: ExpansionHub ServoPort 3 **/
         //wristRight = hardwareMap.servo.get("wristRight"); /** Port: ExpansionHub ServoPort 5 **/
 
@@ -372,6 +374,22 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         intakeRamp.setPosition(intakeArmPos);
         telemetry.addData("intakeArmPos: ",intakeArm.getPosition());
         telemetry.addData("intakeArmPosition: ", intakeArmPos);
+    }
+    private void Drone() {
+        droneLauncher.setPosition(0.42);
+        if (endGameTimer.seconds() >= timeToEndGame) {
+            if (gamepad2.left_bumper && gamepad2.right_bumper) {
+                if (launchRequested) {
+                    droneServo.setPosition(launchAngle);
+                    sleep(1000);
+                    droneLauncher.setPosition(0.5);
+                }
+            }
+        }
+        /*if (gamepad2.dpad_up) {
+            droneServo.setPosition(launchAngle);
+        }*/
+        telemetry.addData("launch Requested", launchRequested);
     }
     private void Outtake() {
         //if (currentGamepad2.left_bumper && !previousGamepad2.left_bumper) {clawLeftToggle = !clawLeftToggle;}
