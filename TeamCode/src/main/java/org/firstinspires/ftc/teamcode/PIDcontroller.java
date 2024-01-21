@@ -43,6 +43,20 @@ public class PIDcontroller {
     kD = kDval;
     dT = dTval;
   }
+  public PIDcontroller(LinearOpMode lom, double kPval, double kIval, double kDval) {
+    opmode = lom;
+    kP = kPval;
+    kI = kIval;
+    kD = kDval;
+    dT = 20;
+  }
+  public PIDcontroller(LinearOpMode lom, double kPval, double kIval, double kDval, long dTval) {
+    opmode = lom;
+    kP = kPval;
+    kI = kIval;
+    kD = kDval;
+    dT = dTval;
+  }
 
   public double controller(double sensorVal, double powerMax) {
     error = targetPoint - sensorVal;
@@ -66,6 +80,25 @@ public class PIDcontroller {
     return power;
   }
   public double controller(double sensorVal, double powerMax, boolean useIntegralMax) {
+    error = targetPoint - sensorVal;
+    integral = integral + error;
+    if (useIntegralMax) {
+      integral = Range.clip(integral,-maxIntegral,maxIntegral);
+    }
+    derivative = error - prevError;
+    prevError = error;
+    power = error*kP + integral*kI + derivative*kD;
+    power = Range.clip(power,-powerMax,powerMax);
+    opmode.telemetry.addData("error: ", error);
+    opmode.telemetry.addData("integral: ", integral);
+    opmode.telemetry.addData("derivative: ", derivative);
+    opmode.telemetry.addData("power: ", power);
+    //return power;
+    opmode.sleep(dT);
+    return power;
+  }
+  public double controller(double targetVal, double sensorVal, double powerMax, boolean useIntegralMax) {
+    targetPoint = targetVal;
     error = targetPoint - sensorVal;
     integral = integral + error;
     if (useIntegralMax) {
