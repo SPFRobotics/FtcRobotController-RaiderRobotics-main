@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.util.Range;
+import com.qualcomm.robotcore.util.Range;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -44,7 +44,7 @@ public class PIDcontroller {
     dT = dTval;
   }
 
-  public double controller(double sensorVal) {
+  public double controller(double sensorVal, double powerMax) {
     error = targetPoint - sensorVal;
     integral = integral + error;
     if (Math.abs(error) > maxErrorReset) {
@@ -56,6 +56,7 @@ public class PIDcontroller {
     derivative = error - prevError;
     prevError = error;
     power = error*kP + integral*kI + derivative*kD;
+    power = Range.clip(power,-powerMax,powerMax);
     opmode.telemetry.addData("error: ", error);
     opmode.telemetry.addData("integral: ", integral);
     opmode.telemetry.addData("derivative: ", derivative);
@@ -64,15 +65,16 @@ public class PIDcontroller {
     opmode.sleep(dT);
     return power;
   }
-  public double controller(double sensorVal, boolean useIntegralMax) {
+  public double controller(double sensorVal, double powerMax, boolean useIntegralMax) {
     error = targetPoint - sensorVal;
     integral = integral + error;
     if (useIntegralMax) {
-      integral = com.qualcomm.robotcore.util.Range.clip(integral,maxIntegral,-maxIntegral);
+      integral = Range.clip(integral,-maxIntegral,maxIntegral);
     }
     derivative = error - prevError;
     prevError = error;
     power = error*kP + integral*kI + derivative*kD;
+    power = Range.clip(power,-powerMax,powerMax);
     opmode.telemetry.addData("error: ", error);
     opmode.telemetry.addData("integral: ", integral);
     opmode.telemetry.addData("derivative: ", derivative);
