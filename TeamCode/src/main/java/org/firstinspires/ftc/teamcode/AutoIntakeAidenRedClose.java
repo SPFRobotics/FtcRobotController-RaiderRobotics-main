@@ -43,7 +43,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
             if(aTag.spikeLocation.equals("LEFT")) {
                 //Move to the center
                 chassis.move(.5, "forward", 23+10);
-                //chassis.move(.5, "left", 0);
+                chassis.move(.5, "left", 4);
                 chassis.move(.5,"backward",6);
                 intake.lowerLip();
                 sleep(1000);
@@ -51,7 +51,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
                 intake.raiseLip();
                 //chassis.move(.5, "backward", 30);
                 //chassis.move(.5,"backward",2);
-                //chassis.move(.5, "right", 6);
+                chassis.move(.5, "right", 4);
             } else if (aTag.spikeLocation.equals("CENTER")) {
                 //Move to the right
                 chassis.move(.5, "forward", 23+4);
@@ -202,7 +202,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         chassis.rotate(-90, .5);
         //chassis.move(.5, "forward", 24);
         //chassis.move(.5, "left", 6);
-        chassis.move(.5,"left",6);
+        chassis.move(.5,"left",8);
         //aTag.initCam2(); //Maybe reinitializing will fix the thing?
         //aTag.camOn();
 
@@ -225,15 +225,16 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         aTag.moveToAprilTag(altAprilTag(location, "close", "red"));
 
         aTag.camOff();
-        chassis.move(.5,"right",10);
+        chassis.move(.5,"right",15);
         chassis.rotate(180, .5);
 
         telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",aTag.outputInfo[0],aTag.outputInfo[1]));
         telemetry.update();
         sleep(5000);
         chassis.move(.5, "backward", aTag.outputInfo[1]);
-        chassis.move(.5, "left", aTag.outputInfo[0] + 10);
-        slide.slide(25,0.5);
+        chassis.move(.5, "left", aTag.outputInfo[0] - 20);
+        chassis.move(.5,"backward",2.2);
+        slide.slide(30,0.5);
         sleep(1000);
         slide.slide(0,0.5);
         //aTag.camOff();
