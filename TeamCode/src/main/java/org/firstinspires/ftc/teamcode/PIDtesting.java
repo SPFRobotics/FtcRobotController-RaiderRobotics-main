@@ -7,10 +7,10 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Autonomous
 public class PIDtesting extends LinearOpMode {
-    private double kP = 0.008;
-    private double kI = 0;
-    private double kD = 0;
-    PIDcontroller controller = new PIDcontroller(this,2000,kP,kI,kD);
+    private double kP = 0.0055;
+    private double kI = 0.0000000001;
+    private double kD = 0.0002;
+    PIDcontroller controller = new PIDcontroller(this,kP,kI,kD);
 
     public DcMotor liftRight;
     public DcMotor liftLeft;
@@ -23,12 +23,12 @@ public class PIDtesting extends LinearOpMode {
         liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         waitForStart();
         while (true) {
-            powerLeft = controller.controller(liftLeft.getCurrentPosition(),0.5,true);
-            powerRight = controller.controller(liftRight.getCurrentPosition(),0.5,true);
-            telemetry.addLine(String.format("power  Left: %6.1f, Right: %6.1f",powerLeft,powerRight));
-
+            powerLeft = controller.controller(2000,liftLeft.getCurrentPosition(),0.8,true);
+            powerRight = controller.controller(2000,liftRight.getCurrentPosition(),0.8,true);
             liftLeft.setPower(powerLeft);
             liftRight.setPower(powerRight);
+            telemetry.addLine(String.format("power  Left: %6.1f, Right: %6.1f",powerLeft,powerRight));
+            telemetry.update();
         }
     }
 }
