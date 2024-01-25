@@ -29,7 +29,8 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private DcMotor frontRight;
     private DcMotor liftLeft;
     private DcMotor liftRight;
-    private DcMotor intake;
+    private DcMotor intake1;
+    private DcMotor intake2;
     private Servo intakeArm;
     private Servo intakeRamp;
     private Servo droneLauncher;
@@ -154,7 +155,8 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         backRight = hardwareMap.dcMotor.get("backRight"); /** Port: ExpansionHub MotorPort 2 **/
         liftLeft = hardwareMap.dcMotor.get("liftLeft"); /** Port: ControlHub MotorPort 2 **/
         liftRight = hardwareMap.dcMotor.get("liftRight"); /** Port: ExpansionHub MotorPort 1 **/
-        intake = hardwareMap.dcMotor.get("intake");  /** Port: ControlHub MotorPort 3 **/
+        intake1 = hardwareMap.dcMotor.get("intake1");  /** Port: ControlHub MotorPort 3 **/
+        intake2 = hardwareMap.dcMotor.get("intake2");  /** Port: ControlHub MotorPort 3 **/
         intakeArm = hardwareMap.servo.get("intakeArm"); /** Port: ExpansionHub ServoPort 5 **/
         intakeRamp = hardwareMap.servo.get("intakeRamp"); /** Port: ControlHub ServoPort 5 **/
         droneLauncher = hardwareMap.servo.get("droneLauncher"); /** Port: ControlHub ServoPort 3 **/
@@ -173,7 +175,8 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        intake.setDirection(DcMotorSimple.Direction.REVERSE);
+        intake1.setDirection(DcMotorSimple.Direction.REVERSE);
+        intake2.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -361,7 +364,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         backRight.setPower(backRightPower);
     }
     private void Intake() {
-        if (gamepad2.square) {intake.setPower(0.6*speed2);} else if (gamepad2.triangle) {intake.setPower(-0.6*speed2);} else {intake.setPower(0);}
+        if (gamepad2.square) {intake1.setPower(0.6*speed2);intake2.setPower(0.6*speed2);} else if (gamepad2.triangle) {intake1.setPower(-0.6*speed2);intake2.setPower(-0.6*speed2);} else {intake1.setPower(0);intake2.setPower(0);}
         if (gamepad2.left_stick_y < 0) {intakeArmPos -= 0.01*speed2;}
         if (gamepad2.left_stick_y > 0) {intakeArmPos += 0.01*speed2;}
         intakeArmPos = Range.clip(intakeArmPos,minIntakeArmPos,maxIntakeArmPos);
