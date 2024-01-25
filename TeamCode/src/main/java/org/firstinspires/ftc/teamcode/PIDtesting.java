@@ -22,7 +22,7 @@ public class PIDtesting extends LinearOpMode {
         liftRight = hardwareMap.dcMotor.get("liftRight"); /** Port: ExpansionHub MotorPort 2 **/
         liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         waitForStart();
-        while (true) {
+        while (opModeIsActive()) {
             powerLeft = controller.controller(2000,liftLeft.getCurrentPosition(),0.8,true);
             powerRight = controller.controller(2000,liftRight.getCurrentPosition(),0.8,true);
             liftLeft.setPower(powerLeft);

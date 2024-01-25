@@ -175,7 +175,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
                 }
             }
         }
-        return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceCenter;
+        return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceRight;
     }
 
 

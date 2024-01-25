@@ -78,7 +78,6 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
                 sleep(1000);
                 chassis.move(.5,"backward",6);
                 intake.raiseLip();
-                //chassis.move(.5, "backward", 24);
                 chassis.move(.5, "right", 10);
                 chassis.move(.5,"forward",6);
             }
