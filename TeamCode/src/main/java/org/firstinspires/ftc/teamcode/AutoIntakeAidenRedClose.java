@@ -63,7 +63,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
                 chassis.move(.5,"backward",6);
                 intake.raiseLip();
                 //chassis.move(.5, "backward", 24);
-                chassis.move(.5, "left", 10);
+                chassis.move(.5, "left", 12);
                 chassis.move(.5,"forward",6);
             } else {
                 //Move to the left
@@ -233,7 +233,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         sleep(5000);
         chassis.move(.5, "backward", aTag.outputInfo[1]);
         chassis.move(.5, "left", aTag.outputInfo[0] - 20);
-        chassis.move(.5,"backward",2.2);
+        chassis.move(.5,"backward",2.5);
         slide.slide(30,0.5);
         sleep(1000);
         slide.slide(0,0.5);

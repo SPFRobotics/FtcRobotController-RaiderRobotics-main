@@ -371,7 +371,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         telemetry.addData("intakeArmPosition: ", intakeArmPos);
     }
     private void Drone() {
-        if (endGameTimer.seconds() >= timeToEndGame) {
+        if (endGameTimer.seconds() >= 3) {
             if (gamepad2.left_bumper && gamepad2.right_bumper) {
                 if (previousGamepad2.touchpad_finger_1 && !currentGamepad2.touchpad_finger_1) {
                     fingerTouching = false;
