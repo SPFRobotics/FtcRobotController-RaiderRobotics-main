@@ -36,7 +36,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private Servo droneLauncher;
     private Servo droneServo;
     private IMU imu;
-    private double speed1 = 0.5;
+    private double speed1 = 1;
     private double speed1Default = 0.7;
     private double speed2 = 0.5;
     private double speed2Default = 0.7;
@@ -46,7 +46,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private double servoSpeed = 0;
     private static final int liftMaxMotorCounts = 4062;
     private static final double minIntakeArmPos = 0;
-    private static final double maxIntakeArmPos = 0.53;
+    private static final double maxIntakeArmPos = 0.45; //.53
     private static final double startIntakeArmPos = 0;
     private static final double minRampArmPos = 0;
     private static final double maxRampArmPos = 1.2;
@@ -127,7 +127,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
             currentGamepad1.copy(gamepad1); /** copies the current gamepad1 state **/
             previousGamepad2.copy(currentGamepad2); /** copies the previous loop's gamepad2 state **/
             currentGamepad2.copy(gamepad2); /** copies the current gamepad2 state **/
-            Speed(); /** a very magical and mystical function that is complicated but not really **/
+            //Speed(); /** a very magical and mystical function that is complicated but not really **/
             if (Math.abs(gamepad1.left_stick_x) <= 0.05 && Math.abs(gamepad1.left_stick_y) <= 0.05) { /** Disclaimer!!!: robot oriented is priority not field **/ /** this is the statment that switches between field and robot oriented drive does this by checking if left joystick isn't being moved **/
                 fieldOriented();
             } else {
@@ -364,7 +364,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         backRight.setPower(backRightPower);
     }
     private void Intake() {
-        if (gamepad2.square) {intake1.setPower(0.6*speed2);intake2.setPower(0.6*speed2);} else if (gamepad2.triangle) {intake1.setPower(-0.6*speed2);intake2.setPower(-0.6*speed2);} else {intake1.setPower(0);intake2.setPower(0);}
+        if (gamepad2.square) {intake1.setPower(1);intake2.setPower(1);} else if (gamepad2.triangle) {intake1.setPower(-1);intake2.setPower(-1);} else {intake1.setPower(0);intake2.setPower(0);}
         if (gamepad2.left_stick_y < 0) {intakeArmPos -= 0.01*speed2;}
         if (gamepad2.left_stick_y > 0) {intakeArmPos += 0.01*speed2;}
         intakeArmPos = Range.clip(intakeArmPos,minIntakeArmPos,maxIntakeArmPos);
