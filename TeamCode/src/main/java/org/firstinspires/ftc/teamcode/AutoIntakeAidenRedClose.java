@@ -55,7 +55,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
             } else if (aTag.spikeLocation.equals("CENTER")) {
                 //Move to the right
                 chassis.move(.5, "forward", 23+4);
-                chassis.move(.5, "right", 8);
+                chassis.move(.5, "left", 8);
                 chassis.move(.5,"backward",4);
                 //Do Intake Servo
                 intake.lowerLip();
@@ -63,7 +63,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
                 chassis.move(.5,"backward",6);
                 intake.raiseLip();
                 //chassis.move(.5, "backward", 24);
-                chassis.move(.5, "left", 12);
+                chassis.move(.5, "right", 12);
                 chassis.move(.5,"forward",6);
             } else {
                 //Move to the left
@@ -89,45 +89,44 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
             if(aTag.spikeLocation.equals("RIGHT")) {
                 //Move to the center
                 chassis.move(.5, "forward", 23+10);
-                //chassis.move(.5, "left", 0);
-                chassis.move(.5,"backward",4);
+                chassis.move(.5, "left", 4);
+                chassis.move(.5,"backward",6);
                 intake.lowerLip();
                 sleep(1000);
                 chassis.move(.5,"backward",6);
                 intake.raiseLip();
                 //chassis.move(.5, "backward", 30);
                 //chassis.move(.5,"backward",2);
-                //chassis.move(.5, "right", 6);
+                chassis.move(.5, "right", 4);
             } else if (aTag.spikeLocation.equals("CENTER")) {
-                //Move to the right
+                //Move to the left
                 chassis.move(.5, "forward", 23+4);
-                //chassis.move(.5, "right", 8);
-                //chassis.move(.5,"backward",4);
+                chassis.move(.5, "right", 8);
+                chassis.move(.5,"backward",4);
                 //Do Intake Servo
                 intake.lowerLip();
                 sleep(1000);
                 chassis.move(.5,"backward",6);
                 intake.raiseLip();
                 //chassis.move(.5, "backward", 24);
-                //chassis.move(.5, "left", 10);
+                chassis.move(.5, "left", 12);
                 chassis.move(.5,"forward",6);
             } else {
-                //Move to the left
-                chassis.move(.5, "forward", 23);
-                //sleep(500);
+                //Move to the right
+                chassis.move(.5, "forward", 26);
                 //chassis.move(.5, "left", 4);
-                chassis.rotate(90,.5);
+                chassis.rotate(-90,.5);
                 chassis.move(.5,"forward",0+8);
-                chassis.move(.5,"backward",2);
+                chassis.move(.5,"backward",4);
                 //Do Intake Servo
                 intake.lowerLip();
                 sleep(1000);
-                chassis.move(.5,"backward",6);
+                chassis.move(.5,"backward",4);
                 intake.raiseLip();
                 //chassis.move(.5, "backward", 30);
                 //chassis.move(.5, "right", 6);
                 //chassis.move(.5,"forward",4);
-                chassis.rotate(-90,.5);
+                chassis.rotate(90,.5);
             }
         }
     }
@@ -230,7 +229,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
 
         telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",aTag.outputInfo[0],aTag.outputInfo[1]));
         telemetry.update();
-        sleep(5000);
+        //sleep(5000);
         chassis.move(.5, "backward", aTag.outputInfo[1]);
         chassis.move(.5, "left", aTag.outputInfo[0] - 20);
         chassis.move(.5,"backward",2.5);
