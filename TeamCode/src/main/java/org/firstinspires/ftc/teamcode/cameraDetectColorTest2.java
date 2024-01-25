@@ -44,7 +44,7 @@ public class cameraDetectColorTest2 implements VisionProcessor {
             BLACK = new Scalar(0,0,0);
     private Scalar color = BLACK;
 
-    public double minSectorPercent = 144, minTotalPercent = 1040;
+    public double minSectorPercent = 1440, minTotalPercent = 1040;
     public double maxPercent = 0, highestSector = 0;
     public double redPercent = 0, bluePercent = 0;
     private Mat redMat = new Mat(), blueMat = new Mat(), blurredMat = new Mat();

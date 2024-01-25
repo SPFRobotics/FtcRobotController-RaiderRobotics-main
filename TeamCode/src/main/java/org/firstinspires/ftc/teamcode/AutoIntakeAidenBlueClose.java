@@ -41,31 +41,6 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
             //Aligned to the right
             //Check for left and center
             if(aTag.spikeLocation.equals("RIGHT")) {
-                //Move to the center
-                chassis.move(.5, "forward", 23+10);
-                chassis.move(.5, "left", 4);
-                chassis.move(.5,"backward",6);
-                intake.lowerLip();
-                sleep(1000);
-                chassis.move(.5,"backward",6);
-                intake.raiseLip();
-                //chassis.move(.5, "backward", 30);
-                //chassis.move(.5,"backward",2);
-                chassis.move(.5, "right", 4);
-            } else if (aTag.spikeLocation.equals("CENTER")) {
-                //Move to the left
-                chassis.move(.5, "forward", 23+4);
-                chassis.move(.5, "right", 8);
-                chassis.move(.5,"backward",4);
-                //Do Intake Servo
-                intake.lowerLip();
-                sleep(1000);
-                chassis.move(.5,"backward",6);
-                intake.raiseLip();
-                //chassis.move(.5, "backward", 24);
-                chassis.move(.5, "left", 12);
-                chassis.move(.5,"forward",6);
-            } else {
                 //Move to the right
                 chassis.move(.5, "forward", 26);
                 //chassis.move(.5, "left", 4);
@@ -81,6 +56,31 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
                 //chassis.move(.5, "right", 6);
                 //chassis.move(.5,"forward",4);
                 chassis.rotate(90,.5);
+            } else if (aTag.spikeLocation.equals("CENTER")) {
+                //Move to the center
+                chassis.move(.5, "forward", 23+10);
+                chassis.move(.5, "right", 2);
+                chassis.move(.5,"backward",6);
+                intake.lowerLip();
+                sleep(1000);
+                chassis.move(.5,"backward",6);
+                intake.raiseLip();
+                //chassis.move(.5, "backward", 30);
+                //chassis.move(.5,"backward",2);
+                //chassis.move(.5, "left", 2);
+            } else {
+                //Move to the left
+                chassis.move(.5, "forward", 23+4);
+                chassis.move(.5, "left", 8);
+                chassis.move(.5,"backward",4);
+                //Do Intake Servo
+                intake.lowerLip();
+                sleep(1000);
+                chassis.move(.5,"backward",6);
+                intake.raiseLip();
+                //chassis.move(.5, "backward", 24);
+                chassis.move(.5, "right", 10);
+                chassis.move(.5,"forward",6);
             }
         }
         if(proximity.toLowerCase().equals("far")) {
@@ -144,24 +144,24 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
             }
             if (proximity.equals("far")) {
                 if (loc.equals("RIGHT")) {
-                    return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceCenter;
+                    return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceRight;
                 }
                 if (loc.equals("CENTER")) {
-                    return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceLeft;
+                    return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceCenter;
                 } else {
-                    return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceRight;
+                    return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceLeft;
                 }
             }
         }
         if(teamColor.equals("blue")) {
             if (proximity.equals("close")) {
                 if (loc.equals("RIGHT")) {
-                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceCenter;
+                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceRight;
                 }
                 if (loc.equals("CENTER")) {
-                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceLeft;
+                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceCenter;
                 } else {
-                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceRight;
+                    return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceLeft;
                 }
             }
             if (proximity.equals("far")) {
