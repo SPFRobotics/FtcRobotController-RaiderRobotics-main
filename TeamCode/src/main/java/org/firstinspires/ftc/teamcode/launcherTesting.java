@@ -16,7 +16,7 @@ public class launcherTesting extends LinearOpMode {
     private Servo droneServo;
     private static final double minLauncherPos = 0;
     private static final double maxLauncherPos = 0.5;
-    private static final double launchAngle = 0.17;
+    private static final double launchAngle = 0.18;
     private Gamepad currentGamepad1;
     private Gamepad previousGamepad1;
     private Gamepad currentGamepad2;

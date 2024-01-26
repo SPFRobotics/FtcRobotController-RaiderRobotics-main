@@ -210,8 +210,8 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
 
         //aTag.initCam2();
         continueTime.reset();
-        while (aTag.getDetections().size() < 3 && opModeIsActive()) {
-        //while (aTag.getDetections().size() < 3 && continueTime.seconds() <= timeToContinue && opModeIsActive()) {
+        //while (aTag.getDetections().size() < 3 && opModeIsActive()) {
+        while (aTag.getDetections().size() < 3 && continueTime.seconds() <= timeToContinue && opModeIsActive()) {
             telemetry.addData("%f",aTag.getDetections().size());
             telemetry.update();
             sleep(10);
