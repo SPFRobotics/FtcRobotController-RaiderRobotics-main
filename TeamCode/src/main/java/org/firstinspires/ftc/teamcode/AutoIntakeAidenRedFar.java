@@ -277,7 +277,9 @@ public class AutoIntakeAidenRedFar extends LinearOpMode {
         waitForStart();
         final String location = aTag.spikeLocation;
         //chassis.rotate(-90,0.5);
+        sleep(5000);
         placeOnSpikeMarkUpdated("far");
         chassis.parkFarRed();
+        terminateOpModeNow();
     }
 }

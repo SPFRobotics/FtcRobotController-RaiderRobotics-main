@@ -83,6 +83,8 @@ public class launcherTesting extends LinearOpMode {
                     droneServo.setPosition(launchAngle);
                     sleep(1000);
                     droneLauncher.setPosition(0.48);
+                    sleep(2000);
+                    terminateOpModeNow();
                 }
             }
         } else {

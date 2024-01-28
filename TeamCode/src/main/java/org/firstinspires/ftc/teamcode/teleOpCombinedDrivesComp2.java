@@ -38,8 +38,8 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private IMU imu;
     private double speed1 = 1;
     private double speed1Default = 0.7;
-    private double speed2 = 0.5;
-    private double speed2Default = 0.7;
+    private double speed2 = 1;
+    private double speed2Default = 1;
     private double liftSpeed = 1.0;
     private double powerLeft = 0;
     private double powerRight = 0;
@@ -54,7 +54,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     //private static final double maxClawPos = 0.5;
     private static final double minLauncherPos = 0;
     private static final double maxLauncherPos = 0.5;
-    private static final double launchAngle = 0.15;
+    private static final double launchAngle = 0.18;
     private double previousSpeed1;
     private double previousSpeed2;
     private int iterationsPressed1 = 0;
@@ -365,8 +365,8 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     }
     private void Intake() {
         if (gamepad2.square) {intake1.setPower(1);intake2.setPower(1);} else if (gamepad2.triangle) {intake1.setPower(-1);intake2.setPower(-1);} else {intake1.setPower(0);intake2.setPower(0);}
-        if (gamepad2.left_stick_y < 0) {intakeArmPos -= 0.01*speed2;}
-        if (gamepad2.left_stick_y > 0) {intakeArmPos += 0.01*speed2;}
+        if (gamepad2.left_stick_y < 0) {intakeArmPos -= 0.05*speed2;}
+        if (gamepad2.left_stick_y > 0) {intakeArmPos += 0.05*speed2;}
         intakeArmPos = Range.clip(intakeArmPos,minIntakeArmPos,maxIntakeArmPos);
         intakeArm.setPosition(intakeArmPos);
         intakeRamp.setPosition(intakeArmPos);
@@ -396,7 +396,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
                 }
             }
         } else {
-            droneServo.setPosition(0.33);
+            droneServo.setPosition(0.33); //.33 horizontal
             droneLauncher.setPosition(0.42);
         }
         /*if (gamepad2.dpad_up) {

@@ -8,7 +8,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Intake {
     public LinearOpMode opmode = null;
-    public DcMotor intakeMotor = null;
+    public DcMotor intakeMotor1 = null;
+    public DcMotor intakeMotor2 = null;
     public Servo lipServo = null;
     public Servo armServo = null;
     
@@ -20,10 +21,12 @@ public class Intake {
         opmode = lom;
     }
     public void initIntake(){
-        intakeMotor = opmode.hardwareMap.get(DcMotor.class, "intake");
+        intakeMotor1 = opmode.hardwareMap.get(DcMotor.class, "intake1");
+        intakeMotor2 = opmode.hardwareMap.dcMotor.get("intake2");  /** Port: ControlHub MotorPort 3 **/
         lipServo = opmode.hardwareMap.get(Servo.class, "intakeRamp");
         armServo = opmode.hardwareMap.get(Servo.class, "intakeArm");
-        intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intakeMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intakeMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     public void raiseLip(){ //Test This Position, .5 is a placeholder
         lipServo.setPosition(minLipPos);
@@ -38,7 +41,7 @@ public class Intake {
         lipServo.setPosition(minArmPos);
     }
     public void powerOn(double power){
-        intakeMotor.setPower(power);
+        intakeMotor1.setPower(power);intakeMotor2.setPower(power);
     }
     public void powerOnTimed(double power, int seconds){
         this.powerOn(power);
@@ -46,6 +49,6 @@ public class Intake {
         this.powerOff();
     }
     public void powerOff(){
-        intakeMotor.setPower(0);
+        intakeMotor1.setPower(0);intakeMotor2.setPower(0);
     }
 }

@@ -296,6 +296,7 @@ public class AutoIntakeAidenBlueFar extends LinearOpMode {
         }
 
         waitForStart();
+        sleep(5000);
         placeOnSpikeMarkAndGoBack("far");
         chassis.parkFarBlue();
         terminateOpModeNow();
