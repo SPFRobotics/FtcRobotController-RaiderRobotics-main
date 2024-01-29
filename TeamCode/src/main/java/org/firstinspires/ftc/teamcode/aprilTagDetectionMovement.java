@@ -85,7 +85,7 @@ public class aprilTagDetectionMovement {
     public void initCam2(){
         visionProcessor = new cameraDetectColorTest2();
         aprilTag = new AprilTagProcessor.Builder().build();
-        aprilTag.setDecimation(2);
+        aprilTag.setDecimation(1);
         VisionPortal.Builder builder = new VisionPortal.Builder();
         builder.setCamera(opmode.hardwareMap.get(WebcamName.class, "Webcam 1"));
         builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
@@ -109,8 +109,6 @@ public class aprilTagDetectionMovement {
                     robotDistanceToAprilTag[1] = detection.ftcPose.y + cameraOffset[1];
                     foundAprilTag = true;
                 }
-            } else { //add to move on to next step or align to a position
-                break;
             }
         }
         //opmode.opmode.telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",robotDistanceToAprilTag[0],robotDistanceToAprilTag[1]));
