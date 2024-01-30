@@ -23,7 +23,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 
-@Autonomous
+@Autonomous(preselectTeleOp = "teleOpCombinedDrivesComp2")
 public class AutoIntakeAidenRedFarHalf extends LinearOpMode {
     MecanumChassis chassis = new MecanumChassis(this);
     Intake intake = new Intake(this);
