@@ -84,11 +84,11 @@ public class rotationMovementTesting extends LinearOpMode {
             double velStrafe = (backLeftVel + frontRightVel - frontLeftVel - backRightVel) / 4;
             double velRotate = (backRightVel + frontRightVel - frontLeftVel - backLeftVel) / (4 * TRACK_WIDTH);
 
-            botYEstimate = botYEstimatePrev + velForward * dT;
+            botYEstimate = botYEstimatePrev + velForward * (dT * 0.001);
             botYEstimatePrev = botYEstimate;
-            botXEstimate = botXEstimatePrev + velStrafe * dT;
+            botXEstimate = botXEstimatePrev + velStrafe * (dT * 0.001);
             botXEstimatePrev = botXEstimate;
-            botRotateEstimate = botRotateEstimatePrev + velRotate * dT;
+            botRotateEstimate = botRotateEstimatePrev + velRotate * (dT * 0.001);
             botRotateEstimatePrev = botRotateEstimate;
 
             double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
