@@ -19,7 +19,8 @@ public class testMotors extends LinearOpMode{
     private DcMotor frontRight;
     private DcMotor liftLeft;
     private DcMotor liftRight;
-    private DcMotor intake;
+    private DcMotor intake1;
+    private DcMotor intake2;
     private IMU imu;
 
     private boolean toggleMotors = false;
@@ -38,7 +39,7 @@ public class testMotors extends LinearOpMode{
 
             if (gamepad1.triangle && toggleMotors) {liftLeft.setTargetPosition(2000);liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);liftLeft.setPower(0.5);} else {liftRight.setPower(0);}
             if (gamepad1.circle && toggleMotors) {liftRight.setTargetPosition(2000);liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);liftRight.setPower(0.5);} else {liftRight.setPower(0);}
-            if (gamepad1.cross && toggleMotors) {intake.setPower(1);} else {intake.setPower(0);}
+            if (gamepad1.cross && toggleMotors) {intake1.setPower(1);intake2.setPower(1);} else {intake1.setPower(0);intake2.setPower(0);}
             //if (gamepad1.square && toggleMotors) {frontLeft.setPower(1);} else {frontLeft.setPower(0);}
         }
     }
@@ -52,7 +53,8 @@ public class testMotors extends LinearOpMode{
         backRight = hardwareMap.dcMotor.get("backRight"); /** Port: ControlHub MotorPort 3 **/
         liftLeft = hardwareMap.dcMotor.get("liftLeft"); /** Port: ExpansionHub MotorPort 3 **/
         liftRight = hardwareMap.dcMotor.get("liftRight"); /** Port: ExpansionHub MotorPort 2 **/
-        intake = hardwareMap.dcMotor.get("intake");  /** Port: ExpansionHub MotorPort 1 **/
+        intake1 = hardwareMap.dcMotor.get("intake1");  /** Port: ExpansionHub MotorPort 1 **/
+        intake2 = hardwareMap.dcMotor.get("intake2");  /** Port: ExpansionHub MotorPort 1 **/
 
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -64,7 +66,8 @@ public class testMotors extends LinearOpMode{
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        intake.setDirection(DcMotorSimple.Direction.REVERSE);
+        intake1.setDirection(DcMotorSimple.Direction.REVERSE);
+        intake2.setDirection(DcMotorSimple.Direction.REVERSE);
 
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
