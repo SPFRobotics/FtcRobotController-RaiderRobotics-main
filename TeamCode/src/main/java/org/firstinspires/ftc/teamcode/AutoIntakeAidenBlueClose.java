@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -12,6 +15,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 
 import org.opencv.core.Mat;
@@ -184,6 +188,7 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
         slide.initSlides();
         aTag.initCam2();
         aTag.camOn();
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         while(!isStarted()){
             aTag.updateSpikeLocation();
