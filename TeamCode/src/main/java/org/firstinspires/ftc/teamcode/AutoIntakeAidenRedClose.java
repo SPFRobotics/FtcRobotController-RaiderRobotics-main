@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -12,6 +15,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 
 import org.opencv.core.Mat;
@@ -31,6 +35,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
     //ColorCam color = new ColorCam(this);
     aprilTagDetectionMovement aTag = new aprilTagDetectionMovement(this);
     LinearSlide slide = new LinearSlide(this);
+    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
     private double timeToContinue = 5;
     private ElapsedTime continueTime = new ElapsedTime();
 
@@ -67,9 +72,14 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
                 chassis.move(.5,"forward",6);
             } else {
                 //Move to the left
-                chassis.move(.5, "forward", 26);
+                //chassis.move(.5, "forward", 26);
                 //chassis.move(.5, "left", 4);
-                chassis.rotate(90,.5);
+                //chassis.rotate(90,.5);
+                Trajectory traj1 = drive.trajectoryBuilder(new Pose2d())
+                        .lineToLinearHeading(new Pose2d(new Vector2d(26, 0), Math.toRadians(90)))
+                        .build();
+                drive.followTrajectory(traj1);
+
                 chassis.move(.5,"forward",0+8);
                 chassis.move(.5,"backward",4);
                 //Do Intake Servo
@@ -186,6 +196,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         aTag.initCam2();
         aTag.camOn();
 
+
         while(!isStarted()){
             aTag.updateSpikeLocation();
             telemetry.addData("Location", aTag.spikeLocation);
@@ -224,8 +235,12 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         aTag.moveToAprilTag(altAprilTag(location, "close", "red"));
 
         aTag.camOff();
-        chassis.move(.5,"right",15);
-        chassis.rotate(180, .5);
+        //chassis.move(.5,"right",15);
+        //chassis.rotate(180, .5);
+        Trajectory traj1 = drive.trajectoryBuilder(new Pose2d())
+                .lineToLinearHeading(new Pose2d(new Vector2d(0, 15), Math.toRadians(180)))
+                .build();
+        drive.followTrajectory(traj1);
 
         telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",aTag.outputInfo[0],aTag.outputInfo[1]));
         telemetry.update();
