@@ -195,6 +195,7 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
         slide.initSlides();
         aTag.initCam2();
         aTag.camOn();
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         while(!isStarted()){
             aTag.updateSpikeLocation();
