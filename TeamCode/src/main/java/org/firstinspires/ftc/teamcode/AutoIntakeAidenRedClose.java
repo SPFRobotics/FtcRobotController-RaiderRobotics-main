@@ -35,7 +35,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
     //ColorCam color = new ColorCam(this);
     aprilTagDetectionMovement aTag = new aprilTagDetectionMovement(this);
     LinearSlide slide = new LinearSlide(this);
-    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+    
     private double timeToContinue = 5;
     private ElapsedTime continueTime = new ElapsedTime();
 
@@ -195,6 +195,8 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         slide.initSlides();
         aTag.initCam2();
         aTag.camOn();
+
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
 
         while(!isStarted()){
