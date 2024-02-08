@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -11,6 +14,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 
 import org.opencv.core.Mat;
@@ -29,6 +33,7 @@ public class AutoIntakeAidenRedFarHalf extends LinearOpMode {
     Intake intake = new Intake(this);
     //ColorCam color = new ColorCam(this);
     aprilTagDetectionMovement aTag = new aprilTagDetectionMovement(this);
+    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
     LinearSlide slide = new LinearSlide(this);
 
     public void placeOnSpikeMarkUpdated(String proximity){
@@ -80,36 +85,51 @@ public class AutoIntakeAidenRedFarHalf extends LinearOpMode {
         if(proximity.toLowerCase().equals("far")) {
             //Aligned to the left
             //Check for center and right
-            if (aTag.spikeLocation.equals("CENTER")) {
-                //Move to the left
-                chassis.move(.5, "left", 8);
-                chassis.move(.5, "forward", 24);
+            if(aTag.spikeLocation.equals("RIGHT")) {
+                //Move to the right
+                //chassis.move(.5, "forward", 26);
+                //chassis.move(.5, "left", 4);
+                //chassis.rotate(-90,.5);
+                Trajectory traj1 = drive.trajectoryBuilder(new Pose2d())
+                        .lineToLinearHeading(new Pose2d(new Vector2d(26, 0),Math.toRadians(-90)))
+                        .build();
+                drive.followTrajectory(traj1);
+
+                chassis.move(.5,"forward",0+8);
+                chassis.move(.5,"backward",4);
                 //Do Intake Servo
                 intake.lowerLip();
                 sleep(1000);
+                chassis.move(.5,"backward",4);
                 intake.raiseLip();
-                chassis.move(.5, "backward", 24);
-                chassis.move(.5, "right", 8);
-            } else if (aTag.spikeLocation.equals("RIGHT")) {
-                //move to the center
-                chassis.move(.5, "right", 6);
-                chassis.move(.5, "forward", 30);
-                //Do Intake Servo
+                //chassis.move(.5, "backward", 30);
+                //chassis.move(.5, "right", 6);
+                //chassis.move(.5,"forward",4);
+                chassis.rotate(90,.5);
+            } else if (aTag.spikeLocation.equals("CENTER")) {
+                //Move to the center
+                chassis.move(.5, "forward", 23+10);
+                chassis.move(.5, "right", 2);
+                chassis.move(.5,"backward",6);
                 intake.lowerLip();
                 sleep(1000);
+                chassis.move(.5,"backward",6);
                 intake.raiseLip();
-                chassis.move(.5, "backward", 30);
-                chassis.move(.5, "left", 6);
+                //chassis.move(.5, "backward", 30);
+                //chassis.move(.5,"backward",2);
+                //chassis.move(.5, "left", 2);
             } else {
-                //move to the right
-                chassis.move(.5, "right", 18);
-                chassis.move(.5, "forward", 30);
+                //Move to the left
+                chassis.move(.5, "forward", 23+4);
+                chassis.move(.5, "left", 8);
+                chassis.move(.5,"backward",4);
                 //Do Intake Servo
                 intake.lowerLip();
                 sleep(1000);
+                chassis.move(.5,"backward",6);
                 intake.raiseLip();
-                chassis.move(.5, "backward", 30);
-                chassis.move(.5, "left", 18);
+                chassis.move(.5, "right", 10);
+                chassis.move(.5,"forward",6);
             }
         }
     }
@@ -124,7 +144,6 @@ public class AutoIntakeAidenRedFarHalf extends LinearOpMode {
             if(aTag.spikeLocation.equals("RIGHT")) {
                 //Move to the right
                 chassis.move(.5, "forward", 26);
-                //chassis.move(.5, "left", 4);
                 chassis.rotate(-90,.5);
                 chassis.move(.5,"forward",0+8);
                 chassis.move(.5,"backward",4);

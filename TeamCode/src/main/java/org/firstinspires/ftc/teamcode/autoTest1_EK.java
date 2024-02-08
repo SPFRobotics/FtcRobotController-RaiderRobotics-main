@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.Range;
 import java.util.Arrays;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -14,6 +15,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @Autonomous
+@Disabled
 public class autoTest1_EK extends LinearOpMode{
     //public static boolean RunAutoRight = false;
     //public static boolean RunMoveToCone = false;

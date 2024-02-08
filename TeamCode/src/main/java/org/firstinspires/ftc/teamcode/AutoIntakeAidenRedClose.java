@@ -247,6 +247,10 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         //sleep(5000);
         chassis.move(.5, "backward", aTag.outputInfo[1]);
         chassis.move(.5, "left", aTag.outputInfo[0] - 20);
+        /*Trajectory traj3 = drive.trajectoryBuilder(new Pose2d())
+                .splineTo(new Vector2d(aTag.outputInfo[0], aTag.outputInfo[1]-20),Math.toRadians(0))
+                .build();
+        drive.followTrajectory(traj3);*/
         chassis.move(.5,"backward",2.5);
         slide.slide(30,0.5);
         sleep(1000);

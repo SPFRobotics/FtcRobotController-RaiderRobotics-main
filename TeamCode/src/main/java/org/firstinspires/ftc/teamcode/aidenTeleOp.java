@@ -11,7 +11,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@TeleOp @Disabled
+@TeleOp
+@Disabled
 public class aidenTeleOp extends LinearOpMode {
     DcMotor frontLeft = null;
     DcMotor backLeft = null;

@@ -218,6 +218,10 @@ public class AutoIntakeAidenBlueFar extends LinearOpMode {
         chassis.move(.5,"left",22);
         chassis.move(.5, "backward", aTag.outputInfo[1]-6);
         chassis.move(.5, "left", aTag.outputInfo[0]-30);
+        /*Trajectory traj3 = drive.trajectoryBuilder(new Pose2d())
+                .splineTo(new Vector2d(aTag.outputInfo[0]-6, aTag.outputInfo[1]-30),Math.toRadians(0))
+                .build();
+        drive.followTrajectory(traj3);*/
         chassis.move(.5,"backward",3);
         slide.slide(35,0.5);
         sleep(1000);

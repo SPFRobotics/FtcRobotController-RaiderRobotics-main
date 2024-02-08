@@ -12,6 +12,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.firstinspires.ftc.teamcode.cameraDetectColorTest2;
 
+
 public class ColorCam {
     LinearOpMode opmode = null;
     OpenCvCamera camera = null;

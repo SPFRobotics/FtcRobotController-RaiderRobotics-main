@@ -23,7 +23,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.List;
 
-@Autonomous @Disabled
+@Autonomous
+@Disabled
 public class AutoIntakeAiden extends LinearOpMode {
     //MOVEMENT MOTOR VARS
     private static final double strafeMult = 1.2;

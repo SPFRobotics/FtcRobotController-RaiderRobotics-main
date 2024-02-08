@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 //These are imports for all of the libraries you need to run the program
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.Range;
 import java.util.Arrays;
 //These imports are should be in most if not all programs
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 //"@Autonomous" puts this program in the autonomous dropdown on the driverhub
 @Autonomous
+@Disabled
 public class autoParkOutline extends LinearOpMode { //"extends LinearOpMode" just means that this program can use motors, also only one of the programs running is allowed to have the "LinearOpMode"
     //"@Override" should be before your runOpMode function
     private DcMotor backLeft;

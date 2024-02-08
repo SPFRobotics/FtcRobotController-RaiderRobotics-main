@@ -10,7 +10,8 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.lang.Math;
 
-@Autonomous @Disabled
+@Autonomous
+@Disabled
 public class AutoTestBradley extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();

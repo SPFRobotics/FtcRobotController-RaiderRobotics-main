@@ -240,6 +240,10 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
         telemetry.update();
         chassis.move(.5, "left", aTag.outputInfo[0]);
         chassis.move(.5, "backward", aTag.outputInfo[1]);
+        /*Trajectory traj3 = drive.trajectoryBuilder(new Pose2d())
+                .splineTo(new Vector2d(aTag.outputInfo[0], aTag.outputInfo[1]),Math.toRadians(0))
+                .build();
+        drive.followTrajectory(traj3);*/
         slide.slide(35,0.5);
         sleep(1000);
         slide.slide(0,0.5);
