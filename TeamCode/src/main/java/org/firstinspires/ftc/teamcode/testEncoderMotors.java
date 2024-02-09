@@ -25,6 +25,7 @@ public class testEncoderMotors extends LinearOpMode {
     private double Reverse = 1;
 
     public static double POWER = 0.25;
+    public static double CHANGEAMOUNT = 200;
 
     @Override
     public void runOpMode() {
@@ -42,16 +43,16 @@ public class testEncoderMotors extends LinearOpMode {
             }
 
             if (gamepad1.circle) {
-                frontLeftVal = frontLeft.getCurrentPosition() + (100 * Reverse);
+                frontLeftVal = frontLeft.getCurrentPosition() + (CHANGEAMOUNT * Reverse);
             }
             if (gamepad1.triangle) {
-                frontRightVal = frontRight.getCurrentPosition() + (100 * Reverse);
+                frontRightVal = frontRight.getCurrentPosition() + (CHANGEAMOUNT * Reverse);
             }
             if (gamepad1.cross) {
-                backLeftVal = backLeft.getCurrentPosition() + (100 * Reverse);
+                backLeftVal = backLeft.getCurrentPosition() + (CHANGEAMOUNT * Reverse);
             }
             if (gamepad1.square) {
-                backRightVal = backRight.getCurrentPosition() + (100 * Reverse);
+                backRightVal = backRight.getCurrentPosition() + (CHANGEAMOUNT * Reverse);
             }
 
             frontLeft.setTargetPosition((int)frontLeftVal);
