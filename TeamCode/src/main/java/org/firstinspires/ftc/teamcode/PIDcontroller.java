@@ -18,7 +18,7 @@ public class PIDcontroller {
   // Predefined constants, also don't touch
   private double maxIntegral = 50000000;
   private double maxErrorReset = 10000;
-  private double minErrorReset = 0;
+  private double minErrorReset = 100;
 
   // Changing variables
   private double error = 0;

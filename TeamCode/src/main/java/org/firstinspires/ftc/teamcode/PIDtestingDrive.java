@@ -1,16 +1,23 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Autonomous
+@Config
 public class PIDtestingDrive extends LinearOpMode {
-    private double kP = 0.01;
-    private double kI = 0.00001;
-    private double kD = 0.0001;
+    public static double kP = 0.01;
+    public static double kI = 0.00001;
+    public static double kD = 0.0001;
+    public static double POWER = 0.5;
+    public static String DIRECTION = "left";
+    public static double DISTANCE = 20;
+
     PIDcontroller controller = new PIDcontroller(this,kP,kI,kD);
+    MecanumChassis chassis = new MecanumChassis(this);
 
     public DcMotor frontLeft;
     public DcMotor frontRight;
@@ -20,7 +27,7 @@ public class PIDtestingDrive extends LinearOpMode {
     private double powerFrontLeft = 0;
     private double powerBackLeft = 0;
     private double powerBackRight = 0;
-    private double targetDist = 30;
+    private double targetDist = -30;
 
     public void runOpMode() {
         frontLeft = hardwareMap.dcMotor.get("frontLeft"); /** Port: ControlHub MotorPort 1 **/
@@ -42,19 +49,21 @@ public class PIDtestingDrive extends LinearOpMode {
 
         targetDist = Unit.inch_convert(targetDist);
 
+        chassis.initializeMovement();
+
         waitForStart();
-        while (opModeIsActive()) {
-            double power = 0.5;
-            powerFrontLeft = controller.controller(targetDist,frontLeft.getCurrentPosition(),power);
-            powerFrontRight = controller.controller(targetDist,frontRight.getCurrentPosition(),power);
-            powerBackLeft = controller.controller(targetDist,backLeft.getCurrentPosition(),power);
-            powerBackRight = controller.controller(targetDist,backRight.getCurrentPosition(),power);
+        /*while (opModeIsActive()) {
+            powerFrontLeft = controller.controller(targetDist,frontLeft.getCurrentPosition(),POWER);
+            powerFrontRight = controller.controller(targetDist,frontRight.getCurrentPosition(),POWER);
+            powerBackLeft = controller.controller(targetDist,backLeft.getCurrentPosition(),POWER);
+            powerBackRight = controller.controller(targetDist,backRight.getCurrentPosition(),POWER);
             frontLeft.setPower(powerFrontLeft);
             frontRight.setPower(powerFrontRight);
             backLeft.setPower(powerBackLeft);
             backRight.setPower(powerBackRight);
             telemetry.addLine(String.format("Front Power \n Left: %6.1f, Right: %6.1f \n Back Power \n Left: %6.1f, Right: %6.1f",powerFrontLeft,powerFrontRight,powerBackLeft,powerBackRight));
             telemetry.update();
-        }
+        }*/
+        chassis.move(POWER,DIRECTION,DISTANCE);
     }
 }

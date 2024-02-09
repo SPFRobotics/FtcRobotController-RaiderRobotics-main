@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,6 +13,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 public class MecanumChassis {
     public LinearOpMode opmode = null;
@@ -19,6 +25,17 @@ public class MecanumChassis {
     public DcMotor liftLeft = null;
     public DcMotor liftRight = null;
     public IMU imu = null;
+
+    private double targetDist = 0;
+    private double powerFrontRight = 0;
+    private double powerFrontLeft = 0;
+    private double powerBackLeft = 0;
+    private double powerBackRight = 0;
+
+    public static double kP = 0.01;
+    public static double kI = 0.00001;
+    public static double kD = 0.0001;
+
     public MecanumChassis(LinearOpMode lom){
         opmode = lom;
     }
@@ -31,15 +48,16 @@ public class MecanumChassis {
         frontLeft = opmode.hardwareMap.dcMotor.get("frontLeft");
         frontRight = opmode.hardwareMap.dcMotor.get("frontRight");
 
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        /*backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
 
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         stop_and_reset_encoders_all();
+        run_without_encoders_all();
 
         imu = opmode.hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -62,6 +80,12 @@ public class MecanumChassis {
         frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
+    public void run_without_encoders_all() {
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
 
     public void powerZero() {
         backLeft.setPower(0);
@@ -69,8 +93,164 @@ public class MecanumChassis {
         frontLeft.setPower(0);
         frontRight.setPower(0);
     }
-
+    public void move2(double movePower, @NonNull String moveDirection, double moveDistance){
+        SampleMecanumDrive drive = new SampleMecanumDrive(opmode.hardwareMap);
+        //stop_and_reset_encoders_all(); //Sets encoder count to 0
+        if (moveDirection.equals("forward")) {
+            //Tell each wheel to move a certain amount
+            Trajectory traj1 = drive.trajectoryBuilder(new Pose2d())
+                    .lineTo(new Vector2d(moveDistance, 0))
+                    .build();
+            drive.followTrajectory(traj1);
+        } else if (moveDirection.equals("backward")) {
+            Trajectory traj1 = drive.trajectoryBuilder(new Pose2d())
+                    .lineTo(new Vector2d(-moveDistance, 0))
+                    .build();
+            drive.followTrajectory(traj1);
+        } else if (moveDirection.equals("right")) {
+            Trajectory traj1 = drive.trajectoryBuilder(new Pose2d())
+                    .lineTo(new Vector2d(0, moveDistance))
+                    .build();
+            drive.followTrajectory(traj1);
+        } else if (moveDirection.equals("left")) {
+            Trajectory traj1 = drive.trajectoryBuilder(new Pose2d())
+                    .lineTo(new Vector2d(0, -moveDistance))
+                    .build();
+            drive.followTrajectory(traj1);
+        } else {
+            opmode.telemetry.addData("Error", "move direction must be forward,backward,left, or right.");
+            opmode.telemetry.update();
+            opmode.terminateOpModeNow();
+        }
+        powerZero();
+        opmode.sleep(500);
+        opmode.telemetry.addData("test", "done!");
+        opmode.telemetry.update();
+    }
     public void move(double movePower, String moveDirection, double moveDistance){
+        PIDcontroller controller = new PIDcontroller(opmode,kP,kI,kD);
+        targetDist = 0;
+        powerFrontRight = 0;
+        powerFrontLeft = 0;
+        powerBackLeft = 0;
+        powerBackRight = 0;
+        stop_and_reset_encoders_all(); //Sets encoder count to 0
+        run_without_encoders_all();
+        frontLeft.setPower(powerFrontLeft);
+        frontRight.setPower(powerFrontRight);
+        backLeft.setPower(powerBackLeft);
+        backRight.setPower(powerBackRight);
+        if (moveDirection.equals("forward")) {
+            //Tell each wheel to move a certain amount
+            targetDist = Unit.inch_convert(moveDistance);
+            powerFrontLeft = controller.controller(targetDist,frontLeft.getCurrentPosition(),movePower);
+            powerFrontRight = controller.controller(targetDist,frontRight.getCurrentPosition(),movePower);
+            powerBackLeft = controller.controller(targetDist,backLeft.getCurrentPosition(),movePower);
+            powerBackRight = controller.controller(targetDist,backRight.getCurrentPosition(),movePower);
+            frontLeft.setPower(powerFrontLeft);
+            frontRight.setPower(powerFrontRight);
+            backLeft.setPower(powerBackLeft);
+            backRight.setPower(powerBackRight);
+        } else if (moveDirection.equals("backward")) {
+            targetDist = Unit.inch_convert(-moveDistance);
+            powerFrontLeft = controller.controller(targetDist,frontLeft.getCurrentPosition(),movePower);
+            powerFrontRight = controller.controller(targetDist,frontRight.getCurrentPosition(),movePower);
+            powerBackLeft = controller.controller(targetDist,backLeft.getCurrentPosition(),movePower);
+            powerBackRight = controller.controller(targetDist,backRight.getCurrentPosition(),movePower);
+            frontLeft.setPower(powerFrontLeft);
+            frontRight.setPower(powerFrontRight);
+            backLeft.setPower(-powerBackLeft);
+            backRight.setPower(powerBackRight);
+        } else if (moveDirection.equals("right")) {
+            targetDist = Unit.inch_convert(moveDistance * strafeMult);
+            powerFrontLeft = controller.controller(targetDist,frontLeft.getCurrentPosition(),movePower);
+            powerFrontRight = controller.controller(-targetDist,frontRight.getCurrentPosition(),movePower);
+            powerBackLeft = controller.controller(-targetDist,backLeft.getCurrentPosition(),movePower);
+            powerBackRight = controller.controller(targetDist,backRight.getCurrentPosition(),movePower);
+            frontLeft.setPower(powerFrontLeft);
+            frontRight.setPower(powerFrontRight);
+            backLeft.setPower(powerBackLeft);
+            backRight.setPower(powerBackRight);
+        } else if (moveDirection.equals("left")) {
+            targetDist = Unit.inch_convert(moveDistance * strafeMult);
+            powerFrontLeft = controller.controller(-targetDist,frontLeft.getCurrentPosition(),movePower);
+            powerFrontRight = controller.controller(targetDist,frontRight.getCurrentPosition(),movePower);
+            powerBackLeft = controller.controller(targetDist,backLeft.getCurrentPosition(),movePower);
+            powerBackRight = controller.controller(-targetDist,backRight.getCurrentPosition(),movePower);
+            frontLeft.setPower(powerFrontLeft);
+            frontRight.setPower(powerFrontRight);
+            backLeft.setPower(powerBackLeft);
+            backRight.setPower(powerBackRight);
+        } else {
+            opmode.telemetry.addData("Error", "move direction must be forward,backward,left, or right.");
+            opmode.telemetry.update();
+            opmode.terminateOpModeNow();
+        }
+        /*opmode.telemetry.addData("Workings",Math.abs(powerFrontLeft) > 0.05 && Math.abs(powerFrontRight) > 0.05 && Math.abs(powerBackLeft) > 0.05 && Math.abs(powerBackRight) > 0.05);
+        opmode.telemetry.update();
+        opmode.sleep(6000);*/
+        //while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()) {
+        while (opmode.opModeIsActive() && Math.abs(powerFrontLeft) > 0.05 && Math.abs(powerFrontRight) > 0.05 && Math.abs(powerBackLeft) > 0.05 && Math.abs(powerBackRight) > 0.05) {
+            if (moveDirection.equals("forward")) {
+                //Tell each wheel to move a certain amount
+                //targetDist = Unit.inch_convert(moveDistance);
+                powerFrontLeft = controller.controller(targetDist,frontLeft.getCurrentPosition(),movePower);
+                powerFrontRight = controller.controller(targetDist,frontRight.getCurrentPosition(),movePower);
+                powerBackLeft = controller.controller(targetDist,backLeft.getCurrentPosition(),movePower);
+                powerBackRight = controller.controller(targetDist,backRight.getCurrentPosition(),movePower);
+                frontLeft.setPower(powerFrontLeft);
+                frontRight.setPower(powerFrontRight);
+                backLeft.setPower(powerBackLeft);
+                backRight.setPower(powerBackRight);
+            } else if (moveDirection.equals("backward")) {
+                //targetDist = Unit.inch_convert(-moveDistance);
+                powerFrontLeft = controller.controller(targetDist,frontLeft.getCurrentPosition(),movePower);
+                powerFrontRight = controller.controller(targetDist,frontRight.getCurrentPosition(),movePower);
+                powerBackLeft = controller.controller(targetDist,backLeft.getCurrentPosition(),movePower);
+                powerBackRight = controller.controller(targetDist,backRight.getCurrentPosition(),movePower);
+                frontLeft.setPower(powerFrontLeft);
+                frontRight.setPower(powerFrontRight);
+                backLeft.setPower(powerBackLeft);
+                backRight.setPower(powerBackRight);
+            } else if (moveDirection.equals("right")) {
+                //targetDist = Unit.inch_convert(moveDistance * strafeMult);
+                powerFrontLeft = controller.controller(targetDist,frontLeft.getCurrentPosition(),movePower);
+                powerFrontRight = controller.controller(-targetDist,frontRight.getCurrentPosition(),movePower);
+                powerBackLeft = controller.controller(-targetDist,backLeft.getCurrentPosition(),movePower);
+                powerBackRight = controller.controller(targetDist,backRight.getCurrentPosition(),movePower);
+                frontLeft.setPower(powerFrontLeft);
+                frontRight.setPower(powerFrontRight);
+                backLeft.setPower(powerBackLeft);
+                backRight.setPower(powerBackRight);
+            } else if (moveDirection.equals("left")) {
+                //targetDist = Unit.inch_convert(moveDistance * strafeMult);
+                powerFrontLeft = controller.controller(-targetDist,frontLeft.getCurrentPosition(),movePower);
+                powerFrontRight = controller.controller(targetDist,frontRight.getCurrentPosition(),movePower);
+                powerBackLeft = controller.controller(targetDist,backLeft.getCurrentPosition(),movePower);
+                powerBackRight = controller.controller(-targetDist,backRight.getCurrentPosition(),movePower);
+                frontLeft.setPower(powerFrontLeft);
+                frontRight.setPower(powerFrontRight);
+                backLeft.setPower(powerBackLeft);
+                backRight.setPower(powerBackRight);
+            } else {
+                opmode.telemetry.addData("Error", "move direction must be forward,backward,left, or right.");
+                opmode.telemetry.update();
+                opmode.terminateOpModeNow();
+            }
+        //while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()) {
+            opmode.telemetry.addData("test", "attempting to move...");
+            opmode.telemetry.addData("power back right", backRight.getPower());
+            opmode.telemetry.addData("power back left", backLeft.getPower());
+            opmode.telemetry.addData("power front right", frontRight.getPower());
+            opmode.telemetry.addData("power front left", frontLeft.getPower());
+            opmode.telemetry.update();
+        }
+        powerZero();
+        opmode.sleep(500);
+        opmode.telemetry.addData("test", "done!");
+        opmode.telemetry.update();
+    }
+    public void move1(double movePower, @NonNull String moveDirection, double moveDistance){
         stop_and_reset_encoders_all(); //Sets encoder count to 0
         if (moveDirection.equals("forward")) {
             //Tell each wheel to move a certain amount
