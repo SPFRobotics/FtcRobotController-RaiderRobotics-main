@@ -35,7 +35,7 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
     //ColorCam color = new ColorCam(this);
     aprilTagDetectionMovement aTag = new aprilTagDetectionMovement(this);
     LinearSlide slide = new LinearSlide(this);
-    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+    SampleMecanumDrive drive = new SampleMecanumDrive(null);
     private double timeToContinue = 5;
     private ElapsedTime continueTime = new ElapsedTime();
 
@@ -199,7 +199,15 @@ public class AutoIntakeAidenBlueClose extends LinearOpMode {
 
         while(!isStarted()){
             aTag.updateSpikeLocation();
-            telemetry.addData("Location", aTag.spikeLocation);
+            switch (aTag.spikeLocation) {
+                case "NONE":
+                    telemetry.addData("Location", "RIGHT");
+                    break;
+                default:
+                    telemetry.addData("Location", aTag.spikeLocation);
+                    break;
+            }
+            //telemetry.addData("Location", aTag.spikeLocation);
             telemetry.update();
         }
 

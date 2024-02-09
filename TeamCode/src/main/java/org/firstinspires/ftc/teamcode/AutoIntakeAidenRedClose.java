@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -35,11 +36,14 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
     //ColorCam color = new ColorCam(this);
     aprilTagDetectionMovement aTag = new aprilTagDetectionMovement(this);
     LinearSlide slide = new LinearSlide(this);
+    //SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+    SampleMecanumDrive drive;
     
     private double timeToContinue = 5;
     private ElapsedTime continueTime = new ElapsedTime();
 
     public void placeOnSpikeMarkUpdated(String proximity){
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         //Move to center of spike marks
         double power = -.3;
         if(proximity.toLowerCase().equals("close")) {
@@ -72,13 +76,14 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
                 chassis.move(.5,"forward",6);
             } else {
                 //Move to the left
-                //chassis.move(.5, "forward", 26);
+                chassis.move(.5, "forward", 26);
                 //chassis.move(.5, "left", 4);
-                //chassis.rotate(90,.5);
-                Trajectory traj1 = drive.trajectoryBuilder(new Pose2d())
+                chassis.rotate(90,.5);
+                /*Trajectory traj1 = drive.trajectoryBuilder(new Pose2d())
                         .lineToLinearHeading(new Pose2d(new Vector2d(26, 0), Math.toRadians(90)))
                         .build();
-                drive.followTrajectory(traj1);
+                drive.followTrajectory(traj1);*/
+                //sleep(2000);
 
                 chassis.move(.5,"forward",0+8);
                 chassis.move(.5,"backward",4);
@@ -201,7 +206,21 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
 
         while(!isStarted()){
             aTag.updateSpikeLocation();
-            telemetry.addData("Location", aTag.spikeLocation);
+            switch (aTag.spikeLocation) {
+                case "NONE":
+                    telemetry.addData("Location", "LEFT");
+                    break;
+                case "CENTER":
+                    telemetry.addData("Location", "RIGHT");
+                    break;
+                case "RIGHT":
+                    telemetry.addData("Location", "CENTER");
+                    break;
+                default:
+                    telemetry.addData("Location", aTag.spikeLocation);
+                    break;
+            }
+            //telemetry.addData("Location 2", aTag.spikeLocation);
             telemetry.update();
         }
 
@@ -239,6 +258,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         aTag.camOff();
         //chassis.move(.5,"right",15);
         //chassis.rotate(180, .5);
+        sleep(400);
         Trajectory traj1 = drive.trajectoryBuilder(new Pose2d())
                 .lineToLinearHeading(new Pose2d(new Vector2d(0, 15), Math.toRadians(180)))
                 .build();
@@ -247,12 +267,12 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",aTag.outputInfo[0],aTag.outputInfo[1]));
         telemetry.update();
         //sleep(5000);
-        chassis.move(.5, "backward", aTag.outputInfo[1]);
-        chassis.move(.5, "left", aTag.outputInfo[0] - 20);
-        /*Trajectory traj3 = drive.trajectoryBuilder(new Pose2d())
-                .splineTo(new Vector2d(aTag.outputInfo[0], aTag.outputInfo[1]-20),Math.toRadians(0))
+        //chassis.move(.5, "backward", aTag.outputInfo[1]);
+        //chassis.move(.5, "left", aTag.outputInfo[0] - 20);
+        Trajectory traj3 = drive.trajectoryBuilder(new Pose2d())
+                .splineTo(new Vector2d(aTag.outputInfo[1]-20, aTag.outputInfo[0]),Math.toRadians(0))
                 .build();
-        drive.followTrajectory(traj3);*/
+        drive.followTrajectory(traj3);
         chassis.move(.5,"backward",2.5);
         slide.slide(30,0.5);
         sleep(1000);

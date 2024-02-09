@@ -289,7 +289,14 @@ public class AutoIntakeAidenRedFarHalf extends LinearOpMode {
 
         while(!isStarted()){
             aTag.updateSpikeLocation();
-            telemetry.addData("Location", aTag.spikeLocation);
+            switch (aTag.spikeLocation) {
+                case "NONE":
+                    telemetry.addData("Location", "RIGHT");
+                    break;
+                default:
+                    telemetry.addData("Location", aTag.spikeLocation);
+                    break;
+            }
             telemetry.update();
         }
 

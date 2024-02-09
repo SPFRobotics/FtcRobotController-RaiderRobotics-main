@@ -153,8 +153,8 @@ public class cameraDetectColorTest1 extends OpenCvPipeline {
                 Imgproc.rectangle(input,GameObjectRightPointA,GameObjectRightPointB,color,4);
             }*/
         } else if (maxPercent == 0 || maxPercent == minTotalPercent) {
-            //position = GameObjectLocation.NONE;
-            position = GameObjectLocation.RIGHT;
+            position = GameObjectLocation.NONE;
+            //position = GameObjectLocation.RIGHT;
             //Imgproc.rectangle(input,GameObjectPointA,GameObjectPointB,BLACK,4);
             Imgproc.rectangle(input,GameObjectLeftPointA,GameObjectLeftPointB,BLACK,2);
             Imgproc.rectangle(input,GameObjectCenterPointA,GameObjectCenterPointB,BLACK,2);
