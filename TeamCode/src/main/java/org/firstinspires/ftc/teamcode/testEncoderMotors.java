@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.IMU;
 @Autonomous
 @Config
 public class testEncoderMotors extends LinearOpMode {
+    MecanumChassis chassis = new MecanumChassis(this);
+
     private DcMotor backLeft;
     private DcMotor backRight;
     private DcMotor frontLeft;
@@ -26,10 +28,14 @@ public class testEncoderMotors extends LinearOpMode {
 
     public static double POWER = 0.25;
     public static double CHANGEAMOUNT = 200;
+    public static double DISTANCE = 20;
+    public static boolean SETMOVEAMOUNT = false;
+    public static String DIRECTION = "forward";
 
     @Override
     public void runOpMode() {
         Initializtion();
+        chassis.initializeMovement();
         waitForStart();
 
         while (opModeIsActive()) {
@@ -42,32 +48,40 @@ public class testEncoderMotors extends LinearOpMode {
                 Reverse = 1;
             }
 
-            if (gamepad1.circle) {
-                frontLeftVal = frontLeft.getCurrentPosition() + (CHANGEAMOUNT * Reverse);
-            }
-            if (gamepad1.triangle) {
-                frontRightVal = frontRight.getCurrentPosition() + (CHANGEAMOUNT * Reverse);
-            }
-            if (gamepad1.cross) {
-                backLeftVal = backLeft.getCurrentPosition() + (CHANGEAMOUNT * Reverse);
-            }
-            if (gamepad1.square) {
-                backRightVal = backRight.getCurrentPosition() + (CHANGEAMOUNT * Reverse);
-            }
+            if (SETMOVEAMOUNT) {
+                chassis.move(POWER,DIRECTION,DISTANCE);
+                SETMOVEAMOUNT = false;
+                //sleep(5000);
+                //terminateOpModeNow();
+            } else {
+                if (gamepad1.circle) {
+                    frontLeftVal = frontLeft.getCurrentPosition() + (CHANGEAMOUNT * Reverse);
+                }
+                if (gamepad1.triangle) {
+                    frontRightVal = frontRight.getCurrentPosition() + (CHANGEAMOUNT * Reverse);
+                }
+                if (gamepad1.cross) {
+                    backLeftVal = backLeft.getCurrentPosition() + (CHANGEAMOUNT * Reverse);
+                }
+                if (gamepad1.square) {
+                    backRightVal = backRight.getCurrentPosition() + (CHANGEAMOUNT * Reverse);
+                }
 
-            frontLeft.setTargetPosition((int)frontLeftVal);
-            frontRight.setTargetPosition((int)frontRightVal);
-            backLeft.setTargetPosition((int)backLeftVal);
-            backRight.setTargetPosition((int)backRightVal);
 
-            frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backLeft.setPower(POWER);
-            backRight.setPower(POWER);
-            frontLeft.setPower(POWER);
-            frontRight.setPower(POWER);
+                frontLeft.setTargetPosition((int) frontLeftVal);
+                frontRight.setTargetPosition((int) frontRightVal);
+                backLeft.setTargetPosition((int) backLeftVal);
+                backRight.setTargetPosition((int) backRightVal);
+
+                frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                backLeft.setPower(POWER);
+                backRight.setPower(POWER);
+                frontLeft.setPower(POWER);
+                frontRight.setPower(POWER);
+            }
 
             telemetry.addLine(String.format("Front Left Encoder \n Actual: %d, Target: %6.1f",frontLeft.getCurrentPosition(),frontLeftVal));
             telemetry.addLine(String.format("Front Right Encoder \n Actual: %d, Target: %6.1f",frontRight.getCurrentPosition(),frontRightVal));

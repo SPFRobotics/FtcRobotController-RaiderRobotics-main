@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.Range;
@@ -18,10 +19,16 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 public class MecanumChassis {
     public LinearOpMode opmode = null;
     public static final double strafeMult = 1.1;
-    public DcMotor backLeft = null;
+    /*public DcMotor backLeft = null;
     public DcMotor backRight = null;
     public DcMotor frontLeft = null;
-    public DcMotor frontRight = null;
+    public DcMotor frontRight = null;*/
+
+    public DcMotorEx backLeft = null;
+    public DcMotorEx backRight = null;
+    public DcMotorEx frontLeft = null;
+    public DcMotorEx frontRight = null;
+
     public DcMotor liftLeft = null;
     public DcMotor liftRight = null;
     public IMU imu = null;
@@ -43,10 +50,15 @@ public class MecanumChassis {
     public double inToCm(int inches) { return inches * 2.54; }
     public double cm_convert(double cm) { return cm * (537.7 / (9.6012 / Math.PI)); }
     public void initializeMovement() {
-        backLeft = opmode.hardwareMap.dcMotor.get("backLeft");
+        /*backLeft = opmode.hardwareMap.dcMotor.get("backLeft");
         backRight = opmode.hardwareMap.dcMotor.get("backRight");
         frontLeft = opmode.hardwareMap.dcMotor.get("frontLeft");
-        frontRight = opmode.hardwareMap.dcMotor.get("frontRight");
+        frontRight = opmode.hardwareMap.dcMotor.get("frontRight");*/
+
+        backLeft = opmode.hardwareMap.get(DcMotorEx.class,"backLeft");
+        backRight = opmode.hardwareMap.get(DcMotorEx.class,"backRight");
+        frontLeft = opmode.hardwareMap.get(DcMotorEx.class,"frontLeft");
+        frontRight = opmode.hardwareMap.get(DcMotorEx.class,"frontRight");
 
         /*backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -85,6 +97,12 @@ public class MecanumChassis {
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+    public void run_using_encoders_all() {
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void powerZero() {
@@ -127,7 +145,7 @@ public class MecanumChassis {
         opmode.telemetry.addData("test", "done!");
         opmode.telemetry.update();
     }
-    public void move(double movePower, String moveDirection, double moveDistance){
+    public void move1(double movePower, String moveDirection, double moveDistance){
         PIDcontroller controller = new PIDcontroller(opmode,kP,kI,kD);
         targetDist = 0;
         powerFrontRight = 0;
@@ -250,8 +268,9 @@ public class MecanumChassis {
         opmode.telemetry.addData("test", "done!");
         opmode.telemetry.update();
     }
-    public void move1(double movePower, @NonNull String moveDirection, double moveDistance){
+    public void move(double movePower, @NonNull String moveDirection, double moveDistance){
         stop_and_reset_encoders_all(); //Sets encoder count to 0
+        //run_using_encoders_all();
         if (moveDirection.equals("forward")) {
             //Tell each wheel to move a certain amount
             backLeft.setTargetPosition((int) inch_convert(moveDistance)); //Converts the

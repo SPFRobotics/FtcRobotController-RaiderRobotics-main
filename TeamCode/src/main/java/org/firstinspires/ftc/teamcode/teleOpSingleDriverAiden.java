@@ -127,6 +127,10 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
             Speed(); /** a very magical and mystical function that is complicated but not really **/
             if (Math.abs(gamepad1.left_stick_x) <= 0.05 && Math.abs(gamepad1.left_stick_y) <= 0.05) { /** Disclaimer!!!: robot oriented is priority not field **/ /** this is the statment that switches between field and robot oriented drive does this by checking if left joystick isn't being moved **/
                 //fieldOriented();
+                frontLeft.setPower(0);
+                frontRight.setPower(0);
+                backLeft.setPower(0);
+                backRight.setPower(0);
             } else {
                 robotOriented();
             }
