@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
@@ -310,5 +311,40 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
+    }
+
+    public void move2(double movePower, @NonNull String moveDirection, double moveDistance){
+        //SampleMecanumDrive drive = new SampleMecanumDrive(opmode.hardwareMap);
+        //stop_and_reset_encoders_all(); //Sets encoder count to 0
+        if (moveDirection.equals("forward")) {
+            //Tell each wheel to move a certain amount
+            Trajectory traj1 = trajectoryBuilder(new Pose2d())
+                    .lineTo(new Vector2d(moveDistance, 0))
+                    .build();
+            followTrajectory(traj1);
+        } else if (moveDirection.equals("backward")) {
+            Trajectory traj1 = trajectoryBuilder(new Pose2d())
+                    .lineTo(new Vector2d(-moveDistance, 0))
+                    .build();
+            followTrajectory(traj1);
+        } else if (moveDirection.equals("right")) {
+            Trajectory traj1 = trajectoryBuilder(new Pose2d())
+                    .lineTo(new Vector2d(0, moveDistance))
+                    .build();
+            followTrajectory(traj1);
+        } else if (moveDirection.equals("left")) {
+            Trajectory traj1 = trajectoryBuilder(new Pose2d())
+                    .lineTo(new Vector2d(0, -moveDistance))
+                    .build();
+            followTrajectory(traj1);
+        } else {
+            //opmode.telemetry.addData("Error", "move direction must be forward,backward,left, or right.");
+            //opmode.telemetry.update();
+            //opmode.terminateOpModeNow();
+        }
+        setMotorPowers(0,0,0,0);
+        //opmode.sleep(500);
+        //opmode.telemetry.addData("test", "done!");
+        //opmode.telemetry.update();
     }
 }
