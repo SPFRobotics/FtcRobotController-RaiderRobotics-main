@@ -125,11 +125,15 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
             //previousGamepad2.copy(currentGamepad2); /** copies the previous loop's gamepad2 state **/
             //currentGamepad2.copy(gamepad2); /** copies the current gamepad2 state **/
             Speed(); /** a very magical and mystical function that is complicated but not really **/
-            //if (Math.abs(gamepad1.left_stick_x) <= 0.05 && Math.abs(gamepad1.left_stick_y) <= 0.05) { /** Disclaimer!!!: robot oriented is priority not field **/ /** this is the statment that switches between field and robot oriented drive does this by checking if left joystick isn't being moved **/
+            if (Math.abs(gamepad1.left_stick_x) <= 0.05 && Math.abs(gamepad1.left_stick_y) <= 0.05) { /** Disclaimer!!!: robot oriented is priority not field **/ /** this is the statment that switches between field and robot oriented drive does this by checking if left joystick isn't being moved **/
                 //fieldOriented();
-            //} else {
+                frontLeft.setPower(0);
+                frontRight.setPower(0);
+                backLeft.setPower(0);
+                backRight.setPower(0);
+            } else {
                 robotOriented();
-            //}
+            }
             Intake();
             //Outtake();
             //LiftHold();
@@ -360,11 +364,9 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
         backLeft.setPower(backLeftPower);
         frontRight.setPower(frontRightPower);
         backRight.setPower(backRightPower);
-
-        //Intake x, outward circle, linearslide up traingle, slide down squaer
     }
     private void Intake() {
-        if (gamepad1.circle) {intake1.setPower(1);intake2.setPower(1);} else if (gamepad1.cross) {intake1.setPower(-1);intake2.setPower(-1);} else {intake1.setPower(0);intake2.setPower(0);}
+        if (gamepad1.square) {intake1.setPower(1);intake2.setPower(1);} else if (gamepad1.triangle) {intake1.setPower(-1);intake2.setPower(-1);} else {intake1.setPower(0);intake2.setPower(0);}
         if (gamepad1.dpad_up) {intakeArmPos -= 0.05*speed2;}
         if (gamepad1.dpad_down) {intakeArmPos += 0.05*speed2;}
         intakeArmPos = Range.clip(intakeArmPos,minIntakeArmPos,maxIntakeArmPos);

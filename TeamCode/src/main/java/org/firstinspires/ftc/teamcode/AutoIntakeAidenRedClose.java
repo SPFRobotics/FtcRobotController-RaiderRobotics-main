@@ -39,7 +39,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
     aprilTagDetectionMovement aTag = new aprilTagDetectionMovement(this);
     LinearSlide slide = new LinearSlide(this);
     //SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-    SampleMecanumDrive drive;
+    //SampleMecanumDrive drive;
     
     private double timeToContinue = 5;
     private ElapsedTime continueTime = new ElapsedTime();
@@ -47,7 +47,6 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
     public static double POWER = 0.5;
 
     public void placeOnSpikeMarkUpdated(String proximity){
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         //Move to center of spike marks
         double power = .5;
         if(proximity.toLowerCase().equals("close")) {
@@ -80,13 +79,9 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
                 chassis.move(.5,"forward",6);
             } else {
                 //Move to the left
-                //chassis.move(0.5, "forward", 26);
+                chassis.move(0.5, "forward", 26);
                 //chassis.move(.5, "left", 4);
-                //chassis.rotate(90,.5);
-                Trajectory traj1 = drive.trajectoryBuilder(new Pose2d())
-                        .lineToLinearHeading(new Pose2d(new Vector2d(28, 0), Math.toRadians(90)))
-                        .build();
-                drive.followTrajectory(traj1);
+                chassis.rotate(90,.5);
                 //sleep(2000);
 
                 chassis.move(.5,"forward",0+8);
@@ -205,8 +200,6 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         aTag.initCam2();
         aTag.camOn();
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
 
         while(!isStarted()){
             aTag.updateSpikeLocation();
@@ -263,20 +256,12 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         chassis.move(.5,"right",15);
         chassis.rotate(180, .5);
         sleep(400);
-        /*Trajectory traj1 = drive.trajectoryBuilder(new Pose2d())
-                .lineToLinearHeading(new Pose2d(new Vector2d(0, 15), Math.toRadians(180)))
-                .build();
-        drive.followTrajectory(traj1);*/
 
         telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",aTag.outputInfo[0],aTag.outputInfo[1]));
         telemetry.update();
         //sleep(5000);
         chassis.move(.5, "backward", aTag.outputInfo[1]);
         chassis.move(.5, "left", aTag.outputInfo[0] - 20);
-        /*Trajectory traj3 = drive.trajectoryBuilder(new Pose2d())
-                .splineTo(new Vector2d(aTag.outputInfo[1]-20, aTag.outputInfo[0]),Math.toRadians(0))
-                .build();
-        drive.followTrajectory(traj3);*/
         chassis.move(.5,"backward",2.5);
         slide.slide(30,0.5);
         sleep(1000);

@@ -35,7 +35,6 @@ public class AutoIntakeAidenRedFar extends LinearOpMode {
     //ColorCam color = new ColorCam(this);
     aprilTagDetectionMovement aTag = new aprilTagDetectionMovement(this);
     LinearSlide slide = new LinearSlide(this);
-    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
     private ElapsedTime continueTime = new ElapsedTime();
     private double timeToContinue = 5;
@@ -126,7 +125,6 @@ public class AutoIntakeAidenRedFar extends LinearOpMode {
     public void placeOnSpikeMarkAndGoBack(String proximity){
         //Move to center of spike marks
         double power = -.3;
-
         //Movement for Blue Far and Red Close
         if(proximity.toLowerCase().equals("far")) {
             //Aligned to the right
@@ -144,8 +142,6 @@ public class AutoIntakeAidenRedFar extends LinearOpMode {
                 chassis.move(.5,"backward",4);
                 intake.raiseLip();
                 chassis.move(.5, "backward", 23);
-
-
             } else if (aTag.spikeLocation.equals("CENTER")) {
                 //Move to the center
                 chassis.move(.5, "forward", 23+10);
@@ -325,22 +321,14 @@ public class AutoIntakeAidenRedFar extends LinearOpMode {
 
         aTag.camOff();
         sleep(2000);
-        //chassis.move(.5,"right",15);
-        //chassis.rotate(180, .5);
-        Trajectory traj1 = drive.trajectoryBuilder(new Pose2d())
-                .lineToLinearHeading(new Pose2d(new Vector2d(0, 15), Math.toRadians(180)))
-                .build();
-        drive.followTrajectory(traj1);
+        chassis.move(.5,"right",15);
+        chassis.rotate(180, .5);
 
         telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",aTag.outputInfo[0],aTag.outputInfo[1]));
         telemetry.update();
         //sleep(5000);
         chassis.move(.5, "backward", aTag.outputInfo[1]);
         chassis.move(.5, "left", aTag.outputInfo[0] - 20);
-        /*Trajectory traj3 = drive.trajectoryBuilder(new Pose2d())
-                .splineTo(new Vector2d(aTag.outputInfo[0], aTag.outputInfo[1]-20),Math.toRadians(0))
-                .build();
-        drive.followTrajectory(traj3);*/
         chassis.move(.5,"backward",2.5);
         slide.slide(30,0.5);
         sleep(1000);

@@ -33,7 +33,6 @@ public class AutoIntakeAidenRedFarHalf extends LinearOpMode {
     Intake intake = new Intake(this);
     //ColorCam color = new ColorCam(this);
     aprilTagDetectionMovement aTag = new aprilTagDetectionMovement(this);
-    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
     LinearSlide slide = new LinearSlide(this);
 
     public void placeOnSpikeMarkUpdated(String proximity){
@@ -87,13 +86,9 @@ public class AutoIntakeAidenRedFarHalf extends LinearOpMode {
             //Check for center and right
             if(aTag.spikeLocation.equals("RIGHT")) {
                 //Move to the right
-                //chassis.move(.5, "forward", 26);
+                chassis.move(.5, "forward", 26);
                 //chassis.move(.5, "left", 4);
-                //chassis.rotate(-90,.5);
-                Trajectory traj1 = drive.trajectoryBuilder(new Pose2d())
-                        .lineToLinearHeading(new Pose2d(new Vector2d(26, 0),Math.toRadians(-90)))
-                        .build();
-                drive.followTrajectory(traj1);
+                chassis.rotate(-90,.5);
 
                 chassis.move(.5,"forward",0+8);
                 chassis.move(.5,"backward",4);
