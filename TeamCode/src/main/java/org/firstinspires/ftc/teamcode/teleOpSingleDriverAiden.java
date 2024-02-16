@@ -43,10 +43,10 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
     private double servoSpeed = 0;
     private static final int liftMaxMotorCounts = 4062;
     private static final double minIntakeArmPos = 0;
-    private static final double maxIntakeArmPos = 0.45; //.53
+    private static final double maxIntakeArmPos = 0.85; //.53  // .45
     private static final double startIntakeArmPos = 0;
     private static final double minRampArmPos = 0;
-    private static final double maxRampArmPos = 1.2;
+    private static final double maxRampArmPos = 0.45; //1.2
     //private static final double minClawPos = 0.7;
     //private static final double maxClawPos = 0.5;
     private static final double minLauncherPos = 0;
@@ -182,7 +182,8 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
         //liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        intakeRamp.scaleRange(minRampArmPos,maxIntakeArmPos);
+        intakeRamp.scaleRange(minRampArmPos,maxRampArmPos);
+        intakeArm.scaleRange(minIntakeArmPos,maxIntakeArmPos);
         intakeArmPos = startIntakeArmPos;
 
         // Retrieve the IMU from the hardware map
@@ -255,53 +256,53 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
         }
         //Start of 2
         /**if (gamepad2.left_trigger > 0 ) {
-            speed2 = (gamepad2.left_trigger * maxSpeedRange2);
-        } else if (currentGamepad2.left_trigger <=0 && previousGamepad2.left_trigger > 0) {
-            speed2 = speed2Default;
-        } else {
-            speed2=speed2Default;
-        }
-        if (gamepad2.right_trigger > 0) {
-            if (currentGamepad2.right_trigger != previousGamepad2.right_trigger) {
-                timeRightTriggerHeld2.reset();
-            } if (timeRightTriggerHeld2.seconds() >= timeHeldToConfirm) {
-                maxSpeedRange2 = gamepad2.right_trigger;
-                gamepad2.rumble(50);
-                gamepad2.setLedColor(0,1,0,-1);
-            } else {
-                gamepad2.setLedColor(0,0,1,-1);
-            }
-        }
-        if (gamepad2.left_trigger > 0 && gamepad2.right_trigger > 0) {
-            iterationsPressed2+=1;
-        } else {
-            iterationsPressed2=0;
-        }
-        //if (maxSpeedRange2 == -1) {
-            //speed2 = 0.2;
-        //}
-        if (iterationsPressed2 >= 10) {
-            speed2=speed2Default;
-            maxSpeedRange2 = 1.0;
-            iterationsPressed2=0;
-            gamepad2.rumble(100);
-        }
-        //if (gamepad2.right_bumper && maxSpeedRange2 != -1) {
-            speed2=0.25;
-        //}
-        /*if (gamepad2.left_bumper && maxSpeedRange2 != -1) {
-            if(currentGamepad2.left_bumper && !previousGamepad2.left_bumper) {
-                previousSpeed2 = speed2;
-                gamepad2.runRumbleEffect(maxSpeedStartUpRumbleEffect);
-                gamepad2.runLedEffect(maxSpeedStartUpLEDEffect);
-            }
-            speed2 = 1;
-            gamepad2.setLedColor(1,0,0,-1);
-        } else if (!currentGamepad2.left_bumper && previousGamepad2.left_bumper) {
-            speed2=previousSpeed2;
-        } else {
-            gamepad2.setLedColor(0,0,1,-1);
-        }*/
+         speed2 = (gamepad2.left_trigger * maxSpeedRange2);
+         } else if (currentGamepad2.left_trigger <=0 && previousGamepad2.left_trigger > 0) {
+         speed2 = speed2Default;
+         } else {
+         speed2=speed2Default;
+         }
+         if (gamepad2.right_trigger > 0) {
+         if (currentGamepad2.right_trigger != previousGamepad2.right_trigger) {
+         timeRightTriggerHeld2.reset();
+         } if (timeRightTriggerHeld2.seconds() >= timeHeldToConfirm) {
+         maxSpeedRange2 = gamepad2.right_trigger;
+         gamepad2.rumble(50);
+         gamepad2.setLedColor(0,1,0,-1);
+         } else {
+         gamepad2.setLedColor(0,0,1,-1);
+         }
+         }
+         if (gamepad2.left_trigger > 0 && gamepad2.right_trigger > 0) {
+         iterationsPressed2+=1;
+         } else {
+         iterationsPressed2=0;
+         }
+         //if (maxSpeedRange2 == -1) {
+         //speed2 = 0.2;
+         //}
+         if (iterationsPressed2 >= 10) {
+         speed2=speed2Default;
+         maxSpeedRange2 = 1.0;
+         iterationsPressed2=0;
+         gamepad2.rumble(100);
+         }
+         //if (gamepad2.right_bumper && maxSpeedRange2 != -1) {
+         speed2=0.25;
+         //}
+         /*if (gamepad2.left_bumper && maxSpeedRange2 != -1) {
+         if(currentGamepad2.left_bumper && !previousGamepad2.left_bumper) {
+         previousSpeed2 = speed2;
+         gamepad2.runRumbleEffect(maxSpeedStartUpRumbleEffect);
+         gamepad2.runLedEffect(maxSpeedStartUpLEDEffect);
+         }
+         speed2 = 1;
+         gamepad2.setLedColor(1,0,0,-1);
+         } else if (!currentGamepad2.left_bumper && previousGamepad2.left_bumper) {
+         speed2=previousSpeed2;
+         } else {
+         gamepad2.setLedColor(0,0,1,-1);
+         }*/
         speed1 = Range.clip(speed1,0,1);
         speed2 = Range.clip(speed2,0,1);
         speed2 = 1;
@@ -369,7 +370,7 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
         if (gamepad1.square) {intake1.setPower(1);intake2.setPower(1);} else if (gamepad1.triangle) {intake1.setPower(-1);intake2.setPower(-1);} else {intake1.setPower(0);intake2.setPower(0);}
         if (gamepad1.dpad_up) {intakeArmPos -= 0.05*speed2;}
         if (gamepad1.dpad_down) {intakeArmPos += 0.05*speed2;}
-        intakeArmPos = Range.clip(intakeArmPos,minIntakeArmPos,maxIntakeArmPos);
+        intakeArmPos = Range.clip(intakeArmPos,minIntakeArmPos,0.45);
         intakeArm.setPosition(intakeArmPos);
         intakeRamp.setPosition(intakeArmPos);
         telemetry.addData("intakeArmPos: ",intakeArm.getPosition());
@@ -438,8 +439,8 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
         telemetry.addData("liftPosition: ",liftPosition);
     }
     private void LiftWorks2() {
-        if (gamepad1.triangle) {liftPosition += 130*speed2;}
-        if (gamepad1.square) {liftPosition-= 130*speed2;}
+        if (gamepad1.circle) {liftPosition += 130*speed2;}
+        if (gamepad1.cross) {liftPosition-= 130*speed2;}
         liftPosition = Range.clip(liftPosition,0,liftMaxMotorCounts);
         powerLeft = controller.controller(liftPosition, liftLeft.getCurrentPosition(),0.8,true);
         powerRight = controller.controller(liftPosition,liftRight.getCurrentPosition(),0.8,true);
