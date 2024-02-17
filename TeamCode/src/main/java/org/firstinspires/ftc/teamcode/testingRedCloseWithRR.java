@@ -35,7 +35,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Config
 @Disabled
 public class testingRedCloseWithRR extends LinearOpMode {
-    MecanumChassis chassis = new MecanumChassis(this);
+    protected MecanumChassis chassis = new MecanumChassis(this);
     Intake intake = new Intake(this);
     //ColorCam color = new ColorCam(this);
     aprilTagDetectionMovement aTag = new aprilTagDetectionMovement(this);
@@ -49,7 +49,7 @@ public class testingRedCloseWithRR extends LinearOpMode {
     public static double POWER = 0.5;
 
     public void placeOnSpikeMarkUpdated(String proximity){
-        //SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         chassis.initializeMovement();
         //Move to center of spike marks
         double power = .5;
@@ -58,21 +58,41 @@ public class testingRedCloseWithRR extends LinearOpMode {
             //Check for left and center
             if(aTag.spikeLocation.equals("LEFT")) {
                 //Move to the center
-                chassis.move(0.5, "forward", 23+10);
-                chassis.move(.5, "left", 4);
-                chassis.move(.5,"backward",6);
+                //chassis.move(0.5, "forward", 23+10);
+                //chassis.move(.5, "left", 4);
+                //chassis.move(.5,"backward",6);
+                Trajectory trajCenter1 = drive.trajectoryBuilder(new Pose2d())
+                        .lineTo(new Vector2d(23+10,0))
+                        .lineTo(new Vector2d(23+10,-4))
+                        .lineTo(new Vector2d(23+4,-4))
+                        .build();
+                drive.followTrajectory(trajCenter1);
                 intake.lowerLip();
                 sleep(1000);
-                chassis.move(.5,"backward",6);
+                //chassis.move(.5,"backward",6);
+                Trajectory trajCenter2 = drive.trajectoryBuilder(new Pose2d())
+                        .lineTo(new Vector2d(23-2,-4))
+                        .build();
+                drive.followTrajectory(trajCenter2);
                 intake.raiseLip();
                 //chassis.move(.5, "backward", 30);
                 //chassis.move(.5,"backward",2);
-                chassis.move(.5, "right", 4);
+                //chassis.move(.5, "right", 4);
+                Trajectory trajCenter3 = drive.trajectoryBuilder(new Pose2d())
+                        .lineTo(new Vector2d(23-2,0))
+                        .build();
+                drive.followTrajectory(trajCenter3);
             } else if (aTag.spikeLocation.equals("CENTER")) {
                 //Move to the right
-                chassis.move(0.5, "forward", 23+4);
+                /*chassis.move(0.5, "forward", 23+4);
                 chassis.move(.5, "left", 8);
-                chassis.move(.5,"backward",4);
+                chassis.move(.5,"backward",4);*/
+                Trajectory trajCenter1 = drive.trajectoryBuilder(new Pose2d())
+                        .lineTo(new Vector2d(23+10,0))
+                        .lineTo(new Vector2d(23+10,-4))
+                        .lineTo(new Vector2d(23+4,-4))
+                        .build();
+                drive.followTrajectory(trajCenter1);
                 //Do Intake Servo
                 intake.lowerLip();
                 sleep(1000);
@@ -208,7 +228,7 @@ public class testingRedCloseWithRR extends LinearOpMode {
         aTag.initCam2();
         aTag.camOn();
 
-        //SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
 
         while(!isStarted()){
