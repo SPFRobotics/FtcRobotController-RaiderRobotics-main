@@ -366,7 +366,7 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
         backRight.setPower(backRightPower);
     }
     private void Intake() {
-        if (gamepad1.square) {intake1.setPower(1);intake2.setPower(1);} else if (gamepad1.triangle) {intake1.setPower(-1);intake2.setPower(-1);} else {intake1.setPower(0);intake2.setPower(0);}
+        if (gamepad1.cross) {intake1.setPower(1);intake2.setPower(1);} else if (gamepad1.circle) {intake1.setPower(-1);intake2.setPower(-1);} else {intake1.setPower(0);intake2.setPower(0);}
         if (gamepad1.dpad_up) {intakeArmPos -= 0.05*speed2;}
         if (gamepad1.dpad_down) {intakeArmPos += 0.05*speed2;}
         intakeArmPos = Range.clip(intakeArmPos,minIntakeArmPos,maxIntakeArmPos);
