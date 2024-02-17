@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class launcherTesting extends LinearOpMode {
     private Servo droneLauncher;
     private Servo droneServo;
+    private Servo droneHolder;
     private static final double minLauncherPos = 0;
     private static final double maxLauncherPos = 0.5;
     private static final double launchAngle = 0.18;
@@ -59,7 +60,8 @@ public class launcherTesting extends LinearOpMode {
         // Declare our motors
         // Make sure your ID's match your configuration
         droneLauncher = hardwareMap.servo.get("droneLauncher"); /** Port: ControlHub ServoPort 3 **/
-        droneServo = hardwareMap.servo.get("droneServo"); /** Port: ExpansionHub ServoPort **/
+        droneServo = hardwareMap.servo.get("droneServo"); /** Port: ExpansionHub ServoPort 0 **/
+        droneHolder = hardwareMap.servo.get("droneHolder"); /** Port: ExpansionHub ServoPort 2 **/
 
         waitForStart();
     }
@@ -80,6 +82,8 @@ public class launcherTesting extends LinearOpMode {
                 }
                 if (launchRequested) {
                     telemetry.addData("works","");
+                    droneHolder.setPosition(0);
+                    sleep(1000);
                     droneServo.setPosition(launchAngle);
                     sleep(1000);
                     droneLauncher.setPosition(0.48);
@@ -90,6 +94,7 @@ public class launcherTesting extends LinearOpMode {
         } else {
             droneServo.setPosition(0.33);
             droneLauncher.setPosition(0.42);
+            droneHolder.setPosition(0.43);
         }
         /*if (gamepad2.dpad_up) {
             droneServo.setPosition(launchAngle);

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -16,10 +17,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
 import org.firstinspires.ftc.teamcode.Hardware.PIDcontroller;
 
 @TeleOp
+@Config
 public class teleOpSingleDriverAiden extends LinearOpMode {
     private double kP = 0.0055;
     private double kI = 0.0000000001;
-    private double kD = 0.0002;
+    private double kD = 0.0007;
     PIDcontroller controller = new PIDcontroller(this,kP,kI,kD);
     private DcMotor backLeft;
     private DcMotor backRight;
@@ -33,6 +35,7 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
     private Servo intakeRamp;
     private Servo droneLauncher;
     private Servo droneServo;
+    private Servo droneHolder;
     private IMU imu;
     private double speed1 = 1;
     private double speed1Default = 1;
@@ -44,10 +47,11 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
     private double servoSpeed = 0;
     private static final int liftMaxMotorCounts = 4062;
     private static final double minIntakeArmPos = 0;
-    private static final double maxIntakeArmPos = 0.85; //.53  // .45
+    public static double maxIntakeArmPos = 0.88; //.53  // .45
     private static final double startIntakeArmPos = 0;
     private static final double minRampArmPos = 0;
-    private static final double maxRampArmPos = 0.45; //1.2
+    public static double maxRampArmPos = 0.45; //1.2  //0.45
+    private static final double maxIntakeArmsPos = 0.45;
     //private static final double minClawPos = 0.7;
     //private static final double maxClawPos = 0.5;
     private static final double minLauncherPos = 0;
@@ -125,8 +129,9 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
             currentGamepad1.copy(gamepad1); /** copies the current gamepad1 state **/
             //previousGamepad2.copy(currentGamepad2); /** copies the previous loop's gamepad2 state **/
             //currentGamepad2.copy(gamepad2); /** copies the current gamepad2 state **/
-            Speed(); /** a very magical and mystical function that is complicated but not really **/
-            if (Math.abs(gamepad1.left_stick_x) <= 0.05 && Math.abs(gamepad1.left_stick_y) <= 0.05) { /** Disclaimer!!!: robot oriented is priority not field **/ /** this is the statment that switches between field and robot oriented drive does this by checking if left joystick isn't being moved **/
+            //Speed(); /** a very magical and mystical function that is complicated but not really **/
+            Speed2();
+            /*if (Math.abs(gamepad1.left_stick_x) <= 0.05 && Math.abs(gamepad1.left_stick_y) <= 0.05) { *//** Disclaimer!!!: robot oriented is priority not field **//* *//** this is the statment that switches between field and robot oriented drive does this by checking if left joystick isn't being moved **//*
                 //fieldOriented();
                 frontLeft.setPower(0);
                 frontRight.setPower(0);
@@ -134,7 +139,8 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
                 backRight.setPower(0);
             } else {
                 robotOriented();
-            }
+            }*/
+            robotOriented();
             Intake();
             //Outtake();
             //LiftHold();
@@ -161,8 +167,9 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
         intake2 = hardwareMap.dcMotor.get("intake2");  /** Port: ControlHub MotorPort 3 **/
         intakeArm = hardwareMap.servo.get("intakeArm"); /** Port: ExpansionHub ServoPort 5 **/
         intakeRamp = hardwareMap.servo.get("intakeRamp"); /** Port: ControlHub ServoPort 5 **/
-        droneLauncher = hardwareMap.servo.get("droneLauncher"); /** Port: ControlHub ServoPort 3 **/
-        droneServo = hardwareMap.servo.get("droneServo"); /** Port: ExpansionHub ServoPort **/
+        droneLauncher = hardwareMap.servo.get("droneLauncher"); /** Port: ExpansionHub ServoPort 0 **/
+        droneServo = hardwareMap.servo.get("droneServo"); /** Port: ExpansionHub ServoPort 3 **/
+        droneHolder = hardwareMap.servo.get("droneHolder"); /** Port: ExpansionHub ServoPort 2 **/
         //wristLeft = hardwareMap.servo.get("wristLeft"); /** Port: ExpansionHub ServoPort 3 **/
         //wristRight = hardwareMap.servo.get("wristRight"); /** Port: ExpansionHub ServoPort 5 **/
 
@@ -177,8 +184,8 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        intake1.setDirection(DcMotorSimple.Direction.REVERSE);
-        intake2.setDirection(DcMotorSimple.Direction.REVERSE);
+        intake1.setDirection(DcMotorSimple.Direction.FORWARD);
+        intake2.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -198,6 +205,13 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
         imu.initialize(parameters);
         imu.resetYaw();
         waitForStart();
+    }
+    private void Speed2() {
+        if (gamepad1.right_bumper /*&& maxSpeedRange1 != -1*/) {
+            speed1 = 0.25;
+        } else {
+            speed1 = 1;
+        }
     }
     private void Speed() {
         /**
@@ -353,6 +367,11 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
         double xRobot = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
         double rxRobot = gamepad1.right_stick_x;
 
+        if (Math.abs(gamepad1.left_stick_x) <= 0.05 && Math.abs(gamepad1.left_stick_y) <= 0.05) {
+            yRobot = 0;
+            xRobot = 0;
+        }
+
         // Denominator is the largest motor power (absolute value) or 1
         // This ensures all the powers maintain the same ratio,
         // but only if at least one is out of the range [-1, 1]
@@ -371,7 +390,7 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
         if (gamepad1.cross) {intake1.setPower(1);intake2.setPower(1);} else if (gamepad1.circle) {intake1.setPower(-1);intake2.setPower(-1);} else {intake1.setPower(0);intake2.setPower(0);}
         if (gamepad1.dpad_up) {intakeArmPos -= 0.05*speed2;}
         if (gamepad1.dpad_down) {intakeArmPos += 0.05*speed2;}
-        intakeArmPos = Range.clip(intakeArmPos,minIntakeArmPos,0.45);
+        intakeArmPos = Range.clip(intakeArmPos,minIntakeArmPos,maxIntakeArmsPos);
         intakeArm.setPosition(intakeArmPos);
         intakeRamp.setPosition(intakeArmPos);
         telemetry.addData("intakeArmPos: ",intakeArm.getPosition());
@@ -394,6 +413,8 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
                 }
                 if (launchRequested) {
                     telemetry.addData("works","");
+                    droneHolder.setPosition(0);
+                    sleep(1000);
                     droneServo.setPosition(launchAngle);
                     sleep(1000);
                     droneLauncher.setPosition(0.48);
@@ -402,6 +423,7 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
         } else {
             droneServo.setPosition(0.33); //.33 horizontal
             droneLauncher.setPosition(0.42);
+            droneHolder.setPosition(0.43);
         }
         /*if (gamepad2.dpad_up) {
             droneServo.setPosition(launchAngle);
@@ -422,8 +444,8 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
         telemetry.addData("wristPosition: ", wristPos);*/
     }
     private void LiftWorks() {
-        if (gamepad1.circle) {liftPosition += 55*speed2;}
-        if (gamepad1.cross) {liftPosition-= 55*speed2;}
+        if (gamepad1.triangle) {liftPosition += 55*speed2;}
+        if (gamepad1.square) {liftPosition-= 55*speed2;}
         liftPosition = Range.clip(liftPosition,0,liftMaxMotorCounts);
         liftLeft.setTargetPosition(liftPosition);
         liftRight.setTargetPosition(liftPosition);
@@ -440,11 +462,11 @@ public class teleOpSingleDriverAiden extends LinearOpMode {
         telemetry.addData("liftPosition: ",liftPosition);
     }
     private void LiftWorks2() {
-        if (gamepad1.circle) {liftPosition += 130*speed2;}
-        if (gamepad1.cross) {liftPosition-= 130*speed2;}
+        if (gamepad1.triangle) {liftPosition += 130*speed2;}
+        if (gamepad1.square) {liftPosition-= 130*speed2;}
         liftPosition = Range.clip(liftPosition,0,liftMaxMotorCounts);
-        powerLeft = controller.controller(liftPosition, liftLeft.getCurrentPosition(),0.8,true);
-        powerRight = controller.controller(liftPosition,liftRight.getCurrentPosition(),0.8,true);
+        powerLeft = controller.controller(liftPosition, liftLeft.getCurrentPosition(),1,true);
+        powerRight = controller.controller(liftPosition,liftRight.getCurrentPosition(),1,true);
         telemetry.addLine(String.format("power  Left: %6.1f, Right: %6.1f",powerLeft,powerRight));
         liftLeft.setPower(powerLeft);
         liftRight.setPower(powerRight);

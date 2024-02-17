@@ -234,7 +234,7 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         aTag.moveToAprilTag(altAprilTag(location, "close", "red"));
 
         aTag.camOff();
-        chassis.move(.5,"right",15);
+        chassis.move(.5,"right",15+8);
         chassis.rotate(180, .5);
         sleep(400);
 

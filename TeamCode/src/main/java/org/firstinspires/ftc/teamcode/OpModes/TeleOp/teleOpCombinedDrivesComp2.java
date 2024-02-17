@@ -32,6 +32,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private Servo intakeRamp;
     private Servo droneLauncher;
     private Servo droneServo;
+    private Servo droneHolder;
     private IMU imu;
     private double speed1 = 1;
     private double speed1Default = 0.7;
@@ -43,10 +44,11 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
     private double servoSpeed = 0;
     private static final int liftMaxMotorCounts = 4062;
     private static final double minIntakeArmPos = 0;
-    private static final double maxIntakeArmPos = 0.85; //.53
+    private static final double maxIntakeArmPos = 0.88; //.53
     private static final double startIntakeArmPos = 0;
     private static final double minRampArmPos = 0;
     private static final double maxRampArmPos = 0.45; //1.2
+    private static final double maxIntakeArmsPos = 0.45;
     //private static final double minClawPos = 0.7;
     //private static final double maxClawPos = 0.5;
     private static final double minLauncherPos = 0;
@@ -156,8 +158,9 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         intake2 = hardwareMap.dcMotor.get("intake2");  /** Port: ControlHub MotorPort 3 **/
         intakeArm = hardwareMap.servo.get("intakeArm"); /** Port: ExpansionHub ServoPort 5 **/
         intakeRamp = hardwareMap.servo.get("intakeRamp"); /** Port: ControlHub ServoPort 5 **/
-        droneLauncher = hardwareMap.servo.get("droneLauncher"); /** Port: ControlHub ServoPort 3 **/
-        droneServo = hardwareMap.servo.get("droneServo"); /** Port: ExpansionHub ServoPort **/
+        droneLauncher = hardwareMap.servo.get("droneLauncher"); /** Port: ExpansionHub ServoPort 0 **/
+        droneServo = hardwareMap.servo.get("droneServo"); /** Port: ExpansionHub ServoPort 3 **/
+        droneHolder = hardwareMap.servo.get("droneHolder"); /** Port: ExpansionHub ServoPort 2 **/
         //wristLeft = hardwareMap.servo.get("wristLeft"); /** Port: ExpansionHub ServoPort 3 **/
         //wristRight = hardwareMap.servo.get("wristRight"); /** Port: ExpansionHub ServoPort 5 **/
 
@@ -365,7 +368,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         if (gamepad2.square) {intake1.setPower(1);intake2.setPower(1);} else if (gamepad2.triangle) {intake1.setPower(-1);intake2.setPower(-1);} else {intake1.setPower(0);intake2.setPower(0);}
         if (gamepad2.left_stick_y < 0) {intakeArmPos -= 0.05*speed2;}
         if (gamepad2.left_stick_y > 0) {intakeArmPos += 0.05*speed2;}
-        intakeArmPos = Range.clip(intakeArmPos,minIntakeArmPos,0.45);
+        intakeArmPos = Range.clip(intakeArmPos,minIntakeArmPos,maxIntakeArmsPos);
         intakeArm.setPosition(intakeArmPos);
         intakeRamp.setPosition(intakeArmPos);
         telemetry.addData("intakeArmPos: ",intakeArm.getPosition());
@@ -388,6 +391,8 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
                 }
                 if (launchRequested) {
                     telemetry.addData("works","");
+                    droneHolder.setPosition(0);
+                    sleep(1000);
                     droneServo.setPosition(launchAngle);
                     sleep(1000);
                     droneLauncher.setPosition(0.48);
@@ -396,6 +401,7 @@ public class teleOpCombinedDrivesComp2 extends LinearOpMode {
         } else {
             droneServo.setPosition(0.33); //.33 horizontal
             droneLauncher.setPosition(0.42);
+            droneHolder.setPosition(0.43);
         }
         /*if (gamepad2.dpad_up) {
             droneServo.setPosition(launchAngle);
