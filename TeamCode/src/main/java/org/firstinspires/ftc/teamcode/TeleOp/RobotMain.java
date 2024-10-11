@@ -66,7 +66,7 @@ public class RobotMain extends LinearOpMode {
             //Variable for hight
              double craneUp = gamepad2.right_trigger;
              double craneDown = -gamepad2.left_trigger;
-             if (!gamepad2.A){
+             if (!gamepad2.a){
                 craneUp /= 2;
                 craneDown /=2;
              }
