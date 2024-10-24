@@ -25,6 +25,8 @@ public class RobotMain extends LinearOpMode {
     private DcMotor rightBackMotor = null;
     private DcMotor leftBackMotor = null;
     private DcMotor craneMotor = null;
+    //Extendo was a crane that moved on the horizontal axis
+    private DcMotor extendo = null;
 
 
     public void runOpMode() {
@@ -58,6 +60,7 @@ public class RobotMain extends LinearOpMode {
             rightBackMotor = hardwareMap.get(DcMotor.class, "Motor3");
             leftBackMotor = hardwareMap.get(DcMotor.class, "Motor2");
             craneMotor = hardwareMap.get(DcMotor.class, "Motor4");
+            extendo = hardwareMap.get(DcMotor.class, "Motor5");
 
             //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
             rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
