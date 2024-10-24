@@ -12,7 +12,7 @@ public class Odometry {
     public DcMotor rightPod = null;
     public DcMotor centerPod = null;
     public LinearOpMode opMode = null;
-    private final double TRACKWIDTH_cm = 30;
+    private final double TRACKWIDTH_cm = 31.45;
 
     double[] pose = new double[3];
     double[] prevEncoder = new double[3]; // prevEncoder[0] is left; prevEncoder[1] is center; prevEncoder[2] is right
@@ -55,6 +55,15 @@ public class Odometry {
         prevEncoder[0] = leftPod.getCurrentPosition();
         prevEncoder[1] = centerPod.getCurrentPosition();
         prevEncoder[2] = rightPod.getCurrentPosition();
+    }
+    public double getX(){
+        return pose[0];
+    }
+    public double getY(){
+        return pose[1];
+    }
+    public double getTheta(){
+        return pose[2];
     }
 
 }

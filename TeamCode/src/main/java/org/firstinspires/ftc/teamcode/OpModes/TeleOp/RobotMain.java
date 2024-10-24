@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TeleOp;
+package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -8,11 +8,16 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.Hardware.Robot.Extendo;
+import org.firstinspires.ftc.teamcode.Hardware.Robot.LinearSlide;
+import org.firstinspires.ftc.teamcode.Hardware.Robot.MecanumChassis;
+import org.firstinspires.ftc.teamcode.Hardware.Robot.Odometry;
+
 import java.text.DecimalFormat;
 
 @TeleOp(name="RobotMain")
 public class RobotMain extends LinearOpMode {
-
+    Odometry odometry = new Odometry(this);
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor rightFrontMotor = null;
@@ -23,6 +28,9 @@ public class RobotMain extends LinearOpMode {
 
 
     public void runOpMode() {
+        odometry.Init();
+        odometry.SetPose(0,0,0);
+
         waitForStart();
         //Format Telemetry
         DecimalFormat df = new DecimalFormat("#.000");
@@ -30,6 +38,7 @@ public class RobotMain extends LinearOpMode {
 
         telemetry.setAutoClear(true);
         while (opModeIsActive()) {
+            odometry.UpdateOdom();
             //Variables for wheels
             double y = gamepad1.left_stick_y;
             double x = -gamepad1.left_stick_x * 1.1;
@@ -63,7 +72,7 @@ public class RobotMain extends LinearOpMode {
             
             //Crane Control
             
-            //Variable for hight
+            //Variable for height
              double craneUp = gamepad2.right_trigger;
              double craneDown = -gamepad2.left_trigger;
              if (!gamepad2.a){
@@ -76,7 +85,10 @@ public class RobotMain extends LinearOpMode {
 
 
             //TELEMETRY
-            //telemetry.update();
+            telemetry.addData("X: ", odometry.getX());
+            telemetry.addData("Y: ", odometry.getY());
+            telemetry.addData("Theta: ", odometry.getTheta());
+            telemetry.update();
         }          
 
     }

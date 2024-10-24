@@ -15,7 +15,9 @@ public class AutoBlueBasketLuke extends LinearOpMode {
     aprilTagDetectionMovement aTag = new aprilTagDetectionMovement(this);
     Extendo extendo = new Extendo(this);
 
-    public void runOpMode(){
+    @Override
+    public void runOpMode() throws InterruptedException
+    {
         chassis.initializeMovement();
         aTag.initCam2();
         aTag.camOn();
