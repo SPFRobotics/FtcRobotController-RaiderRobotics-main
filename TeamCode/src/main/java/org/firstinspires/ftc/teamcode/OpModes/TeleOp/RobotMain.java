@@ -30,11 +30,21 @@ public class RobotMain extends LinearOpMode {
     public void runOpMode() {
         odometry.Init();
         odometry.SetPose(0,0,0);
-
-        waitForStart();
         //Format Telemetry
         DecimalFormat df = new DecimalFormat("#.000");
 
+        //CHECK PORTS!!!!!!!!!!
+        //Configured from looking BEHIND THE ROBOT!!!
+        rightFrontMotor = hardwareMap.get(DcMotor.class, "Motor1");
+        leftFrontMotor = hardwareMap.get(DcMotor.class, "Motor0");
+        rightBackMotor = hardwareMap.get(DcMotor.class, "Motor3");
+        leftBackMotor = hardwareMap.get(DcMotor.class, "Motor2");
+        craneMotor = hardwareMap.get(DcMotor.class, "Motor4");
+
+        //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
+        rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        waitForStart();
 
         telemetry.setAutoClear(true);
         while (opModeIsActive()) {
@@ -50,18 +60,6 @@ public class RobotMain extends LinearOpMode {
                 x /= 2;
                 rx /= 2;
             }
-
-            //CHECK PORTS!!!!!!!!!!
-            //Configured from looking BEHIND THE ROBOT!!!
-            rightFrontMotor = hardwareMap.get(DcMotor.class, "Motor1");
-            leftFrontMotor = hardwareMap.get(DcMotor.class, "Motor0");
-            rightBackMotor = hardwareMap.get(DcMotor.class, "Motor3");
-            leftBackMotor = hardwareMap.get(DcMotor.class, "Motor2");
-            craneMotor = hardwareMap.get(DcMotor.class, "Motor4");
-
-            //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
-            rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-            rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
             //Math for Mecanum drive
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
@@ -81,8 +79,6 @@ public class RobotMain extends LinearOpMode {
              }
              craneMotor.setPower(craneUp);
              craneMotor.setPower(craneDown);
-
-
 
             //TELEMETRY
             telemetry.addData("X: ", odometry.getX());
