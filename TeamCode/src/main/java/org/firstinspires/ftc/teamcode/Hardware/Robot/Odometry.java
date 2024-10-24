@@ -33,6 +33,10 @@ public class Odometry {
         pose[0] = X;
         pose[1] = Y;
         pose[2] = headingRadians;
+
+        prevEncoder[0] = leftPod.getCurrentPosition();
+        prevEncoder[1] = centerPod.getCurrentPosition();
+        prevEncoder[2] = rightPod.getCurrentPosition();
     }
     public void UpdateOdom(){ // Look at GM0 if confused about any calculations done here
         double deltaLeftPod = leftPod.getCurrentPosition() - prevEncoder[0]; // delta = final - initial
