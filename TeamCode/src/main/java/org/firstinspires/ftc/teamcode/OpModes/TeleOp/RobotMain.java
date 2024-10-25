@@ -47,6 +47,19 @@ public class RobotMain extends LinearOpMode {
         waitForStart();
 
         telemetry.setAutoClear(true);
+        //CHECK PORTS!!!!!!!!!!
+        //Configured from looking BEHIND THE ROBOT!!!
+        rightFrontMotor = hardwareMap.get(DcMotor.class, "Motor1");
+        leftFrontMotor = hardwareMap.get(DcMotor.class, "Motor0");
+        rightBackMotor = hardwareMap.get(DcMotor.class, "Motor3");
+        leftBackMotor = hardwareMap.get(DcMotor.class, "Motor2");
+        craneMotor = hardwareMap.get(DcMotor.class, "Motor4");
+        extendo = hardwareMap.get(DcMotor.class, "Motor5");
+
+        //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
+        rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
         while (opModeIsActive()) {
             odometry.UpdateOdom();
             //Variables for wheels
@@ -55,7 +68,7 @@ public class RobotMain extends LinearOpMode {
             double rx = -gamepad1.right_stick_x;
 
             //Speed Control
-            if (!gamepad1.right_bumper){
+            if (!gamepad1.right_bumper) {
                 y /= 2;
                 x /= 2;
                 rx /= 2;
