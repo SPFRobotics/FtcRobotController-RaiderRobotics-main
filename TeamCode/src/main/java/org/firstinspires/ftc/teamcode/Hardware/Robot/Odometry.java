@@ -24,9 +24,9 @@ public class Odometry {
         opMode = lom;
     }
     public void init(){
-        leftPod = opMode.hardwareMap.dcMotor.get("leftPod");
-        rightPod = opMode.hardwareMap.dcMotor.get("rightPod");
-        centerPod = opMode.hardwareMap.dcMotor.get("centerPod");
+        leftPod = opMode.hardwareMap.dcMotor.get("Odo1");
+        rightPod = opMode.hardwareMap.dcMotor.get("Odo3");
+        centerPod = opMode.hardwareMap.dcMotor.get("Odo2");
         leftPod.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         centerPod.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightPod.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
