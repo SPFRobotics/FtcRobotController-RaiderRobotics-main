@@ -25,11 +25,13 @@ public class RobotMain extends LinearOpMode {
     private DcMotor rightBackMotor = null;
     private DcMotor leftBackMotor = null;
     private DcMotor craneMotor = null;
+    private DcMotor extendoL=null;
+    private DcMotor extendoR=null;
 
 
     public void runOpMode() {
-        odometry.Init();
-        odometry.SetPose(0,0,0);
+        odometry.init();
+        odometry.setPose(0,0,0);
         //Format Telemetry
         DecimalFormat df = new DecimalFormat("#.000");
 
@@ -40,6 +42,8 @@ public class RobotMain extends LinearOpMode {
         rightBackMotor = hardwareMap.get(DcMotor.class, "Motor3");
         leftBackMotor = hardwareMap.get(DcMotor.class, "Motor2");
         craneMotor = hardwareMap.get(DcMotor.class, "Motor4");
+        extendoL = hardwareMap.get(DcMotor.class, "Motor5");
+        extendoR = hardwareMap.get(DcMotor.class, "Motor6");
 
         //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
         rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -47,21 +51,9 @@ public class RobotMain extends LinearOpMode {
         waitForStart();
 
         telemetry.setAutoClear(true);
-        //CHECK PORTS!!!!!!!!!!
-        //Configured from looking BEHIND THE ROBOT!!!
-        rightFrontMotor = hardwareMap.get(DcMotor.class, "Motor1");
-        leftFrontMotor = hardwareMap.get(DcMotor.class, "Motor0");
-        rightBackMotor = hardwareMap.get(DcMotor.class, "Motor3");
-        leftBackMotor = hardwareMap.get(DcMotor.class, "Motor2");
-        craneMotor = hardwareMap.get(DcMotor.class, "Motor4");
-        extendo = hardwareMap.get(DcMotor.class, "Motor5");
-
-        //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
-        rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         while (opModeIsActive()) {
-            odometry.UpdateOdom();
+            odometry.updateOdom();
             //Variables for wheels
             double y = gamepad1.left_stick_y;
             double x = -gamepad1.left_stick_x * 1.1;
