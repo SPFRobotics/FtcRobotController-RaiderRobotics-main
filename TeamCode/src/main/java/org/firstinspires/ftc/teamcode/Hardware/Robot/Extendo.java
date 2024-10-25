@@ -9,56 +9,43 @@ import org.firstinspires.ftc.teamcode.Hardware.Util.Unit;
 
 public class Extendo {
     public LinearOpMode opmode;
-    public DcMotor liftLeft = null;
-    public DcMotor liftRight = null;
+    public DcMotor lift = null;
     public double liftPosition = 0;
     private static final int liftMaxMotorCounts = 2031;
     // 2031 is tentative and untested assuming it's half of the normal linear slides
 
     public Extendo(LinearOpMode lom){ opmode = lom; }
     public void initSlides(){
-        liftLeft = opmode.hardwareMap.dcMotor.get("liftLeft");
-        liftRight = opmode.hardwareMap.dcMotor.get("liftRight");
+        lift = opmode.hardwareMap.dcMotor.get("extendo");
 
-        liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
     private boolean isBusy(){
-        return (liftLeft.isBusy() || liftRight.isBusy());
+        return (lift.isBusy());
     }
     public void LiftHold() {
-        liftLeft.setTargetPosition(0);
-        liftRight.setTargetPosition(0);
-        liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        if (Math.abs(liftLeft.getCurrentPosition() - liftPosition) <= 10 && Math.abs(liftRight.getCurrentPosition() - liftPosition) <= 10) {
-            liftLeft.setPower(0);
-            liftRight.setPower(0);
+        lift.setTargetPosition(0);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if (Math.abs(lift.getCurrentPosition() - liftPosition) <= 10) {
+            lift.setPower(0);
         } else {
-            liftLeft.setPower(1);
-            liftRight.setPower(1);
+            lift.setPower(1);
         }
     }
     public void slide(double distance, double power){ //distance in inches
         int encoderAmount = (int)(Unit.inchToLift_convert(distance));
         liftPosition = encoderAmount;
         liftPosition = Range.clip(liftPosition,0,liftMaxMotorCounts);
-        liftLeft.setTargetPosition((int)liftPosition);
-        liftRight.setTargetPosition((int)liftPosition);
-        liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setTargetPosition((int)liftPosition);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        liftLeft.setPower(power);
-        liftRight.setPower(power);
+        lift.setPower(power);
 
         while(isBusy()){
-            opmode.telemetry.addLine(String.format("Left: %6.1f, Right: %6.1f", (float)liftLeft.getCurrentPosition(),(float)liftRight.getCurrentPosition()));
+            opmode.telemetry.addLine(String.format("Left: %6.1f, Right: %6.1f", (float)lift.getCurrentPosition()));
             opmode.telemetry.update();
         }
 
-        liftLeft.setPower(0);
-        liftRight.setPower(0);
+        lift.setPower(0);
     }
 }
