@@ -39,6 +39,15 @@ public class RobotMain extends LinearOpMode {
 
 
         telemetry.setAutoClear(true);
+        //CHECK PORTS!!!!!!!!!!
+        //Configured from looking BEHIND THE ROBOT!!!
+        rightFrontMotor = hardwareMap.get(DcMotor.class, "Motor1");
+        leftFrontMotor = hardwareMap.get(DcMotor.class, "Motor0");
+        rightBackMotor = hardwareMap.get(DcMotor.class, "Motor3");
+        leftBackMotor = hardwareMap.get(DcMotor.class, "Motor2");
+        craneMotor = hardwareMap.get(DcMotor.class, "Motor4");
+        extendo = hardwareMap.get(DcMotor.class, "Motor5");
+
         while (opModeIsActive()) {
             odometry.UpdateOdom();
             //Variables for wheels
@@ -52,15 +61,6 @@ public class RobotMain extends LinearOpMode {
                 x /= 2;
                 rx /= 2;
             }
-
-            //CHECK PORTS!!!!!!!!!!
-            //Configured from looking BEHIND THE ROBOT!!!
-            rightFrontMotor = hardwareMap.get(DcMotor.class, "Motor1");
-            leftFrontMotor = hardwareMap.get(DcMotor.class, "Motor0");
-            rightBackMotor = hardwareMap.get(DcMotor.class, "Motor3");
-            leftBackMotor = hardwareMap.get(DcMotor.class, "Motor2");
-            craneMotor = hardwareMap.get(DcMotor.class, "Motor4");
-            extendo = hardwareMap.get(DcMotor.class, "Motor5");
 
             //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
             rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
