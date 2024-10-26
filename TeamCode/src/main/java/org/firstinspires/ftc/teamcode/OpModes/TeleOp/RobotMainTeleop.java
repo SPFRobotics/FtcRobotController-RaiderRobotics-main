@@ -1,22 +1,17 @@
 package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.Hardware.Robot.Extendo;
-import org.firstinspires.ftc.teamcode.Hardware.Robot.LinearSlide;
-import org.firstinspires.ftc.teamcode.Hardware.Robot.MecanumChassis;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.Odometry;
 
 import java.text.DecimalFormat;
 
 @TeleOp(name="RobotMain")
-public class RobotMain extends LinearOpMode {
+public class RobotMainTeleop extends LinearOpMode {
     Odometry odometry = new Odometry(this);
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
