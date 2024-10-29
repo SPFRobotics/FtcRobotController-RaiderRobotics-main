@@ -21,6 +21,9 @@ public class RobotMainTeleop extends LinearOpMode {
     private DcMotor leftBackMotor = null;
     private DcMotor craneMotor = null;
     private DcMotor extendo=null;
+    private double x=0;
+    private double rx=0;
+    private double y=0;
 
 
     public void runOpMode() {
@@ -39,8 +42,8 @@ public class RobotMainTeleop extends LinearOpMode {
         extendo = hardwareMap.get(DcMotor.class, "Motor5");
 
         //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
-        rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         waitForStart();
 
         telemetry.setAutoClear(true);
@@ -48,9 +51,9 @@ public class RobotMainTeleop extends LinearOpMode {
         while (opModeIsActive()) {
             odometry.updateOdom();
             //Variables for wheels
-            double y = -gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x * 1.1;
-            double rx = gamepad1.right_stick_x;
+            y = -gamepad1.left_stick_y;
+            x = gamepad1.left_stick_x * 1.1;
+            rx = gamepad1.right_stick_x;
 
             //Speed Control
             if (!gamepad1.right_bumper) {
