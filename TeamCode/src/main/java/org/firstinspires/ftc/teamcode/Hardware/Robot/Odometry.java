@@ -42,16 +42,16 @@ public class Odometry {
         prevEncoder[2] = rightPod.getCurrentPosition();
     }
     public void updateOdom(){ // Look at GM0 if confused about any calculations done here
-        double deltaLeftPod = leftPod.getCurrentPosition() - prevEncoder[0]; // delta = final - initial
-        double deltaCenterPod = centerPod.getCurrentPosition() - prevEncoder[1];
-        double deltaRightPod = rightPod.getCurrentPosition() - prevEncoder[2];
+        double deltaLeftPod = ticksToCM(leftPod.getCurrentPosition() - prevEncoder[0]); // delta = final - initial
+        double deltaCenterPod = ticksToCM(centerPod.getCurrentPosition() - prevEncoder[1]) ;
+        double deltaRightPod =  ticksToCM(rightPod.getCurrentPosition() - prevEncoder[2]) ;
 
-        double phi = (ticksToCM(deltaRightPod) - ticksToCM(deltaLeftPod)) / TRACKWIDTH_CM; // need units to be consistent for this calculation
+        double phi = (deltaRightPod - deltaLeftPod) / TRACKWIDTH_CM; // need units to be consistent for this calculation
         // see Gm0, phi (deltaHeading) is the  changes in right and left Pods divided by trackwidth, which we measured on the robot to be the constant TRACKWIDTH_cm
-        double deltaMiddlePos = (ticksToCM(deltaRightPod) + ticksToCM(deltaLeftPod)) / 2; // The change in position of the robots center is the average of changes on right and left pod
-        double deltaPerpPos = ticksToCM(deltaCenterPod) - OFFSET_CM; // See Gm0, our offset on 2024-25 Robot is 0, our pod is in the center
+        double deltaMiddlePos = (deltaRightPod + deltaLeftPod) / 2; // The change in position of the robots center is the average of changes on right and left pod
+        double deltaPerpPos = deltaCenterPod - OFFSET_CM; // See Gm0, our offset on 2024-25 Robot is 0, our pod is in the center
 
-        double deltaX = deltaMiddlePos * Math.cos(pose[2]) - deltaPerpPos * Math.sin(pose[2]); // See Gm0 for derivation
+        double deltaX = deltaMiddlePos * Math.cos(pose[2])- deltaPerpPos * Math.sin(pose[2]); // See Gm0 for derivation
         double deltaY = deltaMiddlePos * Math.sin(pose[2]) - deltaPerpPos * Math.cos(pose[2]); // See. G. m. 0.
         // deltaMiddlePos and deltaPerpPos are already in CM rather than motor ticks
 
