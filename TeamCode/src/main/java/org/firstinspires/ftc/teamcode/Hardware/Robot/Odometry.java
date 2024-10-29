@@ -46,7 +46,7 @@ public class Odometry {
         double deltaCenterPod = centerPod.getCurrentPosition() - prevEncoder[1];
         double deltaRightPod = rightPod.getCurrentPosition() - prevEncoder[2];
 
-        double phi = (ticksToCM(deltaLeftPod) - ticksToCM(deltaRightPod)) / TRACKWIDTH_CM; // need units to be consistent for this calculation
+        double phi = (ticksToCM(deltaRightPod) - ticksToCM(deltaLeftPod)) / TRACKWIDTH_CM; // need units to be consistent for this calculation
         // see Gm0, phi (deltaHeading) is the  changes in right and left Pods divided by trackwidth, which we measured on the robot to be the constant TRACKWIDTH_cm
         double deltaMiddlePos = (ticksToCM(deltaRightPod) + ticksToCM(deltaLeftPod)) / 2; // The change in position of the robots center is the average of changes on right and left pod
         double deltaPerpPos = ticksToCM(deltaCenterPod) - OFFSET_CM; // See Gm0, our offset on 2024-25 Robot is 0, our pod is in the center
