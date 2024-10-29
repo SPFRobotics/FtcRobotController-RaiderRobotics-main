@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -29,8 +30,16 @@ public class MecanumChassisConvertCmm {
     //Enumeration type used to specify direction when sending a move command.
     public enum Direction {
         FORWARD,
+        FORWARD_LEFT,
+        FORWARD_RIGHT,
+        BACKWARD,
+        BACK_LEFT,
+        BACK_RIGHT,
         STRAFE,
-//        FORWARD_LEFT,              F
+        STRAFE_LEFT,
+        STRAFE_RIGHT,
+
+//        FORWARD_LEFT,
 //        FORWARD_RIGHT,
 //        BACK_LEFT,
 //        BACK_RIGHT
@@ -41,21 +50,70 @@ public class MecanumChassisConvertCmm {
         // to the names assigned during the robot configuration step on the DS or RC devices.
         leftFrontWheel = hwMap.get(DcMotor.class, "frontLeft");
         rightFrontWheel = hwMap.get(DcMotor.class,  "frontRight");
+        leftBackWheel = hwMap.get(DcMotor.class,  "backLeft");
+        rightBackWheel = hwMap.get(DcMotor.class,  "backRight");
         //******* TODO: Initialize the other wheels
 
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
+
+        // Forwards
+        leftFrontWheel.setDirection(DcMotor.Direction.FORWARD);
+        rightFrontWheel.setDirection(DcMotor.Direction.FORWARD);
+        leftBackWheel.setDirection(DcMotor.Direction.FORWARD);
+        rightBackWheel.setDirection(DcMotor.Direction.FORWARD);
+
+        // Backwards
         leftFrontWheel.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontWheel.setDirection(DcMotor.Direction.REVERSE);
+        leftBackWheel.setDirection(DcMotor.Direction.REVERSE);
+        rightBackWheel.setDirection(DcMotor.Direction.REVERSE);
+
+        //Turning Right
+        leftFrontWheel.setDirection(DcMotor.Direction.FORWARD);
+        rightFrontWheel.setDirection(DcMotor.Direction.REVERSE);
+        leftBackWheel.setDirection(DcMotor.Direction.FORWARD);
+        rightBackWheel.setDirection(DcMotor.Direction.REVERSE);
+
+        //Turning Left
+        leftFrontWheel.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontWheel.setDirection(DcMotor.Direction.FORWARD);
+        leftBackWheel.setDirection(DcMotor.Direction.REVERSE);
+        rightBackWheel.setDirection(DcMotor.Direction.FORWARD);
+
+        //Strafe Right
+        leftFrontWheel.setDirection(DcMotor.Direction.FORWARD);
+        rightFrontWheel.setDirection(DcMotor.Direction.REVERSE);
+        leftBackWheel.setDirection(DcMotor.Direction.REVERSE);
+        rightBackWheel.setDirection(DcMotor.Direction.FORWARD);
+
+        //Strafe Left
+        leftFrontWheel.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontWheel.setDirection(DcMotor.Direction.FORWARD);
+        leftBackWheel.setDirection(DcMotor.Direction.FORWARD);
+        rightBackWheel.setDirection(DcMotor.Direction.REVERSE);
+
         //******* TODO: Set direction for other motor
 
         //Make sure motors are stopped an reset encoder.
         leftFrontWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         //Set Motors brake mode(Zero Behavior Mode)
+        leftFrontWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBackWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //******* TODO: Set motor zero behavior mode
 
         //Set motors run mode (could be RUN_USING_ENCODER or RUN_WITHOUT_ENCODER)
+        leftFrontWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFrontWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBackWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBackWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //******* TODO: Set motor run mode.
 
         //Initialize IMU: The IMU provides heading/direction of the robot. It can be used to turn
