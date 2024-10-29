@@ -13,7 +13,7 @@ public class Odometry {
     private DcMotor centerPod = null;
     private LinearOpMode opMode = null;
     private final double TRACKWIDTH_CM = 31.45;
-    private final double CM_PER_TICK = 2000 / (0.32 * Math.PI);
+    private final double CM_PER_TICK = (0.32 * Math.PI)/2000;
     // 2000 PPR encoder; 32 mm diameter (0.16 cm).
     private final double OFFSET_CM = 0;
 
