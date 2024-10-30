@@ -119,10 +119,10 @@ public class MecanumChassis {
         //run_using_encoders_all();
         if (moveDirection.equals("forward")) {
             //Tell each wheel to move a certain amount
-            backLeft.setTargetPosition((int) inch_convert(moveDistance)); //Converts the
-            backRight.setTargetPosition((int) inch_convert(moveDistance));
-            frontLeft.setTargetPosition((int) inch_convert(moveDistance));
-            frontRight.setTargetPosition((int) inch_convert(moveDistance));
+            backLeft.setTargetPosition((int) cm_convert(moveDistance)); //Converts the
+            backRight.setTargetPosition((int) cm_convert(moveDistance));
+            frontLeft.setTargetPosition((int) cm_convert(moveDistance));
+            frontRight.setTargetPosition((int) cm_convert(moveDistance));
             run_to_position_all();
             opmode.telemetry.addData("Power", movePower);
             opmode.telemetry.update();
@@ -131,30 +131,30 @@ public class MecanumChassis {
             frontLeft.setPower(movePower);
             frontRight.setPower(movePower);
         } else if (moveDirection.equals("backward")) {
-            backLeft.setTargetPosition((int) inch_convert(-moveDistance));
-            backRight.setTargetPosition((int) inch_convert(-moveDistance));
-            frontLeft.setTargetPosition((int) inch_convert(-moveDistance));
-            frontRight.setTargetPosition((int) inch_convert(-moveDistance));
+            backLeft.setTargetPosition((int) cm_convert(-moveDistance));
+            backRight.setTargetPosition((int) cm_convert(-moveDistance));
+            frontLeft.setTargetPosition((int) cm_convert(-moveDistance));
+            frontRight.setTargetPosition((int) cm_convert(-moveDistance));
             run_to_position_all();
             backLeft.setPower(-movePower);
             backRight.setPower(-movePower);
             frontLeft.setPower(-movePower);
             frontRight.setPower(-movePower);
         } else if (moveDirection.equals("right")) {
-            backLeft.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
-            backRight.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
-            frontLeft.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
-            frontRight.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
+            backLeft.setTargetPosition((int) cm_convert(-moveDistance*strafeMult));
+            backRight.setTargetPosition((int) cm_convert(moveDistance*strafeMult));
+            frontLeft.setTargetPosition((int) cm_convert(moveDistance*strafeMult));
+            frontRight.setTargetPosition((int) cm_convert(-moveDistance*strafeMult));
             run_to_position_all();
             backLeft.setPower(-movePower);
             backRight.setPower(movePower);
             frontLeft.setPower(movePower);
             frontRight.setPower(-movePower);
         } else if (moveDirection.equals("left")) {
-            backLeft.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
-            backRight.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
-            frontLeft.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
-            frontRight.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
+            backLeft.setTargetPosition((int) cm_convert(moveDistance*strafeMult));
+            backRight.setTargetPosition((int) cm_convert(-moveDistance*strafeMult));
+            frontLeft.setTargetPosition((int) cm_convert(-moveDistance*strafeMult));
+            frontRight.setTargetPosition((int) cm_convert(moveDistance*strafeMult));
             run_to_position_all();
             backLeft.setPower(movePower);
             backRight.setPower(-movePower);
@@ -201,10 +201,10 @@ public class MecanumChassis {
         double targetAngle = angle;
         if (moveDirection.equals("forward")) {
             //Tell each wheel to move a certain amount
-            backLeft.setTargetPosition((int) inch_convert(moveDistance)); //Converts the
-            backRight.setTargetPosition((int) inch_convert(moveDistance));
-            frontLeft.setTargetPosition((int) inch_convert(moveDistance));
-            frontRight.setTargetPosition((int) inch_convert(moveDistance));
+            backLeft.setTargetPosition((int) cm_convert(moveDistance)); //Converts the
+            backRight.setTargetPosition((int) cm_convert(moveDistance));
+            frontLeft.setTargetPosition((int) cm_convert(moveDistance));
+            frontRight.setTargetPosition((int) cm_convert(moveDistance));
             run_to_position_all();
             opmode.telemetry.addData("Power", movePower);
             opmode.telemetry.update();
@@ -217,10 +217,10 @@ public class MecanumChassis {
             frontLeft.setPower(movePower);
             frontRight.setPower(movePower);
         } else if (moveDirection.equals("backward")) {
-            backLeft.setTargetPosition((int) inch_convert(-moveDistance));
-            backRight.setTargetPosition((int) inch_convert(-moveDistance));
-            frontLeft.setTargetPosition((int) inch_convert(-moveDistance));
-            frontRight.setTargetPosition((int) inch_convert(-moveDistance));
+            backLeft.setTargetPosition((int) cm_convert(-moveDistance));
+            backRight.setTargetPosition((int) cm_convert(-moveDistance));
+            frontLeft.setTargetPosition((int) cm_convert(-moveDistance));
+            frontRight.setTargetPosition((int) cm_convert(-moveDistance));
             run_to_position_all();
             bLPower = -movePower;
             bRPower = -movePower;
@@ -231,10 +231,10 @@ public class MecanumChassis {
             frontLeft.setPower(-movePower);
             frontRight.setPower(-movePower);
         } else if (moveDirection.equals("right")) {
-            backLeft.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
-            backRight.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
-            frontLeft.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
-            frontRight.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
+            backLeft.setTargetPosition((int) cm_convert(-moveDistance*strafeMult));
+            backRight.setTargetPosition((int) cm_convert(moveDistance*strafeMult));
+            frontLeft.setTargetPosition((int) cm_convert(moveDistance*strafeMult));
+            frontRight.setTargetPosition((int) cm_convert(-moveDistance*strafeMult));
             run_to_position_all();
             bLPower = -movePower;
             bRPower = movePower;
@@ -245,10 +245,10 @@ public class MecanumChassis {
             frontLeft.setPower(movePower);
             frontRight.setPower(-movePower);
         } else if (moveDirection.equals("left")) {
-            backLeft.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
-            backRight.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
-            frontLeft.setTargetPosition((int) inch_convert(-moveDistance*strafeMult));
-            frontRight.setTargetPosition((int) inch_convert(moveDistance*strafeMult));
+            backLeft.setTargetPosition((int) cm_convert(moveDistance*strafeMult));
+            backRight.setTargetPosition((int) cm_convert(-moveDistance*strafeMult));
+            frontLeft.setTargetPosition((int) cm_convert(-moveDistance*strafeMult));
+            frontRight.setTargetPosition((int) cm_convert(moveDistance*strafeMult));
             run_to_position_all();
             bLPower = movePower;
             bRPower = -movePower;
