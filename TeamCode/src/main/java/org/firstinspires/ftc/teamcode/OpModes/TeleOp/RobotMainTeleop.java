@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot.Odometry;
@@ -19,13 +21,13 @@ public class RobotMainTeleop extends LinearOpMode {
     private DcMotor leftFrontMotor = null;
     private DcMotor rightBackMotor = null;
     private DcMotor leftBackMotor = null;
-    private DcMotor craneMotor = null;
-    private DcMotor extendo=null;
+    private DcMotor craneMotorY = null;
+    private DcMotor extendoX = null;
+    private Servo rightClawServo = null;
+    private Servo leftClawServo = null;
 
 
     public void runOpMode() {
-        odometry.init();
-        odometry.setPose(0,0,0);
         //Format Telemetry
         DecimalFormat df = new DecimalFormat("#.000");
 
@@ -35,18 +37,25 @@ public class RobotMainTeleop extends LinearOpMode {
         leftFrontMotor = hardwareMap.get(DcMotor.class, "Motor0");
         rightBackMotor = hardwareMap.get(DcMotor.class, "Motor3");
         leftBackMotor = hardwareMap.get(DcMotor.class, "Motor2");
-        craneMotor = hardwareMap.get(DcMotor.class, "Motor4");
-        extendo = hardwareMap.get(DcMotor.class, "Motor5");
+        craneMotorY = hardwareMap.get(DcMotor.class, "Motor4");
+        extendoX = hardwareMap.get(DcMotor.class, "Motor5");
+        rightClawServo = hardwareMap.get(Servo.class, "Servo0");
+        leftClawServo = hardwareMap.get(Servo.class, "Servo1");
 
         //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
         rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightClawServo.setDirection(Servo.Direction.REVERSE);
+
+        //Defines servo position
+        double rClawPos = rightClawServo.getPosition();
+        double lClawPos = leftClawServo.getPosition();
+
         waitForStart();
 
         telemetry.setAutoClear(true);
 
         while (opModeIsActive()) {
-            odometry.updateOdom();
             //Variables for wheels
             double y = gamepad1.left_stick_y;
             double x = -gamepad1.left_stick_x * 1.1;
@@ -65,24 +74,17 @@ public class RobotMainTeleop extends LinearOpMode {
             leftFrontMotor.setPower((y + x + rx) / denominator);
             rightBackMotor.setPower((y + x - rx) / denominator);
             leftBackMotor.setPower((y - x + rx) / denominator);
-            
+
             //Crane Control
-            
-            //Variable for height
-             double craneUp = gamepad2.right_trigger;
-             double craneDown = -gamepad2.left_trigger;
-             if (!gamepad2.a){
-                craneUp /= 2;
-                craneDown /=2;
-             }
-             craneMotor.setPower(craneUp);
-             craneMotor.setPower(craneDown);
+            craneMotorY.setPower(gamepad2.right_stick_y);
+            extendoX.setPower(gamepad2.left_stick_y);
+
+            //Claw Control
+            if (gamepad2.a){
+
+            }
 
             //TELEMETRY
-            telemetry.addData("X: ", odometry.getX());
-            telemetry.addData("Y: ", odometry.getY());
-            telemetry.addData("Theta: ", odometry.getTheta());
-            telemetry.update();
         }          
 
     }
