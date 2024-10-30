@@ -37,8 +37,8 @@ public class RobotMainTeleop extends LinearOpMode {
         leftFrontMotor = hardwareMap.get(DcMotor.class, "Motor0");
         rightBackMotor = hardwareMap.get(DcMotor.class, "Motor3");
         leftBackMotor = hardwareMap.get(DcMotor.class, "Motor2");
-        craneMotorY = hardwareMap.get(DcMotor.class, "Motor4");
-        extendoX = hardwareMap.get(DcMotor.class, "Motor5");
+        craneMotorY = hardwareMap.get(DcMotor.class, "Motor5");
+        extendoX = hardwareMap.get(DcMotor.class, "Motor4");
         rightClawServo = hardwareMap.get(Servo.class, "Servo0");
         leftClawServo = hardwareMap.get(Servo.class, "Servo1");
 
@@ -57,7 +57,7 @@ public class RobotMainTeleop extends LinearOpMode {
 
         while (opModeIsActive()) {
             //Variables for wheels
-            double y = -gamepad1.left_stick_y;
+            double y = gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x * 1.1;
             double rx = gamepad1.right_stick_x;
 
