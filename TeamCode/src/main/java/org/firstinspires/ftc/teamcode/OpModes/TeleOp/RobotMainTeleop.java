@@ -85,9 +85,13 @@ public class RobotMainTeleop extends LinearOpMode {
             extendoX.setPower(gamepad2.left_stick_y);
 
             //Claw Control
-            if (gamepad2.a){
-                //wristClawServo.setPosition();
+            if (gamepad2.a && wClawPos < 1){
+                wClawPos += 0.01;
             }
+            if (gamepad2.b && wClawPos > 0){
+                wClawPos -= 0.01;
+            }
+            wristClawServo.setPosition(wClawPos);
 
             //TELEMETRY
         }          
