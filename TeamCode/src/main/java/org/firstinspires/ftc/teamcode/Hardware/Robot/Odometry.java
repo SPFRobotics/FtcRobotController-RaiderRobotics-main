@@ -30,7 +30,6 @@ public class Odometry {
         leftPod.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         centerPod.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightPod.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftPod.setDirection(DcMotorSimple.Direction.REVERSE);
     }
     public void setPose(double X, double Y, double headingRadians){ // Any angles in our code should be in radians we're grown by now
         pose[0] = X;
