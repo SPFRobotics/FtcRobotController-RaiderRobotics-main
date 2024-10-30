@@ -23,6 +23,7 @@ public class RobotMainTeleop extends LinearOpMode {
     private DcMotor leftBackMotor = null;
     private DcMotor craneMotorY = null;
     private DcMotor extendoX = null;
+    //The wrist of the robot moves the call in the up and down direction.
     private Servo wristClawServo = null;
     private Servo rightClawServo = null;
     private Servo leftClawServo = null;
