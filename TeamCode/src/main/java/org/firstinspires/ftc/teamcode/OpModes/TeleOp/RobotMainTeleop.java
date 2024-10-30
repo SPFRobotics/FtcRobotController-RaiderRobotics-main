@@ -57,9 +57,9 @@ public class RobotMainTeleop extends LinearOpMode {
 
         while (opModeIsActive()) {
             //Variables for wheels
-            double y = gamepad1.left_stick_y;
-            double x = -gamepad1.left_stick_x * 1.1;
-            double rx = -gamepad1.right_stick_x;
+            double y = -gamepad1.left_stick_y;
+            double x = gamepad1.left_stick_x * 1.1;
+            double rx = gamepad1.right_stick_x;
 
             //Speed Control
             if (!gamepad1.right_bumper) {
