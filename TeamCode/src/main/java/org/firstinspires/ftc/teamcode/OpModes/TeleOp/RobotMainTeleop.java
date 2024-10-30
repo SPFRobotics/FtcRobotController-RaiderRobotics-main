@@ -23,8 +23,10 @@ public class RobotMainTeleop extends LinearOpMode {
     private DcMotor leftBackMotor = null;
     private DcMotor craneMotorY = null;
     private DcMotor extendoX = null;
+    private Servo wristClawServo = null;
     private Servo rightClawServo = null;
     private Servo leftClawServo = null;
+
 
 
     public void runOpMode() {
@@ -32,22 +34,25 @@ public class RobotMainTeleop extends LinearOpMode {
         DecimalFormat df = new DecimalFormat("#.000");
 
         //CHECK PORTS!!!!!!!!!!
-        //Configured from looking BEHIND THE ROBOT!!!
+        //Configured from looking IN FRONT OF THE ROBOT!!!
         rightFrontMotor = hardwareMap.get(DcMotor.class, "Motor1");
         leftFrontMotor = hardwareMap.get(DcMotor.class, "Motor0");
         rightBackMotor = hardwareMap.get(DcMotor.class, "Motor3");
         leftBackMotor = hardwareMap.get(DcMotor.class, "Motor2");
         craneMotorY = hardwareMap.get(DcMotor.class, "Motor5");
         extendoX = hardwareMap.get(DcMotor.class, "Motor4");
-        rightClawServo = hardwareMap.get(Servo.class, "Servo0");
-        leftClawServo = hardwareMap.get(Servo.class, "Servo1");
+        wristClawServo = hardwareMap.get(Servo.class, "Servo0");
+        rightClawServo = hardwareMap.get(Servo.class, "Servo1");
+        leftClawServo = hardwareMap.get(Servo.class, "Servo2");
 
         //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
-        rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         rightClawServo.setDirection(Servo.Direction.REVERSE);
 
         //Defines servo position
+        //w stands or write while r and l are for left and right
+        double wClawPos = wristClawServo.getPosition();
         double rClawPos = rightClawServo.getPosition();
         double lClawPos = leftClawServo.getPosition();
 
@@ -57,7 +62,7 @@ public class RobotMainTeleop extends LinearOpMode {
 
         while (opModeIsActive()) {
             //Variables for wheels
-            double y = gamepad1.left_stick_y;
+            double y = -gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x * 1.1;
             double rx = gamepad1.right_stick_x;
 
@@ -81,7 +86,7 @@ public class RobotMainTeleop extends LinearOpMode {
 
             //Claw Control
             if (gamepad2.a){
-
+                //wristClawServo.setPosition();
             }
 
             //TELEMETRY
