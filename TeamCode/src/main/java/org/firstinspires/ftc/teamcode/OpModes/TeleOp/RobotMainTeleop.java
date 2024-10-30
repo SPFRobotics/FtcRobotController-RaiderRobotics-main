@@ -27,6 +27,8 @@ public class RobotMainTeleop extends LinearOpMode {
     private Servo wristClawServo = null;
     private Servo rightClawServo = null;
     private Servo leftClawServo = null;
+    private Servo topRightClaw = null;
+    private Servo topLeftClaw = null;
 
 
 
@@ -36,6 +38,7 @@ public class RobotMainTeleop extends LinearOpMode {
 
         //CHECK PORTS!!!!!!!!!!
         //Configured from looking IN FRONT OF THE ROBOT!!!
+
         rightFrontMotor = hardwareMap.get(DcMotor.class, "Motor1");
         leftFrontMotor = hardwareMap.get(DcMotor.class, "Motor0");
         rightBackMotor = hardwareMap.get(DcMotor.class, "Motor3");
@@ -45,6 +48,9 @@ public class RobotMainTeleop extends LinearOpMode {
         wristClawServo = hardwareMap.get(Servo.class, "Servo0");
         rightClawServo = hardwareMap.get(Servo.class, "Servo1");
         leftClawServo = hardwareMap.get(Servo.class, "Servo2");
+        topRightClaw = hardwareMap.get(Servo.class, "Servo3");
+        topLeftClaw = hardwareMap.get(Servo.class, "Servo4");
+
 
         //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
         leftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -53,9 +59,10 @@ public class RobotMainTeleop extends LinearOpMode {
 
         //Defines servo position
         //w stands or write while r and l are for left and right
-        double wClawPos = wristClawServo.getPosition();
-        double rClawPos = rightClawServo.getPosition();
-        double lClawPos = leftClawServo.getPosition();
+        double wClawPos = 0;
+        double rClawPos = 0;
+        double lClawPos = 0;
+
 
         waitForStart();
 
@@ -82,10 +89,10 @@ public class RobotMainTeleop extends LinearOpMode {
             leftBackMotor.setPower((y - x + rx) / denominator);
 
             //Crane Control
-            craneMotorY.setPower(gamepad2.right_stick_y);
-            extendoX.setPower(gamepad2.left_stick_y);
+            craneMotorY.setPower(-gamepad2.right_stick_y);
+            extendoX.setPower(-gamepad2.left_stick_y);
 
-            //Claw Control
+            //Claw Wrist Control
             if (gamepad2.a && wClawPos < 1){
                 wClawPos += 0.01;
             }
@@ -94,7 +101,13 @@ public class RobotMainTeleop extends LinearOpMode {
             }
             wristClawServo.setPosition(wClawPos);
 
-            //TELEMETRY
+            rightClawServo.setPosition(gamepad2.right_trigger);
+            leftClawServo.setPosition(gamepad2.right_trigger);
+
+            topRightClaw.setPosition(gamepad2.left_trigger);
+            topLeftClaw.setPosition(gamepad2.left_trigger);
+
+            //TELEMETRY?
         }          
 
     }
