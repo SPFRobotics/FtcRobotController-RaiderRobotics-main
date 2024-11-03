@@ -165,13 +165,14 @@ public class RobotMainTeleop extends LinearOpMode {
 
             //Claw Wrist Control
             //Uses the a and b buttons to control the claw but needs to be changed to right and left bumpers.
-            if (gamepad2.right_bumper && wClawPos < 1){
+            if (gamepad2.right_bumper && wClawPos < 1 && wClawPos < 0.52){
                 wClawPos += 0.01/2;
             }
             if (gamepad2.left_bumper && wClawPos > 0){
                 wClawPos -= 0.01/2;
             }
             wristClawServo.setPosition(wClawPos);
+            //Limit: 0.52
 
 
             //The trigger controls the claw as of now but needs to be changed to buttons for ease of usage.
