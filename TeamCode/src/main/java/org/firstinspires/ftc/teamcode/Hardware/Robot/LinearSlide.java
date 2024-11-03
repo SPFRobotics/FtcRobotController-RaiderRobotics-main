@@ -43,8 +43,8 @@ public class LinearSlide {
         lift.setPower(power);
 
         while(isBusy()){
-            opmode.telemetry.addLine(String.format("Left: %6.1f, Right: %6.1f", (float)lift.getCurrentPosition()));
-            opmode.telemetry.update();
+            //opmode.telemetry.addLine(String.format("Left: %6.1f, Right: %6.1f", (float)lift.getCurrentPosition()));
+            //opmode.telemetry.update();
         }
 
         lift.setPower(0);
