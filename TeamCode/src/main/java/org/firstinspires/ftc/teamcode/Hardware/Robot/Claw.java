@@ -9,14 +9,14 @@ public class Claw {
     private Servo rightArm = null;
     private final double LEFT_ARM_OPEN_POS = 0;
     private final double RIGHT_ARM_OPEN_POS = 0;
-    private final double LEFT_ARM_CLOSED_POS = .2;
-    private final double RIGHT_ARM_CLOSED_POS = .2;
+    private final double LEFT_ARM_CLOSED_POS = .12;
+    private final double RIGHT_ARM_CLOSED_POS = .12;
     public Claw(LinearOpMode lom){
         opmode = lom;
     }
     public void init(){
-        leftArm = opmode.hardwareMap.servo.get("leftArm");
-        rightArm = opmode.hardwareMap.servo.get("rightArm");
+        leftArm = opmode.hardwareMap.servo.get("Servo4");
+        rightArm = opmode.hardwareMap.servo.get("Servo3");
         close();
     }
     public void close(){

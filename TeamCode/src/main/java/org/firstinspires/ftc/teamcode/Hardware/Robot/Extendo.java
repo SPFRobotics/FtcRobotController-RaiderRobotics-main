@@ -16,7 +16,7 @@ public class Extendo {
 
     public Extendo(LinearOpMode lom){ opmode = lom; }
     public void initSlides(){
-        lift = opmode.hardwareMap.dcMotor.get("extendo");
+        lift = opmode.hardwareMap.dcMotor.get("Motor11");
 
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
