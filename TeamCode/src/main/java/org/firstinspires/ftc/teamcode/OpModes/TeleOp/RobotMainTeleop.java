@@ -126,9 +126,7 @@ public class RobotMainTeleop extends LinearOpMode {
 
             //Crane Control
             //Old controls using the thumbstick value.
-            //craneMotorY.setPower(gamepad2.right_stick_y);
-
-            //-3300*/
+            //craneMotorY.setPower(gamepad2.right_stick_y);*/
 
             //Old code for the extendo uses encoders
             /*if (gamepad1.dpad_up){
@@ -159,6 +157,7 @@ public class RobotMainTeleop extends LinearOpMode {
             else if(gamepad2.dpad_down && craneMotorYPos < 0){
                 craneMotorYPos += 5;
             }
+            //Limit is: -3300
             craneMotorY.setTargetPosition((int)craneMotorYPos);
             craneMotorY.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             craneMotorY.setPower(1);
@@ -208,9 +207,13 @@ public class RobotMainTeleop extends LinearOpMode {
             telemetry.addLine("BL Motor PWR: " + leftBackMotor.getPower());
             telemetry.addLine("Vertical Slide: " + craneMotorY.getPower());
             telemetry.addLine("Extendo: " + extendoX.getPower() + "\n");
+
             telemetry.addLine("Slide Pos:");
             telemetry.addLine("Vertical Slide: " + craneMotorYPos);
-            telemetry.addLine("Extendo: " + extendoXPos);
+            telemetry.addLine("Extendo: " + extendoXPos + "\n");
+
+            telemetry.addLine("Servo Pos:");
+            telemetry.addLine("Wrist: " + wClawPos);
             //Servo positions and motor positions coming soon!!!!
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
