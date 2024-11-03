@@ -85,6 +85,9 @@ public class RobotMainTeleop extends LinearOpMode {
         double rClawPos = 0;
         double lClawPos = 0;
 
+        boolean clawClosed = false;
+        boolean topClawClosed = false;
+
         //Initialize all servos to 0
         topRightClaw.setPosition(0.05);
         topLeftClaw.setPosition(0.05);
@@ -164,7 +167,6 @@ public class RobotMainTeleop extends LinearOpMode {
 
 
             //Claw Wrist Control
-            //Uses the a and b buttons to control the claw but needs to be changed to right and left bumpers.
             if (gamepad2.right_bumper && wClawPos < 1 && wClawPos < 0.52){
                 wClawPos += 0.01/2;
             }
@@ -175,7 +177,7 @@ public class RobotMainTeleop extends LinearOpMode {
             //Limit: 0.52
 
 
-            //The trigger controls the claw as of now but needs to be changed to buttons for ease of usage.
+            //Claw control (Needs to be changed to singular button)
             if (gamepad2.a){
                 rightClawServo.setPosition(0);
                 leftClawServo.setPosition(0);
@@ -193,6 +195,29 @@ public class RobotMainTeleop extends LinearOpMode {
                 topRightClaw.setPosition(0.2);
                 topLeftClaw.setPosition(0.2);
             }
+
+            //POTENTIAL NEW CODE that makes closing and opening the claw for both the top and bottom claws 1 button
+
+            /*if (gamepad2.a && !clawClosed){
+                rightClawServo.setPosition(0.2);
+                leftClawServo.setPosition(0.2);
+                clawClosed = true;
+            }
+            else if (gamepad2.a && clawClosed){
+                rightClawServo.setPosition(0);
+                leftClawServo.setPosition(0);
+                clawClosed = false;
+            }
+            if (gamepad2.b && !topClawClosed){
+                topRightClaw.setPosition(0.2);
+                topLeftClaw.setPosition(0.2);
+                topClawClosed = true;
+            }
+            else if(gamepad2.b && topClawClosed){
+                topRightClaw.setPosition(0);
+                topLeftClaw.setPosition(0);
+                topClawClosed = false;
+            }*/
 
             //TELEMETRY
             //ALL NAMES CONFIGURED LOOKING AT THE FRONT OF THE ROBOT
