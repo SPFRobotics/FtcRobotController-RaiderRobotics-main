@@ -51,7 +51,7 @@ public class MecanumChassis {
     }
     public double inch_convert(double inch) { return inch * (537.7 / (3.78 * Math.PI)); }
     public double inToCm(int inches) { return inches * 2.54; }
-    public double cm_convert(double cm) { return cm * (537.7 / (9.6012 / Math.PI)); }
+    public double cm_convert(double cm) { return cm * (537.7 / (9.6012 * Math.PI)); }
     public void initializeMovement() {
         backLeft = opmode.hardwareMap.dcMotor.get("Motor2");
         backRight = opmode.hardwareMap.dcMotor.get("Motor3");
