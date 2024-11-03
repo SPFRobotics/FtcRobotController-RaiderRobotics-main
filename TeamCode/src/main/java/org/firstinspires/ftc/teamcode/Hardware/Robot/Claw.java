@@ -15,8 +15,8 @@ public class Claw {
         opmode = lom;
     }
     public void init(){
-        leftArm = opmode.hardwareMap.servo.get("leftArm");
-        rightArm = opmode.hardwareMap.servo.get("rightArm");
+        leftArm = opmode.hardwareMap.servo.get("Servo4");
+        rightArm = opmode.hardwareMap.servo.get("Servo3");
         close();
     }
     public void close(){
