@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot.Odometry;
 
 import java.text.DecimalFormat;
 
-@TeleOp(name="RobotMain")
+@TeleOp(name="RobotMainTeleOp")
 public class RobotMainTeleop extends LinearOpMode {
     Odometry odometry = new Odometry(this);
     // Declare OpMode members.
@@ -33,7 +33,7 @@ public class RobotMainTeleop extends LinearOpMode {
 
 
     public void runOpMode() {
-        //Format Telemetry
+        //Format Telemetry (Not in use)
         DecimalFormat df = new DecimalFormat("#.000");
 
         //CHECK PORTS!!!!!!!!!!
@@ -43,11 +43,11 @@ public class RobotMainTeleop extends LinearOpMode {
         leftFrontMotor = hardwareMap.get(DcMotor.class, "Motor0");
         rightBackMotor = hardwareMap.get(DcMotor.class, "Motor3");
         leftBackMotor = hardwareMap.get(DcMotor.class, "Motor2");
-        craneMotorY = hardwareMap.get(DcMotor.class, "Motor5");
-        extendoX = hardwareMap.get(DcMotor.class, "Motor4");
-        wristClawServo = hardwareMap.get(Servo.class, "Servo0");
+        craneMotorY = hardwareMap.get(DcMotor.class, "Motor10");
+        extendoX = hardwareMap.get(DcMotor.class, "Motor11");
+        wristClawServo = hardwareMap.get(Servo.class, "Servo2");
         rightClawServo = hardwareMap.get(Servo.class, "Servo1");
-        leftClawServo = hardwareMap.get(Servo.class, "Servo2");
+        leftClawServo = hardwareMap.get(Servo.class, "Servo0");
         topRightClaw = hardwareMap.get(Servo.class, "Servo3");
         topLeftClaw = hardwareMap.get(Servo.class, "Servo4");
 
@@ -56,12 +56,34 @@ public class RobotMainTeleop extends LinearOpMode {
         leftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         rightClawServo.setDirection(Servo.Direction.REVERSE);
+        topLeftClaw.setDirection(Servo.Direction.REVERSE);
+        //topRightClaw.setDirection(Servo.Direction.REVERSE);
+
+        craneMotorY.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        extendoX.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
         //Defines servo position
         //w stands or write while r and l are for left and right
         double wClawPos = 0;
         double rClawPos = 0;
         double lClawPos = 0;
+
+        //Initialize all servos to 0
+        topRightClaw.setPosition(0);
+        topLeftClaw.setPosition(0);
+        rightClawServo.setPosition(0);
+        leftClawServo.setPosition(0);
+        wristClawServo.setPosition(0);
+
+
+        //Crane position
+        craneMotorY.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        double craneMotorYPos = 0;
+
+        //Extendo Position
+        extendoX.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        double extendoXPos = 0;
 
 
         waitForStart();
@@ -70,7 +92,7 @@ public class RobotMainTeleop extends LinearOpMode {
 
         while (opModeIsActive()) {
             //Variables for wheels
-            double y = -gamepad1.left_stick_y;
+            double y = gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x * 1.1;
             double rx = gamepad1.right_stick_x;
 
@@ -89,25 +111,69 @@ public class RobotMainTeleop extends LinearOpMode {
             leftBackMotor.setPower((y - x + rx) / denominator);
 
             //Crane Control
-            craneMotorY.setPower(-gamepad2.right_stick_y);
-            extendoX.setPower(-gamepad2.left_stick_y);
+            //Old controls using the thumbstick value.
+            //craneMotorY.setPower(gamepad2.right_stick_y);
+
+            //New controls using encoders
+            if (gamepad2.right_stick_y > 0 && craneMotorYPos > -3300){
+                craneMotorYPos += 20;
+            }
+
+            if (gamepad2.right_stick_y < 0 && craneMotorYPos < 0){
+                craneMotorYPos -= 20;
+            }
+            craneMotorY.setTargetPosition((int)craneMotorYPos);
+            craneMotorY.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            craneMotorY.setPower(1);
+            //-3300
+
+            if (gamepad1.dpad_up){
+                extendoXPos += -15;
+            }
+            else if(gamepad1.dpad_down){
+                extendoXPos += 15;
+            }
+            extendoX.setTargetPosition((int)extendoXPos);
+            extendoX.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            extendoX.setPower(1);
+
+
 
             //Claw Wrist Control
-            if (gamepad2.a && wClawPos < 1){
+            //Uses the a and b buttons to control the claw but needs to be changed to right and left bumpers.
+            if (gamepad2.right_bumper && wClawPos < 1){
                 wClawPos += 0.01;
             }
-            if (gamepad2.b && wClawPos > 0){
+            if (gamepad2.left_bumper && wClawPos > 0){
                 wClawPos -= 0.01;
             }
             wristClawServo.setPosition(wClawPos);
 
-            rightClawServo.setPosition(gamepad2.right_trigger);
-            leftClawServo.setPosition(gamepad2.right_trigger);
 
-            topRightClaw.setPosition(gamepad2.left_trigger);
-            topLeftClaw.setPosition(gamepad2.left_trigger);
+            //The trigger controls the claw as of now but needs to be changed to buttons for ease of usage.
+            if (gamepad2.a){
+                rightClawServo.setPosition(0);
+                leftClawServo.setPosition(0);
+            }
+            else if(gamepad2.b){
+                rightClawServo.setPosition(0.2);
+                leftClawServo.setPosition(0.2);
+            }
 
-            //TELEMETRY?
+            if (gamepad2.y){
+                topRightClaw.setPosition(0);
+                topLeftClaw.setPosition(0);
+            }
+            else if(gamepad2.x){
+                topRightClaw.setPosition(0.2);
+                topLeftClaw.setPosition(0.2);
+            }
+
+            //TELEMETRY
+            telemetry.update();
+            telemetry.addLine("==========================================");
+            telemetry.addLine("Motor Position:" + String.valueOf(craneMotorY.getCurrentPosition()));
+            telemetry.addLine("==========================================");
         }          
 
     }
