@@ -18,7 +18,7 @@ public class JustParkComp1 extends LinearOpMode {
     {
         chassis.initializeMovement();
         waitForStart();
-        chassis.move(.5, "right", 65);
+        chassis.move(.5, "right", 20);
         // 3 Points practically guaranteed
     }
 }
