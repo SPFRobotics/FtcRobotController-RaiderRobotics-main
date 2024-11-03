@@ -111,7 +111,7 @@ public class RobotMainTeleop extends LinearOpMode {
             double rx = gamepad1.right_stick_x;
 
             //Speed Control
-            if (!gamepad1.right_bumper) {
+            if (!gamepad1.a) {
                 y /= 2;
                 x /= 2;
                 rx /= 2;
@@ -142,10 +142,10 @@ public class RobotMainTeleop extends LinearOpMode {
             extendoX.setPower(0.5);*/
 
             //Using the d-pad to set the power of the motors
-            if (gamepad1.dpad_up){
+            if (gamepad1.right_bumper){
                 extendoX.setPower(-1);
             }
-            else if (gamepad1.dpad_down){
+            else if (gamepad1.left_bumper){
                 extendoX.setPower(1);
             }
             else{
@@ -197,7 +197,7 @@ public class RobotMainTeleop extends LinearOpMode {
             //TELEMETRY
             //ALL NAMES CONFIGURED LOOKING AT THE FRONT OF THE ROBOT
             telemetry.update();
-            telemetry.addLine("Telemetry Provided By Mr.Spaceman ;)");
+            //telemetry.addLine("Telemetry Provided By Mr.Spaceman ;)");
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
             telemetry.addLine("==========================================");
