@@ -23,6 +23,7 @@ public class AutoRedObsZoneLuke extends LinearOpMode {
         slide.initSlides();
         extendo.initSlides();
         claw.init();
+        waitForStart();
         slide.slide(19.5, .6); // raises lift high enough to place specimen on chamber
         chassis.move(.5, "forward", 81.28); // should move towards submersible
         chassis.move(.5,"left",30); // should move towards submersible
