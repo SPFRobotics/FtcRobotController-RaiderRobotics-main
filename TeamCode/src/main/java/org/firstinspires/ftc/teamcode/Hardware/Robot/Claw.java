@@ -17,7 +17,8 @@ public class Claw {
     public void init(){
         leftArm = opmode.hardwareMap.servo.get("Servo4");
         rightArm = opmode.hardwareMap.servo.get("Servo3");
-        close();
+        leftArm.setPosition(0.05);
+        rightArm.setPosition(0.05);
     }
     public void close(){
         leftArm.setPosition(LEFT_ARM_CLOSED_POS);
