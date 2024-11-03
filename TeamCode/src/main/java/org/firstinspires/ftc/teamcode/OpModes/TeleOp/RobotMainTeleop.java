@@ -86,8 +86,8 @@ public class RobotMainTeleop extends LinearOpMode {
         double lClawPos = 0;
 
         //Initialize all servos to 0
-        topRightClaw.setPosition(0.12);
-        topLeftClaw.setPosition(0.12);
+        topRightClaw.setPosition(0.05);
+        topLeftClaw.setPosition(0.05);
         rightClawServo.setPosition(0);
         leftClawServo.setPosition(0);
         wristClawServo.setPosition(0);
@@ -167,10 +167,10 @@ public class RobotMainTeleop extends LinearOpMode {
             //Claw Wrist Control
             //Uses the a and b buttons to control the claw but needs to be changed to right and left bumpers.
             if (gamepad2.right_bumper && wClawPos < 1){
-                wClawPos += 0.01;
+                wClawPos += 0.01/2;
             }
             if (gamepad2.left_bumper && wClawPos > 0){
-                wClawPos -= 0.01;
+                wClawPos -= 0.01/2;
             }
             wristClawServo.setPosition(wClawPos);
 
