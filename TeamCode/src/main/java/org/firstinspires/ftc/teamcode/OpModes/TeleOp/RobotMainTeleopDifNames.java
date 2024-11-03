@@ -12,8 +12,8 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot.Odometry;
 
 import java.text.DecimalFormat;
 
-@TeleOp(name="RobotMainTeleOp")
-public class RobotMainTeleop extends LinearOpMode {
+@TeleOp(name="RobotMainTeleOpDifNames")
+public class RobotMainTeleopDifNames extends LinearOpMode {
     Odometry odometry = new Odometry(this);
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -175,7 +175,7 @@ public class RobotMainTeleop extends LinearOpMode {
             telemetry.addLine("==========================================");
             telemetry.addLine("Motor Position:" + String.valueOf(craneMotorY.getCurrentPosition()));
             telemetry.addLine("==========================================");
-        }          
+        }
 
     }
 }
