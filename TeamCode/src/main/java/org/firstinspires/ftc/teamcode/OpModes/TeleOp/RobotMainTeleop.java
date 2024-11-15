@@ -197,8 +197,8 @@ public class RobotMainTeleop extends LinearOpMode {
             }
 
             //POTENTIAL NEW CODE that makes closing and opening the claw for both the top and bottom claws 1 button
-
-            /*if (gamepad2.a && !clawClosed){
+            /*
+            if (gamepad2.a && !clawClosed){
                 rightClawServo.setPosition(0.2);
                 leftClawServo.setPosition(0.2);
                 clawClosed = true;
