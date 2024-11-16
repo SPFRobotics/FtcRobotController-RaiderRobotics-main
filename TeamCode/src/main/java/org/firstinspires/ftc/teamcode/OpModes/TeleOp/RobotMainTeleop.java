@@ -3,10 +3,12 @@ package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot.Odometry;
 
@@ -29,6 +31,7 @@ public class RobotMainTeleop extends LinearOpMode {
     private Servo leftClawServo = null;
     private Servo topRightClaw = null;
     private Servo topLeftClaw = null;
+    private IMU Imu = null;
 
 
 
@@ -55,6 +58,9 @@ public class RobotMainTeleop extends LinearOpMode {
         leftClawServo = hardwareMap.get(Servo.class, "Servo0");
         topRightClaw = hardwareMap.get(Servo.class, "Servo3");
         topLeftClaw = hardwareMap.get(Servo.class, "Servo4");
+
+        //IMU
+        Imu = hardwareMap.get(IMU.class, "Imu");
 
 
         //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
@@ -102,6 +108,7 @@ public class RobotMainTeleop extends LinearOpMode {
         double extendoXPos = 0;
 
         telemetry.setAutoClear(true);
+
 
         waitForStart();
         while (opModeIsActive()) {
@@ -200,6 +207,8 @@ public class RobotMainTeleop extends LinearOpMode {
 
             telemetry.addLine("Servo Pos:");
             telemetry.addLine("Wrist: " + wClawPos);
+
+            telemetry.addLine("IMU: " + Imu.toString());
             //Servo positions and motor positions coming soon!!!!
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
