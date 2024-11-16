@@ -85,9 +85,6 @@ public class RobotMainTeleop extends LinearOpMode {
         double rClawPos = 0;
         double lClawPos = 0;
 
-        boolean clawClosed = false;
-        boolean topClawClosed = false;
-
         //Initialize all servos to 0
         topRightClaw.setPosition(0.05);
         topLeftClaw.setPosition(0.05);
@@ -178,7 +175,7 @@ public class RobotMainTeleop extends LinearOpMode {
 
 
             //Claw control (Needs to be changed to singular button)
-            if (gamepad2.a){
+            /*if (gamepad2.a){
                 rightClawServo.setPosition(0);
                 leftClawServo.setPosition(0);
             }
@@ -194,30 +191,25 @@ public class RobotMainTeleop extends LinearOpMode {
             else if(gamepad2.x){
                 topRightClaw.setPosition(0.2);
                 topLeftClaw.setPosition(0.2);
-            }
+            }*/
 
             //POTENTIAL NEW CODE that makes closing and opening the claw for both the top and bottom claws 1 button
-            /*
-            if (gamepad2.a && !clawClosed){
+            if (gamepad2.a){
                 rightClawServo.setPosition(0.2);
                 leftClawServo.setPosition(0.2);
-                clawClosed = true;
             }
-            else if (gamepad2.a && clawClosed){
+            else if (!gamepad2.a){
                 rightClawServo.setPosition(0);
                 leftClawServo.setPosition(0);
-                clawClosed = false;
             }
-            if (gamepad2.b && !topClawClosed){
+            if (gamepad2.b){
                 topRightClaw.setPosition(0.2);
                 topLeftClaw.setPosition(0.2);
-                topClawClosed = true;
             }
-            else if(gamepad2.b && topClawClosed){
+            else if(!gamepad2.b){
                 topRightClaw.setPosition(0);
                 topLeftClaw.setPosition(0);
-                topClawClosed = false;
-            }*/
+            }
 
             //TELEMETRY
             //ALL NAMES CONFIGURED LOOKING AT THE FRONT OF THE ROBOT
