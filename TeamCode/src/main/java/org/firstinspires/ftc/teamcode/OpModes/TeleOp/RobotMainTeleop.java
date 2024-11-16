@@ -110,8 +110,8 @@ public class RobotMainTeleop extends LinearOpMode {
             double x = gamepad1.left_stick_x * -1.1;
             double rx = gamepad1.right_stick_x;
 
-            //Speed Control
-            if (!gamepad1.a) {
+            //Robot Speed Control Using the right_trigger
+            if (gamepad1.right_trigger != 0) {
                 y /= 2;
                 x /= 2;
                 rx /= 2;
@@ -123,21 +123,6 @@ public class RobotMainTeleop extends LinearOpMode {
             leftFrontMotor.setPower((y + x + rx) / denominator);
             rightBackMotor.setPower((y + x - rx) / denominator);
             leftBackMotor.setPower((y - x + rx) / denominator);
-
-            //Crane Control
-            //Old controls using the thumbstick value.
-            //craneMotorY.setPower(gamepad2.right_stick_y);*/
-
-            //Old code for the extendo uses encoders
-            /*if (gamepad1.dpad_up){
-                extendoXPos += -15;
-            }
-            else if(gamepad1.dpad_down){
-                extendoXPos += 15;
-            }
-            extendoX.setTargetPosition((int)extendoXPos);
-            extendoX.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            extendoX.setPower(0.5);*/
 
             //Using the d-pad to set the power of the motors
             if (gamepad1.right_bumper){
@@ -174,39 +159,22 @@ public class RobotMainTeleop extends LinearOpMode {
             //Limit: 0.52
 
 
-            //Claw control (Needs to be changed to singular button)
-            /*if (gamepad2.a){
-                rightClawServo.setPosition(0);
-                leftClawServo.setPosition(0);
-            }
-            else if(gamepad2.b){
-                rightClawServo.setPosition(0.2);
-                leftClawServo.setPosition(0.2);
-            }
-
-            if (gamepad2.y){
-                topRightClaw.setPosition(0);
-                topLeftClaw.setPosition(0);
-            }
-            else if(gamepad2.x){
-                topRightClaw.setPosition(0.2);
-                topLeftClaw.setPosition(0.2);
-            }*/
-
             //POTENTIAL NEW CODE that makes closing and opening the claw for both the top and bottom claws 1 button
-            if (gamepad2.a){
-                rightClawServo.setPosition(0.2);
-                leftClawServo.setPosition(0.2);
-            }
-            else if (!gamepad2.a){
+            //Intake
+            if (gamepad2.y){
                 rightClawServo.setPosition(0);
                 leftClawServo.setPosition(0);
             }
-            if (gamepad2.b){
+            else if (!gamepad2.y){
+                rightClawServo.setPosition(0.2);
+                leftClawServo.setPosition(0.2);
+            }
+            //Outtake
+            if (gamepad2.a){
                 topRightClaw.setPosition(0.2);
                 topLeftClaw.setPosition(0.2);
             }
-            else if(!gamepad2.b){
+            else if(!gamepad2.a){
                 topRightClaw.setPosition(0);
                 topLeftClaw.setPosition(0);
             }
