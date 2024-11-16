@@ -16,10 +16,9 @@ public class LinearSlide {
     public LinearSlide(LinearOpMode lom){ opmode = lom; }
     public void initSlides(){
         lift = opmode.hardwareMap.dcMotor.get("Motor10");
-
+        lift.setDirection(DcMotorSimple.Direction.REVERSE);
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        // Don't know if direction should be reversed, have to test
-        // lift.setDirection(DcMotorSimple.Direction.REVERSE);
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
     private boolean isBusy(){
         return (lift.isBusy());
