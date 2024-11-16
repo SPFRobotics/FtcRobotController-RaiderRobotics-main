@@ -8,9 +8,9 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot.Extendo;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.LinearSlide;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.MecanumChassis;
 import org.firstinspires.ftc.teamcode.Hardware.aprilTagDetectionMovement;
-// START WITH ROBOT ON A5 WITH RIGHT WHEELS ON COORDINATE LINE
+// START WITH ROBOT ON F2 WITH RIGHT WHEELS ON COORDINATE LINE
 @Autonomous
-public class AutoBlueBasketLuke extends LinearOpMode {
+public class AutoRedBasketLuke extends LinearOpMode {
     MecanumChassis chassis = new MecanumChassis(this);
     LinearSlide slide = new LinearSlide(this);
     Extendo extendo = new Extendo(this);

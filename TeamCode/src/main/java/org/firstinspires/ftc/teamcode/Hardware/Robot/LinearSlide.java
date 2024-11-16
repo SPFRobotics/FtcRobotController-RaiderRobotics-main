@@ -15,7 +15,7 @@ public class LinearSlide {
 
     public LinearSlide(LinearOpMode lom){ opmode = lom; }
     public void initSlides(){
-        lift = opmode.hardwareMap.dcMotor.get("lift");
+        lift = opmode.hardwareMap.dcMotor.get("Motor10");
 
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         // Don't know if direction should be reversed, have to test
@@ -43,8 +43,8 @@ public class LinearSlide {
         lift.setPower(power);
 
         while(isBusy()){
-            opmode.telemetry.addLine(String.format("Left: %6.1f, Right: %6.1f", (float)lift.getCurrentPosition()));
-            opmode.telemetry.update();
+            //opmode.telemetry.addLine(String.format("Left: %6.1f, Right: %6.1f", (float)lift.getCurrentPosition()));
+            //opmode.telemetry.update();
         }
 
         lift.setPower(0);
