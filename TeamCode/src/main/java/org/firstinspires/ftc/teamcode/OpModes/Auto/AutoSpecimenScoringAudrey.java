@@ -44,6 +44,14 @@ public class AutoSpecimenScoringAudrey extends LinearOpMode{
         slide.slide(4,.6);
         //picked specimen up off the wall
 
+        chassis.move(.5,"backward",60);
+        chassis.rotate(90,.5);
+        chassis.move(.5,"forward",90);
+        chassis.rotate(90,.5);
+        //position chassis in front of rungs to score
+
+
+
 
     }
 
