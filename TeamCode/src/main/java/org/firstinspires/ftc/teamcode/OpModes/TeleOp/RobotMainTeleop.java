@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.Odometry;
 
 import java.text.DecimalFormat;
@@ -30,7 +31,7 @@ public class RobotMainTeleop extends LinearOpMode {
     private Servo leftClawServo = null;
     private Servo topRightClaw = null;
     private Servo topLeftClaw = null;
-    private IMU Imu = null;
+    private IMU imu = null;
 
 
 
@@ -59,7 +60,7 @@ public class RobotMainTeleop extends LinearOpMode {
         topLeftClaw = hardwareMap.get(Servo.class, "Servo4");
 
         //IMU
-        Imu = hardwareMap.get(IMU.class, "Imu");
+        imu = hardwareMap.get(IMU.class, "imu");
 
 
         //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
@@ -106,8 +107,11 @@ public class RobotMainTeleop extends LinearOpMode {
         extendoX.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double extendoXPos = 0;
 
-        telemetry.setAutoClear(true);
+        //Boolean conditions
+        boolean isStillPressed = false;
+        boolean fieldOri = false;
 
+        telemetry.setAutoClear(true);
 
         waitForStart();
         while (opModeIsActive()) {
@@ -116,6 +120,29 @@ public class RobotMainTeleop extends LinearOpMode {
             double x = gamepad1.left_stick_x * -1.1;
             double rx = gamepad1.right_stick_x;
 
+            double fowardDef = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
+            //Change between Robot Oriented and Field Oriented Drive using 1 button
+            if (gamepad1.touchpad && !isStillPressed && !fieldOri) {
+                fieldOri = true;
+                isStillPressed = true;
+            }
+
+            if (gamepad1.touchpad && !isStillPressed && fieldOri){
+                fieldOri = false;
+                isStillPressed = true;
+            }
+
+            if (!gamepad1.touchpad && isStillPressed){
+                isStillPressed = false;
+            }
+
+            if (fieldOri){
+                x = x * Math.cos(fowardDef) - y * Math.sin(fowardDef);
+                y = x * Math.sin(fowardDef) + y * Math.cos(fowardDef);
+            }
+
+            gamepad1.rumble(100);
             //Robot Speed Control Using the right_trigger
             if (gamepad1.right_trigger != 0) {
                 y /= 2;
@@ -207,7 +234,13 @@ public class RobotMainTeleop extends LinearOpMode {
             telemetry.addLine("Servo Pos:");
             telemetry.addLine("Wrist: " + wClawPos);
 
-            telemetry.addLine("IMU: " + Imu.toString());
+            //Driver Mode
+            if (fieldOri) {
+                telemetry.addLine("Driver Mode: Field Oriented");
+            }
+            else{
+                telemetry.addLine("Driver Mode: Robot Oriented");
+            }
             //Servo positions and motor positions coming soon!!!!
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
