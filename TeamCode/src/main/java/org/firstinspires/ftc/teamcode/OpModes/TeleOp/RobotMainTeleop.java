@@ -120,15 +120,19 @@ public class RobotMainTeleop extends LinearOpMode {
             double x = gamepad1.left_stick_x * -1.1;
             double rx = gamepad1.right_stick_x;
 
+            // Get's the robots start foward facing position
             double fowardDef = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
             //Change between Robot Oriented and Field Oriented Drive using 1 button
             if (gamepad1.touchpad && !isStillPressed && !fieldOri) {
+                gamepad1.rumble(100);
+                gamepad1.rumble(100);
                 fieldOri = true;
                 isStillPressed = true;
             }
 
             if (gamepad1.touchpad && !isStillPressed && fieldOri){
+                gamepad1.rumble(100);
                 fieldOri = false;
                 isStillPressed = true;
             }
@@ -142,7 +146,6 @@ public class RobotMainTeleop extends LinearOpMode {
                 y = x * Math.sin(fowardDef) + y * Math.cos(fowardDef);
             }
 
-            gamepad1.rumble(100);
             //Robot Speed Control Using the right_trigger
             if (gamepad1.right_trigger != 0) {
                 y /= 2;
