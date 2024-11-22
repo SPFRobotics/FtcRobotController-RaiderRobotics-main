@@ -3,11 +3,13 @@ package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.Odometry;
 
 import java.text.DecimalFormat;
@@ -29,6 +31,7 @@ public class RobotMainTeleop extends LinearOpMode {
     private Servo leftClawServo = null;
     private Servo topRightClaw = null;
     private Servo topLeftClaw = null;
+    private IMU imu = null;
 
 
 
@@ -55,6 +58,9 @@ public class RobotMainTeleop extends LinearOpMode {
         leftClawServo = hardwareMap.get(Servo.class, "Servo0");
         topRightClaw = hardwareMap.get(Servo.class, "Servo3");
         topLeftClaw = hardwareMap.get(Servo.class, "Servo4");
+
+        //IMU
+        imu = hardwareMap.get(IMU.class, "imu");
 
 
         //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
@@ -86,8 +92,8 @@ public class RobotMainTeleop extends LinearOpMode {
         double lClawPos = 0;
 
         //Initialize all servos to 0
-        topRightClaw.setPosition(0.05);
-        topLeftClaw.setPosition(0.05);
+        topRightClaw.setPosition(0);
+        topLeftClaw.setPosition(0);
         rightClawServo.setPosition(0);
         leftClawServo.setPosition(0);
         wristClawServo.setPosition(0);
@@ -101,6 +107,10 @@ public class RobotMainTeleop extends LinearOpMode {
         extendoX.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double extendoXPos = 0;
 
+        //Boolean conditions
+        boolean isStillPressed = false;
+        boolean fieldOri = false;
+
         telemetry.setAutoClear(true);
 
         waitForStart();
@@ -110,8 +120,33 @@ public class RobotMainTeleop extends LinearOpMode {
             double x = gamepad1.left_stick_x * -1.1;
             double rx = gamepad1.right_stick_x;
 
-            //Speed Control
-            if (!gamepad1.a) {
+            // Get's the robots start foward facing position
+            double fowardDef = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
+            //Change between Robot Oriented and Field Oriented Drive using 1 button
+            if (gamepad1.touchpad && !isStillPressed && !fieldOri) {
+                gamepad1.rumble(500);
+                fieldOri = true;
+                isStillPressed = true;
+            }
+
+            if (gamepad1.touchpad && !isStillPressed && fieldOri){
+                gamepad1.rumble(500);
+                fieldOri = false;
+                isStillPressed = true;
+            }
+
+            if (!gamepad1.touchpad && isStillPressed){
+                isStillPressed = false;
+            }
+
+            if (fieldOri){
+                x = x * Math.cos(fowardDef) - y * Math.sin(fowardDef);
+                y = x * Math.sin(fowardDef) + y * Math.cos(fowardDef);
+            }
+
+            //Robot Speed Control Using the right_trigger
+            if (gamepad1.right_trigger != 0) {
                 y /= 2;
                 x /= 2;
                 rx /= 2;
@@ -123,21 +158,6 @@ public class RobotMainTeleop extends LinearOpMode {
             leftFrontMotor.setPower((y + x + rx) / denominator);
             rightBackMotor.setPower((y + x - rx) / denominator);
             leftBackMotor.setPower((y - x + rx) / denominator);
-
-            //Crane Control
-            //Old controls using the thumbstick value.
-            //craneMotorY.setPower(gamepad2.right_stick_y);*/
-
-            //Old code for the extendo uses encoders
-            /*if (gamepad1.dpad_up){
-                extendoXPos += -15;
-            }
-            else if(gamepad1.dpad_down){
-                extendoXPos += 15;
-            }
-            extendoX.setTargetPosition((int)extendoXPos);
-            extendoX.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            extendoX.setPower(0.5);*/
 
             //Using the d-pad to set the power of the motors
             if (gamepad1.right_bumper){
@@ -174,39 +194,22 @@ public class RobotMainTeleop extends LinearOpMode {
             //Limit: 0.52
 
 
-            //Claw control (Needs to be changed to singular button)
-            /*if (gamepad2.a){
-                rightClawServo.setPosition(0);
-                leftClawServo.setPosition(0);
-            }
-            else if(gamepad2.b){
-                rightClawServo.setPosition(0.2);
-                leftClawServo.setPosition(0.2);
-            }
-
-            if (gamepad2.y){
-                topRightClaw.setPosition(0);
-                topLeftClaw.setPosition(0);
-            }
-            else if(gamepad2.x){
-                topRightClaw.setPosition(0.2);
-                topLeftClaw.setPosition(0.2);
-            }*/
-
             //POTENTIAL NEW CODE that makes closing and opening the claw for both the top and bottom claws 1 button
-            if (gamepad2.a){
-                rightClawServo.setPosition(0.2);
-                leftClawServo.setPosition(0.2);
-            }
-            else if (!gamepad2.a){
+            //Intake
+            if (gamepad2.y){
                 rightClawServo.setPosition(0);
                 leftClawServo.setPosition(0);
             }
-            if (gamepad2.b){
+            else if (!gamepad2.y){
+                rightClawServo.setPosition(0.2);
+                leftClawServo.setPosition(0.2);
+            }
+            //Outtake
+            if (gamepad2.a){
                 topRightClaw.setPosition(0.2);
                 topLeftClaw.setPosition(0.2);
             }
-            else if(!gamepad2.b){
+            else if(!gamepad2.a){
                 topRightClaw.setPosition(0);
                 topLeftClaw.setPosition(0);
             }
@@ -225,13 +228,20 @@ public class RobotMainTeleop extends LinearOpMode {
             telemetry.addLine("BL Motor PWR: " + leftBackMotor.getPower());
             telemetry.addLine("Vertical Slide: " + craneMotorY.getPower());
             telemetry.addLine("Extendo: " + extendoX.getPower() + "\n");
-
-            telemetry.addLine("Slide Pos:");
             telemetry.addLine("Vertical Slide: " + craneMotorYPos);
             telemetry.addLine("Extendo: " + extendoXPos + "\n");
+            telemetry.addLine("Pitch: " + imu.getRobotYawPitchRollAngles().getPitch(AngleUnit.DEGREES));
+            telemetry.addLine("Roll: " + imu.getRobotYawPitchRollAngles().getRoll(AngleUnit.DEGREES));
+            telemetry.addLine("Yaw: " + imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
-            telemetry.addLine("Servo Pos:");
-            telemetry.addLine("Wrist: " + wClawPos);
+
+            //Driver Mode Logic
+            if (fieldOri) {
+                telemetry.addLine("Driver Mode: Field Oriented");
+            }
+            else{
+                telemetry.addLine("Driver Mode: Robot Oriented");
+            }
             //Servo positions and motor positions coming soon!!!!
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));

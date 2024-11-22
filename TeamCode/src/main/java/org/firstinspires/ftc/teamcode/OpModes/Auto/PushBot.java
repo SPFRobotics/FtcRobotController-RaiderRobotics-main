@@ -17,7 +17,7 @@ public class PushBot extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()){
-            chassis.move(.5, "forward", 182.52);
+            chassis.move(.5, "forward", 152.52);
             chassis.move(.5, "left", 15.24);
             chassis.move(.5, "backward", 113.02);
             chassis.move(.5, "forward", 113.02);
