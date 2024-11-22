@@ -229,15 +229,14 @@ public class RobotMainTeleop extends LinearOpMode {
             telemetry.addLine("BL Motor PWR: " + leftBackMotor.getPower());
             telemetry.addLine("Vertical Slide: " + craneMotorY.getPower());
             telemetry.addLine("Extendo: " + extendoX.getPower() + "\n");
-
-            telemetry.addLine("Slide Pos:");
             telemetry.addLine("Vertical Slide: " + craneMotorYPos);
             telemetry.addLine("Extendo: " + extendoXPos + "\n");
+            telemetry.addLine("Pitch: " + imu.getRobotYawPitchRollAngles().getPitch(AngleUnit.DEGREES));
+            telemetry.addLine("Roll: " + imu.getRobotYawPitchRollAngles().getRoll(AngleUnit.DEGREES));
+            telemetry.addLine("Yaw: " + imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
-            telemetry.addLine("Servo Pos:");
-            telemetry.addLine("Wrist: " + wClawPos);
 
-            //Driver Mode
+            //Driver Mode Logic
             if (fieldOri) {
                 telemetry.addLine("Driver Mode: Field Oriented");
             }
