@@ -29,7 +29,7 @@ public class AutoSampleToObv extends LinearOpMode {
         double x = aprilTagDist.getDistX();
         double y = aprilTagDist.getDistY();
 
-        if (x == 0) {
+        if ((x > -1) && (x < 1)) {
             while (y > 61) {
                 chassis.move(.2,"right",y-61); //hi
                 y = aprilTagDist.getDistY();
