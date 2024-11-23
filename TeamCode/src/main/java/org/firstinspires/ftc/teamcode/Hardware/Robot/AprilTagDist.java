@@ -35,6 +35,22 @@ public class AprilTagDist {
             }
         return dist;
     }
+    public double getDistX(){
+        double dist = 0;
+        if (!tagProcessor.getDetections().isEmpty()){
+            AprilTagDetection tag = tagProcessor.getDetections().get(0);
+            dist = tag.ftcPose.x;
+        }
+        return dist;
+    }
+    public double getDistY(){
+        double dist = 0;
+        if (!tagProcessor.getDetections().isEmpty()){
+            AprilTagDetection tag = tagProcessor.getDetections().get(0);
+            dist = tag.ftcPose.y;
+        }
+        return dist;
+    }
 }
 
 
