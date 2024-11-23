@@ -27,7 +27,7 @@ public class AutoApriltagDist extends LinearOpMode {
         VisionPortal visionPortal = new VisionPortal.Builder()
                         .addProcessor(tagProcessor)
                         .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-                        .setCameraResolution(new Size(648, 480))
+                        .setCameraResolution(new Size(640, 480))
                         .build();
 
 

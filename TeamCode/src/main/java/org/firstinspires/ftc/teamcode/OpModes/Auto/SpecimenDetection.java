@@ -59,7 +59,7 @@ public class SpecimenDetection implements VisionProcessor {
     public double redPercentRight, bluePercentRight, rightPercent = 0;
 
     private Mat redMatRight = new Mat(), blueMatRight = new Mat(), blurredMatRight = new Mat();
-
+    //creates our boxes :)
     Point SpecimenPointA = new Point(
             Specimen_BoundingBox_TopLeft_AnchorPoint.x,
             Specimen_BoundingBox_TopLeft_AnchorPoint.y
@@ -97,6 +97,7 @@ public class SpecimenDetection implements VisionProcessor {
 
     @Override
     public Object processFrame(Mat input, long captureTimeNanos){
+        //this defines our mats and WHERE they are! :D
         Imgproc.blur(input, blurredMat, new Size(5, 5));
         Imgproc.blur(input, blurredMatLeft, new Size(5,5));
         Imgproc.blur(input, blurredMatCenter, new Size(5,5));
@@ -106,7 +107,35 @@ public class SpecimenDetection implements VisionProcessor {
         blurredMatCenter = blurredMatCenter.submat(new Rect(SpecimenPointACenter, SpecimenPointBCenter));
         blurredMatRight.submat(new Rect(SpecimenPointARight, SpecimenPointBRight));
 
-        
+        //basically, the following smoothens out the image, getting rid of gaps!
+        Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3));
+        Imgproc.morphologyEx(blurredMat, blurredMat, Imgproc.MORPH_CLOSE, kernel);
+        Imgproc.morphologyEx(blurredMatLeft, blurredMatLeft, Imgproc.MORPH_CLOSE, kernel);
+        Imgproc.morphologyEx(blurredMatCenter, blurredMatCenter, Imgproc.MORPH_CLOSE, kernel);
+        Imgproc.morphologyEx(blurredMatRight, blurredMatRight, Imgproc.MORPH_CLOSE, kernel);
+
+        //this part searches each mat to find if any of the pixels remain in the range specified for each color!
+        Core.inRange(blurredMat, lower_red_bounds, upper_red_bounds, redMat);
+        Core.inRange(blurredMat, lower_blue_bounds, upper_blue_bounds, blueMat);
+        Core.inRange(blurredMatLeft, lower_red_bounds, upper_red_bounds, redMat);
+        Core.inRange(blurredMatLeft, lower_blue_bounds, upper_blue_bounds, blueMat);
+        Core.inRange(blurredMatCenter, lower_red_bounds, upper_red_bounds, redMat);
+        Core.inRange(blurredMatCenter, lower_blue_bounds, upper_blue_bounds, blueMat);
+        Core.inRange(blurredMatRight, lower_red_bounds, upper_red_bounds, redMat);
+        Core.inRange(blurredMatRight, lower_blue_bounds, upper_blue_bounds, blueMat);
+
+        //if the pixel is filled (non-zero) it figures out what the color that pixel is
+        redPercent = Core.countNonZero(redMat);
+        bluePercent = Core.countNonZero(blueMat);
+        redPercentLeft = Core.countNonZero(redMatLeft);
+        bluePercentLeft = Core.countNonZero(blueMatLeft);
+        leftPercent = redPercentLeft + bluePercentLeft;
+        redPercentCenter = Core.countNonZero(redMatCenter);
+        bluePercentCenter = Core.countNonZero(blueMatCenter);
+        centerPercent = redPercentCenter + bluePercentCenter;
+        redPercentRight = Core.countNonZero(redMatRight);
+        bluePercentRight = Core.countNonZero(blueMatRight);
+        rightPercent = redPercentRight + bluePercentRight;jgo
     }
 
 
