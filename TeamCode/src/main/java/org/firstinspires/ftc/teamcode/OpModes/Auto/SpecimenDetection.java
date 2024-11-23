@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes.Auto;
+/*package org.firstinspires.ftc.teamcode.OpModes.Auto;
 
 import android.graphics.Canvas;
 
@@ -15,9 +15,10 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 public class SpecimenDetection implements VisionProcessor {
     @Override
-    public void init(int width, int height, CameraCalibration calibration){}
+    public void init(int width, int height, CameraCalibration calibration) {
+    }
 
-    public enum GameObjectLocation{
+    public enum GameObjectLocation {
         LEFT,
         RIGHT,
         CENTER,
@@ -33,15 +34,15 @@ public class SpecimenDetection implements VisionProcessor {
     private static int RightLineLocation = 520;
 
     private static final Scalar
-        lower_red_bounds = new Scalar(100,0,0,0),
-        upper_red_bounds = new Scalar(255,70,70,255),
-        lower_blue_bounds = new Scalar(0,0,100,0),
-        upper_blue_bounds = new Scalar(100,00,255,255);
+            lower_red_bounds = new Scalar(100, 0, 0, 0),
+            upper_red_bounds = new Scalar(255, 70, 70, 255),
+            lower_blue_bounds = new Scalar(0, 0, 100, 0),
+            upper_blue_bounds = new Scalar(100, 00, 255, 255);
 
     private final Scalar
-        RED = new Scalar(255,0,0),
-        BLUE = new Scalar(0,0,255),
-        BLACK = new Scalar(0,0,0);
+            RED = new Scalar(255, 0, 0),
+            BLUE = new Scalar(0, 0, 255),
+            BLACK = new Scalar(0, 0, 0);
     private Scalar color = BLACK;
 
     public double minSectorPercent = 1440, minTotalPercent = 1040;
@@ -96,18 +97,18 @@ public class SpecimenDetection implements VisionProcessor {
     private volatile GameObjectLocation position = GameObjectLocation.NONE;
 
     @Override
-    public Object processFrame(Mat input, long captureTimeNanos){
+    public Object processFrame(Mat input, long captureTimeNanos) {
         Imgproc.blur(input, blurredMat, new Size(5, 5));
-        Imgproc.blur(input, blurredMatLeft, new Size(5,5));
-        Imgproc.blur(input, blurredMatCenter, new Size(5,5));
-        Imgproc.blur(input, blurredMatRight, new Size(5,5));
+        Imgproc.blur(input, blurredMatLeft, new Size(5, 5));
+        Imgproc.blur(input, blurredMatCenter, new Size(5, 5));
+        Imgproc.blur(input, blurredMatRight, new Size(5, 5));
         blurredMat = blurredMat.submat(new Rect(SpecimenPointA, SpecimenPointB));
         blurredMatLeft = blurredMatLeft.submat(new Rect(SpecimenPointALeft, SpecimenPointBLeft));
         blurredMatCenter = blurredMatCenter.submat(new Rect(SpecimenPointACenter, SpecimenPointBCenter));
         blurredMatRight.submat(new Rect(SpecimenPointARight, SpecimenPointBRight));
 
-        
+
     }
 
-
 }
+*/

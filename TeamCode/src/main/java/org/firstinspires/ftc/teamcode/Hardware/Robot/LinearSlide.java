@@ -15,7 +15,7 @@ public class LinearSlide {
 
     public LinearSlide(LinearOpMode lom){ opmode = lom; }
     public void initSlides(){
-        lift = opmode.hardwareMap.dcMotor.get("Motor10");
+        lift = opmode.hardwareMap.dcMotor.get("lift");
         lift.setDirection(DcMotorSimple.Direction.REVERSE);
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
