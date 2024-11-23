@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Hardware;
+/*package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -72,7 +72,7 @@ public class aprilTagDetectionMovement {
                 sleep(20);
             }
         }
-    }*/
+    }*//*
 
     public aprilTagDetectionMovement(LinearOpMode lom) {opmode = lom;}
     public void initCam2(){
@@ -109,7 +109,7 @@ public class aprilTagDetectionMovement {
             move(0.5,"right",robotDistanceToAprilTag[0]);
             rotate(180,0.5);
             move(0.5,"backward",(robotDistanceToAprilTag[1]-20));
-        }*/
+        }*//*
         if (foundAprilTag) {
             outputInfo = new double[] {(robotDistanceToAprilTag[0] - moveOffsetX), (robotDistanceToAprilTag[1] - moveOffsetY)};
         } else {
@@ -135,7 +135,7 @@ public class aprilTagDetectionMovement {
             move(0.5,"right",robotDistanceToAprilTag[0]);
             rotate(180,0.5);
             move(0.5,"backward",(robotDistanceToAprilTag[1]-20));
-        }*/
+        }*//*
         if (foundAprilTag) {
             outputInfo = new double[] {robotDistanceToAprilTag[0],(robotDistanceToAprilTag[1] - moveOffsetY)}; //[xPos, yPos]
         }
@@ -185,3 +185,4 @@ public class aprilTagDetectionMovement {
         spikeLocation = visionProcessor.getPosition().toString();
     }
 }
+*/
