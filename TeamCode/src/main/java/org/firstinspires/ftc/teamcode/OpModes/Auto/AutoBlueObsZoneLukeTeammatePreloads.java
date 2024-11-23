@@ -32,22 +32,9 @@ public class AutoBlueObsZoneLukeTeammatePreloads extends LinearOpMode {
 
 
         chassis.move(.5, "backward", 5);
-        chassis.move(.5, "right", 100);
+        chassis.move(.5, "right", 110);
         chassis.rotate(-90, .6);
-        slide.slide(0, .6);
-        chassis.move(.5, "right", 45);
-        chassis.rotate(-90, 0.5);
-        chassis.move(.5, "forward", 19.01);
-        claw.close();
-        slide.slide(24, .6);
-        chassis.move(.5, "backward", 19.01);
-        chassis.rotate(180, 0.5);
-        chassis.move(.5, "left", 85);
-        chassis.move(.5, "forward", 55.5);
-        slide.slide(18.5, .6);
-        claw.open();
-        chassis.move(.5, "backward", 60);
-        chassis.move(.5, "right", 90);
+
 
     }
 }

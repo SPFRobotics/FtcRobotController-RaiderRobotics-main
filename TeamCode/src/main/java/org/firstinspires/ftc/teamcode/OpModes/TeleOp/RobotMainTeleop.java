@@ -187,20 +187,26 @@ public class RobotMainTeleop extends LinearOpMode {
             }
             */
             if(gamepad2.dpad_up){
-                craneMotorY.setPower(0.75);
+                craneMotorY.setPower(1);
             }
             else if(gamepad2.dpad_down){
-                craneMotorY.setPower(-0.75);
+                craneMotorY.setPower(-1);
             }
-            if(craneMotorY.getCurrentPosition() > 3301||craneMotorY.getCurrentPosition()<0){
+            else{
+                craneMotorY.setPower(0);
+            }
+            if(craneMotorY.getCurrentPosition() >= 3300&&craneMotorY.getPower()>0){
+                craneMotorY.setPower(0);
+            }
+            if(craneMotorY.getCurrentPosition()<= 0 &&craneMotorY.getPower()<0){
                 craneMotorY.setPower(0);
             }
 
 
             //Limit is: 3300
-            craneMotorY.setTargetPosition((int)craneMotorYPos);
+            /*craneMotorY.setTargetPosition((int)craneMotorYPos);
             craneMotorY.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            craneMotorY.setPower(1);
+            craneMotorY.setPower(1);*/
 
 
             //Claw Wrist Control
@@ -217,31 +223,24 @@ public class RobotMainTeleop extends LinearOpMode {
             //POTENTIAL NEW CODE that makes closing and opening the claw for both the top and bottom claws 1 button
             //Intake
             if (gamepad2.y){
-                if(rightClawServo.getPosition()==0&&leftClawServo.getPosition()==0){
-                    rightClawServo.setPosition(0.18);
-                    leftClawServo.setPosition(0.18);
-                }
-                else if(rightClawServo.getPosition()==0.18&&leftClawServo.getPosition()==0.18){
-                    rightClawServo.setPosition(0);
-                    leftClawServo.setPosition(0);
-                }
-
+                rightClawServo.setPosition(0.1);
+                leftClawServo.setPosition(0.1);
             }
-            else if (!gamepad2.y){
-                rightClawServo.setPosition(0.0);
-                leftClawServo.setPosition(0.0);
+            else{
+                rightClawServo.setPosition(0.18);
+                leftClawServo.setPosition(0.18);
             }
             //Outtake
             if (gamepad2.a){
-                if(topRightClaw.getPosition()==0&&topLeftClaw.getPosition()==0) {
-                    topRightClaw.setPosition(0.15);
-                    topLeftClaw.setPosition(0.15);
-                }
-                else if(topRightClaw.getPosition()==.15&&topLeftClaw.getPosition()==.15){
-                    topRightClaw.setPosition(0);
-                    topLeftClaw.setPosition(0);
-                }
+                topRightClaw.setPosition(0.15);
+                topLeftClaw.setPosition(0.15);
+
             }
+            else{
+                topRightClaw.setPosition(0);
+                topLeftClaw.setPosition(0);
+            }
+
 
             //TELEMETRY
             //ALL NAMES CONFIGURED LOOKING AT THE FRONT OF THE ROBOT
