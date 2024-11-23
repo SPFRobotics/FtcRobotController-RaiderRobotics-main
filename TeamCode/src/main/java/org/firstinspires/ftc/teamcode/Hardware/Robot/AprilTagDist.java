@@ -55,4 +55,3 @@ public class AprilTagDist {
             this.opmode = opmode;
         }
     }
-}
