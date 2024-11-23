@@ -13,6 +13,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @Autonomous
 public class AutoApriltagDist extends LinearOpMode {
+    //hi
+    public double inToCm(double inches) { return inches * 2.54; }
 
     @Override
     public void runOpMode() throws InterruptedException{
@@ -38,10 +40,10 @@ public class AutoApriltagDist extends LinearOpMode {
 
                 //tag.ftcPose. this is how you can get distance from x y and z axis to the tag. x left right, y is straight out, and z is up and down. We need to use the pythagorean theorem for x and y to get the distance from the tag. YAY!
 
-                telemetry.addData("X", tag.ftcPose.x);
-                telemetry.addData("Y", tag.ftcPose.y);
-                telemetry.addData("Z", tag.ftcPose.z);
-                //telemetry.addData("roll", tag.ftcPose.roll);
+                telemetry.addData("X", inToCm(tag.ftcPose.x));
+                telemetry.addData("Y", inToCm(tag.ftcPose.y));
+                telemetry.addData("Z", inToCm(tag.ftcPose.z));
+                //telemetry.addData("roll", tag.ftcPose.roll); if used make sure to add inToCm()
                 //telemetry.addData("pitch", tag.ftcPose.pitch);
                 //telemetry.addData("yaw", tag.ftcPose.yaw);
             }
