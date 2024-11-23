@@ -13,7 +13,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @Autonomous
 public class AutoApriltagDist extends LinearOpMode {
-
+    //hi
     public double inToCm(double inches) { return inches * 2.54; }
 
     @Override
