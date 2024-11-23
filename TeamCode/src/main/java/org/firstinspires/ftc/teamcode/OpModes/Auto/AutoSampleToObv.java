@@ -31,11 +31,13 @@ public class AutoSampleToObv extends LinearOpMode {
 
         if (x == 0) {
             while (y > 61) {
-                chassis.move(.2,"right",y-61);
+                chassis.move(.2,"right",y-61); //hi
+                y = aprilTagDist.getDistY();
             }
 
             while (y < 61) {
                 chassis.move(.2,"left",61-y);
+                y = aprilTagDist.getDistY();
             }
         }
 
