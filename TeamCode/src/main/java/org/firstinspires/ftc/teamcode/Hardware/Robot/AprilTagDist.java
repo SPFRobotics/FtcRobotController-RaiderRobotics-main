@@ -5,6 +5,8 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.har
 
 import android.util.Size;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -12,6 +14,9 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 
 public class AprilTagDist {
+    private LinearOpMode opmode = null;
+    public AprilTagDist(LinearOpMode lom){ opmode = lom; }
+
     public double inToCm(double inches) { return inches * 2.54; }
         AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder()
                 .setDrawAxes(true)
@@ -34,6 +39,31 @@ public class AprilTagDist {
                 dist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
             }
         return dist;
+    }
+
+    public double getDistX(){
+        double dist = 0;
+        if (!tagProcessor.getDetections().isEmpty()){
+            AprilTagDetection tag = tagProcessor.getDetections().get(0);
+            dist = tag.ftcPose.x;
+        }
+        return dist;
+    }
+    public double getDistY(){
+        double dist = 0;
+        if (!tagProcessor.getDetections().isEmpty()){
+            AprilTagDetection tag = tagProcessor.getDetections().get(0);
+            dist = tag.ftcPose.y;
+        }
+        return dist;
+    }
+
+    public LinearOpMode getOpmode() {
+        return opmode;
+    }
+
+    public void setOpmode(LinearOpMode opmode) {
+        this.opmode = opmode;
     }
 }
 
