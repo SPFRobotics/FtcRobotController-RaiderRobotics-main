@@ -92,8 +92,8 @@ public class RobotMainTeleop extends LinearOpMode {
         double lClawPos = 0;
 
         //Initialize all servos to 0
-        topRightClaw.setPosition(0.05);
-        topLeftClaw.setPosition(0.05);
+        topRightClaw.setPosition(0);
+        topLeftClaw.setPosition(0);
         rightClawServo.setPosition(0);
         leftClawServo.setPosition(0);
         wristClawServo.setPosition(0);
@@ -125,14 +125,13 @@ public class RobotMainTeleop extends LinearOpMode {
 
             //Change between Robot Oriented and Field Oriented Drive using 1 button
             if (gamepad1.touchpad && !isStillPressed && !fieldOri) {
-                gamepad1.rumble(100);
-                gamepad1.rumble(100);
+                gamepad1.rumble(500);
                 fieldOri = true;
                 isStillPressed = true;
             }
 
             if (gamepad1.touchpad && !isStillPressed && fieldOri){
-                gamepad1.rumble(100);
+                gamepad1.rumble(500);
                 fieldOri = false;
                 isStillPressed = true;
             }
