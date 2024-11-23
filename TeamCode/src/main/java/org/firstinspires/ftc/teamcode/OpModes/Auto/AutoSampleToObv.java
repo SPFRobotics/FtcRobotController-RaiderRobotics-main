@@ -30,8 +30,14 @@ public class AutoSampleToObv extends LinearOpMode {
         double y = aprilTagDist.getDistY();
 
         if (x == 0) {
-            //hello
-        }
-    }
+            while (y > 61) {
+                chassis.move(.2,"right",y-61);
+            }
 
+            while (y < 61) {
+                chassis.move(.2,"left",61-y);
+            }
+        }
+
+    }
 }
