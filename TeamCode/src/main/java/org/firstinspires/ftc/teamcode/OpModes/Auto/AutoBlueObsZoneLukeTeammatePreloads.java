@@ -2,16 +2,15 @@ package org.firstinspires.ftc.teamcode.OpModes.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot.Claw;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.Extendo;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.LinearSlide;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.MecanumChassis;
-import org.firstinspires.ftc.teamcode.Hardware.aprilTagDetectionMovement;
+
 // START WITH ROBOT ON A3 WITH RIGHT WHEELS ON COORDINATE LINE
 @Autonomous
-public class AutoBlueObsZoneLuke extends LinearOpMode {
+public class AutoBlueObsZoneLukeTeammatePreloads extends LinearOpMode {
     MecanumChassis chassis = new MecanumChassis(this);
     LinearSlide slide = new LinearSlide(this);
     Extendo extendo = new Extendo(this);
@@ -30,19 +29,20 @@ public class AutoBlueObsZoneLuke extends LinearOpMode {
         chassis.move(.5, "forward", 69.01); // should move towards submersible
         slide.slide(18.5,.6); // lowers lift (specimen should attach by now)
         claw.open(); // let go of specimen
-        // next 2 move commands move towards parking zone
 
-        chassis.move(.5, "backward", 50);
-        chassis.move(.5, "right", 86);
+
+        chassis.move(.5, "backward", 5);
+        chassis.move(.5, "right", 100);
+        chassis.rotate(-90, .6);
         slide.slide(0, .6);
-
-        chassis.rotate(180, 0.5);
+        chassis.move(.5, "right", 45);
+        chassis.rotate(-90, 0.5);
         chassis.move(.5, "forward", 19.01);
         claw.close();
         slide.slide(24, .6);
         chassis.move(.5, "backward", 19.01);
         chassis.rotate(180, 0.5);
-        chassis.move(.5, "left", 71);
+        chassis.move(.5, "left", 85);
         chassis.move(.5, "forward", 55.5);
         slide.slide(18.5, .6);
         claw.open();

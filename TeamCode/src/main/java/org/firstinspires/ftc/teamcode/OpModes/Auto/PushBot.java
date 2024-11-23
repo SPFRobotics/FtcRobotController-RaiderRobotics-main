@@ -13,10 +13,11 @@ import org.firstinspires.ftc.teamcode.Hardware.aprilTagDetectionMovement;
 public class PushBot extends LinearOpMode {
     public void runOpMode() throws InterruptedException{
         MecanumChassis chassis = new MecanumChassis(this);
+        chassis.initializeMovement();
 
         waitForStart();
         while (opModeIsActive()){
-            chassis.move(.5, "forward", 182.52);
+            chassis.move(.5, "forward", 152.52);
             chassis.move(.5, "left", 15.24);
             chassis.move(.5, "backward", 113.02);
             chassis.move(.5, "forward", 113.02);
