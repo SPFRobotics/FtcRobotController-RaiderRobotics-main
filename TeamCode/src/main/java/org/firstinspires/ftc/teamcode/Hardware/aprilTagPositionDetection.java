@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Hardware;
+/*package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -101,7 +101,7 @@ public class aprilTagPositionDetection {
                 sleep(20);
             }
         }
-    }*/
+    }*//*
     public aprilTagPositionDetection(LinearOpMode lom) {opmode = lom;}
     public void initCam(){
         aprilTagsDict.put(aprilTags.RedAudienceWallLarge,0);
@@ -162,7 +162,7 @@ public class aprilTagPositionDetection {
             robotFieldPos[1] = yPosSum / foundAprilTags.size();
             //telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",robotFieldPos[0],robotFieldPos[1]));
             outputInfo = robotFieldPos;
-            /** ToDo: have an output for when you don't see a april tag */
+            /** ToDo: have an output for when you don't see a april tag *//*
         } else {
             outputInfo = new double[] {-1,-1};
         }
@@ -193,4 +193,4 @@ public class aprilTagPositionDetection {
     public List<AprilTagDetection> getDetections(){
         return aprilTag.getDetections();
     }
-}
+}*/
