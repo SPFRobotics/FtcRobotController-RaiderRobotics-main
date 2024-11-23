@@ -141,8 +141,8 @@ public class RobotMainTeleop extends LinearOpMode {
             }
 
             if (fieldOri){
-                x = x * Math.cos(fowardDef) - y * Math.sin(fowardDef);
-                y = x * Math.sin(fowardDef) + y * Math.cos(fowardDef);
+                x = x * Math.cos(-fowardDef) - y * Math.sin(-fowardDef);
+                y = x * Math.sin(-fowardDef) + y * Math.cos(-fowardDef);
             }
 
             //Robot Speed Control Using the right_trigger
