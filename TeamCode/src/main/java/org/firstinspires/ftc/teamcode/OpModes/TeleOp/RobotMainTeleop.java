@@ -120,6 +120,9 @@ public class RobotMainTeleop extends LinearOpMode {
                 RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
         ));
 
+        double rotX = 0;
+        double rotY = 0;
+
         imu.initialize(parameters);
         imu.resetYaw();
 
@@ -151,8 +154,21 @@ public class RobotMainTeleop extends LinearOpMode {
             }
 
             if (fieldOri){
-                x = x * Math.cos(-fowardDef) - y * Math.sin(-fowardDef);
-                y = x * Math.sin(-fowardDef) + y * Math.cos(-fowardDef);
+                rotX = x * Math.cos(-fowardDef) - y * Math.sin(-fowardDef);
+                rotY = x * Math.sin(-fowardDef) + y * Math.cos(-fowardDef);
+
+                double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+                rightFrontMotor.setPower((rotY - rotX - rx) / denominator);
+                leftFrontMotor.setPower((rotY + rotX + rx) / denominator);
+                rightBackMotor.setPower((rotY + rotX - rx) / denominator);
+                leftBackMotor.setPower((rotY - rotX + rx) / denominator);
+            }
+            else{
+                double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+                rightFrontMotor.setPower((y - x - rx) / denominator);
+                leftFrontMotor.setPower((y + x + rx) / denominator);
+                rightBackMotor.setPower((y + x - rx) / denominator);
+                leftBackMotor.setPower((y - x + rx) / denominator);
             }
 
             //Robot Speed Control Using the right_trigger
@@ -163,11 +179,6 @@ public class RobotMainTeleop extends LinearOpMode {
             }
 
             //Math for Mecanum drive
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            rightFrontMotor.setPower((y - x - rx) / denominator);
-            leftFrontMotor.setPower((y + x + rx) / denominator);
-            rightBackMotor.setPower((y + x - rx) / denominator);
-            leftBackMotor.setPower((y - x + rx) / denominator);
 
             //Extendo will extend to a negative position
             extendoXPos = extendoX.getCurrentPosition();
