@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -60,9 +61,6 @@ public class RobotMainTeleop extends LinearOpMode {
         topRightClaw = hardwareMap.get(Servo.class, "outtakeRightClaw");
         topLeftClaw = hardwareMap.get(Servo.class, "outtakeLeftClaw");
 
-        //IMU
-        imu = hardwareMap.get(IMU.class, "imu");
-
 
         //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
         leftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -114,6 +112,17 @@ public class RobotMainTeleop extends LinearOpMode {
 
         telemetry.setAutoClear(true);
 
+        //IMU
+        imu = hardwareMap.get(IMU.class, "imu");
+
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
+        ));
+
+        imu.initialize(parameters);
+        imu.resetYaw();
+
         waitForStart();
         while (opModeIsActive()) {
             //Variables for wheels
@@ -160,11 +169,12 @@ public class RobotMainTeleop extends LinearOpMode {
             rightBackMotor.setPower((y + x - rx) / denominator);
             leftBackMotor.setPower((y - x + rx) / denominator);
 
-            //Using the d-pad to set the power of the motors
-            if (gamepad1.right_bumper){
+            //Extendo will extend to a negative position
+            extendoXPos = extendoX.getCurrentPosition();
+            if (extendoXPos > -1700 && gamepad1.right_bumper){
                 extendoX.setPower(-1);
             }
-            else if (gamepad1.left_bumper){
+            else if (extendoXPos < 0 && gamepad1.left_bumper){
                 extendoX.setPower(1);
             }
             else{
@@ -186,21 +196,24 @@ public class RobotMainTeleop extends LinearOpMode {
                 craneMotorYPos = 3295;
             }
             */
-            if(gamepad2.dpad_up){
+
+            //Using the d-pad to set the power of the motors
+            craneMotorYPos = craneMotorY.getCurrentPosition();
+            if(craneMotorYPos < 3100 && gamepad2.dpad_up){
                 craneMotorY.setPower(1);
             }
-            else if(gamepad2.dpad_down){
+            else if(craneMotorYPos > 200 && gamepad2.dpad_down){
                 craneMotorY.setPower(-1);
             }
             else{
                 craneMotorY.setPower(0);
             }
-            if(craneMotorY.getCurrentPosition() >= 3300&&craneMotorY.getPower()>0){
+            /*if(craneMotorY.getCurrentPosition() >= 3300&&craneMotorY.getPower()>0){
                 craneMotorY.setPower(0);
             }
             if(craneMotorY.getCurrentPosition()<= 0 &&craneMotorY.getPower()<0){
                 craneMotorY.setPower(0);
-            }
+            }/*
 
 
             //Limit is: 3300
@@ -211,10 +224,10 @@ public class RobotMainTeleop extends LinearOpMode {
 
             //Claw Wrist Control
             if (gamepad2.right_bumper && wClawPos < 1 && wClawPos < 0.52){
-                wClawPos += 0.05/2;
+                wClawPos += 0.02;
             }
             if (gamepad2.left_bumper && wClawPos > 0){
-                wClawPos -= 0.05/2;
+                wClawPos -= 0.02;
             }
             wristClawServo.setPosition(wClawPos);
             //Limit: 0.52
@@ -256,8 +269,8 @@ public class RobotMainTeleop extends LinearOpMode {
             telemetry.addLine("BL Motor PWR: " + leftBackMotor.getPower());
             telemetry.addLine("Vertical Slide: " + craneMotorY.getPower());
             telemetry.addLine("Extendo: " + extendoX.getPower() + "\n");
-            telemetry.addLine("Vertical Slide: " + craneMotorYPos);
-            telemetry.addLine("Extendo: " + extendoXPos + "\n");
+            telemetry.addLine("Vertical Slide Pos: " + craneMotorYPos);
+            telemetry.addLine("Extendo Pos: " + extendoXPos + "\n");
             telemetry.addLine("Pitch: " + imu.getRobotYawPitchRollAngles().getPitch(AngleUnit.DEGREES));
             telemetry.addLine("Roll: " + imu.getRobotYawPitchRollAngles().getRoll(AngleUnit.DEGREES));
             telemetry.addLine("Yaw: " + imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
