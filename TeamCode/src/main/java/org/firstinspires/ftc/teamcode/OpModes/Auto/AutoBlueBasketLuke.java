@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes.Auto;
+/*package org.firstinspires.ftc.teamcode.OpModes.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -38,4 +38,4 @@ public class AutoBlueBasketLuke extends LinearOpMode {
         chassis.move(.5, "forward", 37);
         // once all measurements are finetuned this should place a pre-loaded specimen and achieve a level 1 ascent (13pts)
     }
-}
+}*/

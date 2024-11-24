@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot.Claw;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.Extendo;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.LinearSlide;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.MecanumChassis;
-import org.firstinspires.ftc.teamcode.Hardware.aprilTagDetectionMovement;
+//import org.firstinspires.ftc.teamcode.Hardware.aprilTagDetectionMovement;
 
 @Autonomous
 public class PushBot extends LinearOpMode {

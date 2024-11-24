@@ -1,3 +1,4 @@
+/*
 package org.firstinspires.ftc.teamcode.OpModes2324.Auto;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -71,7 +72,7 @@ public class testingRedCloseWithRR extends LinearOpMode {
                 //Move to the right
                 /*chassis.move(0.5, "forward", 23+4);
                 chassis.move(.5, "left", 8);
-                chassis.move(.5,"backward",4);*/
+                chassis.move(.5,"backward",4);
                 Trajectory trajCenter1 = drive.trajectoryBuilder(new Pose2d())
                         .lineTo(new Vector2d(23+10,0))
                         .lineTo(new Vector2d(23+10,-4))
@@ -94,7 +95,7 @@ public class testingRedCloseWithRR extends LinearOpMode {
                 /*Trajectory traj1 = drive.trajectoryBuilder(new Pose2d())
                         .lineToLinearHeading(new Pose2d(new Vector2d(28, 0), Math.toRadians(90)))
                         .build();
-                drive.followTrajectory(traj1);*/
+                drive.followTrajectory(traj1);
                 //sleep(2000);
 
                 chassis.move(.5,"forward",0+8);
@@ -274,7 +275,7 @@ public class testingRedCloseWithRR extends LinearOpMode {
         /*Trajectory traj1 = drive.trajectoryBuilder(new Pose2d())
                 .lineToLinearHeading(new Pose2d(new Vector2d(0, 15), Math.toRadians(180)))
                 .build();
-        drive.followTrajectory(traj1);*/
+        drive.followTrajectory(traj1);
 
         telemetry.addLine(String.format("XY %6.1f %6.1f  (inch)",aTag.outputInfo[0],aTag.outputInfo[1]));
         telemetry.update();
@@ -284,7 +285,7 @@ public class testingRedCloseWithRR extends LinearOpMode {
         /*Trajectory traj3 = drive.trajectoryBuilder(new Pose2d())
                 .splineTo(new Vector2d(aTag.outputInfo[1]-20, aTag.outputInfo[0]),Math.toRadians(0))
                 .build();
-        drive.followTrajectory(traj3);*/
+        drive.followTrajectory(traj3);
         chassis.move(.5,"backward",2.5);
         slide.slide(30,0.5);
         sleep(1000);
@@ -298,3 +299,5 @@ public class testingRedCloseWithRR extends LinearOpMode {
         terminateOpModeNow();
     }
 }
+
+ */

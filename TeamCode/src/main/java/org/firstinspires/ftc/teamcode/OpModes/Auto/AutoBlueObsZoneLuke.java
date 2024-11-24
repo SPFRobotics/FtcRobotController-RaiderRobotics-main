@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Hardware.Robot.Claw;
+/*import org.firstinspires.ftc.teamcode.Hardware.Robot.Claw;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.Extendo;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.LinearSlide;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.MecanumChassis;
@@ -50,4 +50,4 @@ public class AutoBlueObsZoneLuke extends LinearOpMode {
         chassis.move(.5, "right", 90);
 
     }
-}
+}*/

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes2324.Auto;
+/*package org.firstinspires.ftc.teamcode.OpModes2324.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -143,7 +143,7 @@ public class AutoIntakeAidenBlueFar extends LinearOpMode {
                 }
             }
         }
-        /*if(teamColor.equals("blue")) {
+        if(teamColor.equals("blue")) {
             if (proximity.equals("close")) {
                 if (loc.equals("RIGHT")) {
                     return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceRight;
@@ -164,7 +164,7 @@ public class AutoIntakeAidenBlueFar extends LinearOpMode {
                     return aprilTagDetectionMovement.backBoardAprilTags.BlueAllianceLeft;
                 }
             }
-        }*/
+        }
         return aprilTagDetectionMovement.backBoardAprilTags.RedAllianceRight;
     }
 
@@ -226,4 +226,4 @@ public class AutoIntakeAidenBlueFar extends LinearOpMode {
         //chassis.parkFarBlue();
         terminateOpModeNow();
     }
-}
+}*/

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes2324.Auto;
+/*package org.firstinspires.ftc.teamcode.OpModes2324.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -285,4 +285,4 @@ public class AutoIntakeAidenRedFarHalf extends LinearOpMode {
         chassis.parkFarRed();
         terminateOpModeNow();
     }
-}
+}*/
