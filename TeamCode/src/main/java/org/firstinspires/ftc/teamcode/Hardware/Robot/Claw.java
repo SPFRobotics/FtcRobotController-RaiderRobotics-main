@@ -15,11 +15,11 @@ public class Claw {
         opmode = lom;
     }
     public void init(){
-        leftArm = opmode.hardwareMap.servo.get("Servo4");
-        rightArm = opmode.hardwareMap.servo.get("Servo3");
+        leftArm = opmode.hardwareMap.servo.get("outtakeLeftClaw");
+        rightArm = opmode.hardwareMap.servo.get("outtakeRightClaw");
         leftArm.setDirection(Servo.Direction.REVERSE);
-        leftArm.setPosition(0.01);
-        rightArm.setPosition(0.01);
+        leftArm.setPosition(0.0);
+        rightArm.setPosition(0.0);
     }
     public void close(){
         leftArm.setPosition(LEFT_ARM_CLOSED_POS);

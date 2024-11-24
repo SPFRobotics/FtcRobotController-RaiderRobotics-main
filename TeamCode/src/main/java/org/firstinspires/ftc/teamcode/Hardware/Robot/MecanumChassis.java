@@ -53,20 +53,16 @@ public class MecanumChassis {
     public double inToCm(int inches) { return inches * 2.54; }
     public double cm_convert(double cm) { return cm * (537.7 / (9.6012 * Math.PI)); }
     public void initializeMovement() {
-        backLeft = opmode.hardwareMap.dcMotor.get("Motor2");
-        backRight = opmode.hardwareMap.dcMotor.get("Motor3");
-        frontLeft = opmode.hardwareMap.dcMotor.get("Motor0");
-        frontRight = opmode.hardwareMap.dcMotor.get("Motor1");
+        backLeft = opmode.hardwareMap.dcMotor.get("backLeft");
+        backRight = opmode.hardwareMap.dcMotor.get("backRight");
+        frontLeft = opmode.hardwareMap.dcMotor.get("frontLeft");
+        frontRight = opmode.hardwareMap.dcMotor.get("frontRight");
 
-        /*backLeft = opmode.hardwareMap.get(DcMotorEx.class,"backLeft");
-        backRight = opmode.hardwareMap.get(DcMotorEx.class,"backRight");
-        frontLeft = opmode.hardwareMap.get(DcMotorEx.class,"frontLeft");
-        frontRight = opmode.hardwareMap.get(DcMotorEx.class,"frontRight");*/
 
-        /*backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -76,8 +72,8 @@ public class MecanumChassis {
 
         imu = opmode.hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
         imu.resetYaw();
@@ -314,7 +310,7 @@ public class MecanumChassis {
         double minPower = 0.3;
         double Kp = 0.04; //this is for proportional control (ie. the closer you are the target angle the slower you will go)
         double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-        double targetAngle = startAngle + angle;
+        double targetAngle = AngleUnit.normalizeDegrees(startAngle + angle);
         double error = (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
         double power1 = 0;
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
