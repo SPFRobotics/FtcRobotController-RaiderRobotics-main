@@ -93,8 +93,8 @@ public class RobotMainTeleop extends LinearOpMode {
         //Initialize all servos to 0
         topRightClaw.setPosition(0.0);
         topLeftClaw.setPosition(0.0);
-        rightClawServo.setPosition(0.18);
-        leftClawServo.setPosition(0.18);
+        rightClawServo.setPosition(0.3);
+        leftClawServo.setPosition(0.3);
         wristClawServo.setPosition(0);
 
 
