@@ -107,8 +107,10 @@ public class RobotMainTeleop extends LinearOpMode {
         double extendoXPos = 0;
 
         //Boolean conditions
-        boolean isStillPressed = false;
+        boolean isStillPressed1 = false;
+        boolean isStillPressed2 = false;
         boolean fieldOri = false;
+        boolean automatedPlacement = false;
 
         telemetry.setAutoClear(true);
 
@@ -137,20 +139,20 @@ public class RobotMainTeleop extends LinearOpMode {
             double fowardDef = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
             //Change between Robot Oriented and Field Oriented Drive using 1 button
-            if (gamepad1.touchpad && !isStillPressed && !fieldOri) {
+            if (gamepad1.touchpad && !isStillPressed1 && !fieldOri) {
                 gamepad1.rumble(500);
                 fieldOri = true;
-                isStillPressed = true;
+                isStillPressed1 = true;
             }
 
-            if (gamepad1.touchpad && !isStillPressed && fieldOri){
+            if (gamepad1.touchpad && !isStillPressed1 && fieldOri){
                 gamepad1.rumble(500);
                 fieldOri = false;
-                isStillPressed = true;
+                isStillPressed1 = true;
             }
 
-            if (!gamepad1.touchpad && isStillPressed){
-                isStillPressed = false;
+            if (!gamepad1.touchpad && isStillPressed1){
+                isStillPressed1 = false;
             }
 
             if (fieldOri){
