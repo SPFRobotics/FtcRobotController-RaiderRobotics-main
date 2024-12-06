@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes2324.Auto;
+/*package org.firstinspires.ftc.teamcode.OpModes2324.Auto;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -255,4 +255,4 @@ public class AutoIntakeAidenRedClose extends LinearOpMode {
         telemetry.update();
         terminateOpModeNow();
     }
-}
+}*/

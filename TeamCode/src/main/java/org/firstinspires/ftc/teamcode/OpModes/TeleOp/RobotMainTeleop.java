@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -46,21 +47,19 @@ public class RobotMainTeleop extends LinearOpMode {
         //Configured from looking IN FRONT OF THE ROBOT!!!
 
         //Motors
-        rightFrontMotor = hardwareMap.get(DcMotor.class, "Motor1");
-        leftFrontMotor = hardwareMap.get(DcMotor.class, "Motor0");
-        rightBackMotor = hardwareMap.get(DcMotor.class, "Motor3");
-        leftBackMotor = hardwareMap.get(DcMotor.class, "Motor2");
-        craneMotorY = hardwareMap.get(DcMotor.class, "Motor10");
-        extendoX = hardwareMap.get(DcMotor.class, "Motor11");
+        rightFrontMotor = hardwareMap.get(DcMotor.class, "frontRight");
+        leftFrontMotor = hardwareMap.get(DcMotor.class, "frontLeft");
+        rightBackMotor = hardwareMap.get(DcMotor.class, "backRight");
+        leftBackMotor = hardwareMap.get(DcMotor.class, "backLeft");
+        craneMotorY = hardwareMap.get(DcMotor.class, "lift");
+        craneMotorY.setDirection(DcMotorSimple.Direction.REVERSE);
+        extendoX = hardwareMap.get(DcMotor.class, "extendo");
         //Servos
-        wristClawServo = hardwareMap.get(Servo.class, "Servo2");
-        rightClawServo = hardwareMap.get(Servo.class, "Servo1");
-        leftClawServo = hardwareMap.get(Servo.class, "Servo0");
-        topRightClaw = hardwareMap.get(Servo.class, "Servo3");
-        topLeftClaw = hardwareMap.get(Servo.class, "Servo4");
-
-        //IMU
-        imu = hardwareMap.get(IMU.class, "imu");
+        wristClawServo = hardwareMap.get(Servo.class, "intakeWrist");
+        rightClawServo = hardwareMap.get(Servo.class, "intakeRightClaw");
+        leftClawServo = hardwareMap.get(Servo.class, "intakeLeftClaw");
+        topRightClaw = hardwareMap.get(Servo.class, "outtakeRightClaw");
+        topLeftClaw = hardwareMap.get(Servo.class, "outtakeLeftClaw");
 
 
         //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
@@ -92,10 +91,10 @@ public class RobotMainTeleop extends LinearOpMode {
         double lClawPos = 0;
 
         //Initialize all servos to 0
-        topRightClaw.setPosition(0);
-        topLeftClaw.setPosition(0);
-        rightClawServo.setPosition(0);
-        leftClawServo.setPosition(0);
+        topRightClaw.setPosition(0.0);
+        topLeftClaw.setPosition(0.0);
+        rightClawServo.setPosition(0.3);
+        leftClawServo.setPosition(0.3);
         wristClawServo.setPosition(0);
 
 
@@ -108,10 +107,26 @@ public class RobotMainTeleop extends LinearOpMode {
         double extendoXPos = 0;
 
         //Boolean conditions
-        boolean isStillPressed = false;
+        boolean isStillPressed1 = false;
+        boolean isStillPressed2 = false;
         boolean fieldOri = false;
+        boolean automatedPlacement = false;
 
         telemetry.setAutoClear(true);
+
+        //IMU
+        imu = hardwareMap.get(IMU.class, "imu");
+
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
+        ));
+
+        double rotX = 0;
+        double rotY = 0;
+
+        imu.initialize(parameters);
+        imu.resetYaw();
 
         waitForStart();
         while (opModeIsActive()) {
@@ -124,25 +139,38 @@ public class RobotMainTeleop extends LinearOpMode {
             double fowardDef = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
             //Change between Robot Oriented and Field Oriented Drive using 1 button
-            if (gamepad1.touchpad && !isStillPressed && !fieldOri) {
+            if (gamepad1.touchpad && !isStillPressed1 && !fieldOri) {
                 gamepad1.rumble(500);
                 fieldOri = true;
-                isStillPressed = true;
+                isStillPressed1 = true;
             }
 
-            if (gamepad1.touchpad && !isStillPressed && fieldOri){
+            if (gamepad1.touchpad && !isStillPressed1 && fieldOri){
                 gamepad1.rumble(500);
                 fieldOri = false;
-                isStillPressed = true;
+                isStillPressed1 = true;
             }
 
-            if (!gamepad1.touchpad && isStillPressed){
-                isStillPressed = false;
+            if (!gamepad1.touchpad && isStillPressed1){
+                isStillPressed1 = false;
             }
 
             if (fieldOri){
-                x = x * Math.cos(-fowardDef) - y * Math.sin(-fowardDef);
-                y = x * Math.sin(-fowardDef) + y * Math.cos(-fowardDef);
+                rotX = x * Math.cos(-fowardDef) - y * Math.sin(-fowardDef);
+                rotY = x * Math.sin(-fowardDef) + y * Math.cos(-fowardDef);
+
+                double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+                rightFrontMotor.setPower((rotY - rotX - rx) / denominator);
+                leftFrontMotor.setPower((rotY + rotX + rx) / denominator);
+                rightBackMotor.setPower((rotY + rotX - rx) / denominator);
+                leftBackMotor.setPower((rotY - rotX + rx) / denominator);
+            }
+            else{
+                double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+                rightFrontMotor.setPower((y - x - rx) / denominator);
+                leftFrontMotor.setPower((y + x + rx) / denominator);
+                rightBackMotor.setPower((y + x - rx) / denominator);
+                leftBackMotor.setPower((y - x + rx) / denominator);
             }
 
             //Robot Speed Control Using the right_trigger
@@ -153,17 +181,13 @@ public class RobotMainTeleop extends LinearOpMode {
             }
 
             //Math for Mecanum drive
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            rightFrontMotor.setPower((y - x - rx) / denominator);
-            leftFrontMotor.setPower((y + x + rx) / denominator);
-            rightBackMotor.setPower((y + x - rx) / denominator);
-            leftBackMotor.setPower((y - x + rx) / denominator);
 
-            //Using the d-pad to set the power of the motors
-            if (gamepad1.right_bumper){
+            //Extendo will extend to a negative position
+            extendoXPos = extendoX.getCurrentPosition();
+            if (extendoXPos > -1700 && gamepad1.right_bumper){
                 extendoX.setPower(-1);
             }
-            else if (gamepad1.left_bumper){
+            else if (extendoXPos < 0 && gamepad1.left_bumper){
                 extendoX.setPower(1);
             }
             else{
@@ -171,24 +195,52 @@ public class RobotMainTeleop extends LinearOpMode {
             }
 
             //For Vertical slide
-            if (gamepad2.dpad_up && craneMotorYPos > -3300){
-                craneMotorYPos -= 5;
+            /*
+            if (gamepad2.dpad_up && craneMotorYPos > 3300){
+                craneMotorYPos += 50;
             }
-            else if(gamepad2.dpad_down && craneMotorYPos < 0){
-                craneMotorYPos += 5;
+            else if(gamepad2.dpad_down && craneMotorYPos > 5){
+                craneMotorYPos -= 50;
             }
-            //Limit is: -3300
-            craneMotorY.setTargetPosition((int)craneMotorYPos);
+            if(craneMotorYPos < 5){
+                craneMotorYPos = 5;
+            }
+            else if(craneMotorYPos >3295){
+                craneMotorYPos = 3295;
+            }
+            */
+
+            //Using the d-pad to set the power of the motors
+            craneMotorYPos = craneMotorY.getCurrentPosition();
+            if(craneMotorYPos < 3100 && gamepad2.dpad_up){
+                craneMotorY.setPower(1);
+            }
+            else if(craneMotorYPos > 200 && gamepad2.dpad_down){
+                craneMotorY.setPower(-1);
+            }
+            else{
+                craneMotorY.setPower(0);
+            }
+            /*if(craneMotorY.getCurrentPosition() >= 3300&&craneMotorY.getPower()>0){
+                craneMotorY.setPower(0);
+            }
+            if(craneMotorY.getCurrentPosition()<= 0 &&craneMotorY.getPower()<0){
+                craneMotorY.setPower(0);
+            }/*
+
+
+            //Limit is: 3300
+            /*craneMotorY.setTargetPosition((int)craneMotorYPos);
             craneMotorY.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            craneMotorY.setPower(1);
+            craneMotorY.setPower(1);*/
 
 
             //Claw Wrist Control
             if (gamepad2.right_bumper && wClawPos < 1 && wClawPos < 0.52){
-                wClawPos += 0.01/2;
+                wClawPos += 0.02;
             }
             if (gamepad2.left_bumper && wClawPos > 0){
-                wClawPos -= 0.01/2;
+                wClawPos -= 0.02;
             }
             wristClawServo.setPosition(wClawPos);
             //Limit: 0.52
@@ -197,22 +249,24 @@ public class RobotMainTeleop extends LinearOpMode {
             //POTENTIAL NEW CODE that makes closing and opening the claw for both the top and bottom claws 1 button
             //Intake
             if (gamepad2.y){
-                rightClawServo.setPosition(0);
-                leftClawServo.setPosition(0);
+                rightClawServo.setPosition(0.1);
+                leftClawServo.setPosition(0.1);
             }
-            else if (!gamepad2.y){
-                rightClawServo.setPosition(0.2);
-                leftClawServo.setPosition(0.2);
+            else{
+                rightClawServo.setPosition(0.18);
+                leftClawServo.setPosition(0.18);
             }
             //Outtake
             if (gamepad2.a){
-                topRightClaw.setPosition(0.2);
-                topLeftClaw.setPosition(0.2);
+                topRightClaw.setPosition(0.15);
+                topLeftClaw.setPosition(0.15);
+
             }
-            else if(!gamepad2.a){
+            else{
                 topRightClaw.setPosition(0);
                 topLeftClaw.setPosition(0);
             }
+
 
             //TELEMETRY
             //ALL NAMES CONFIGURED LOOKING AT THE FRONT OF THE ROBOT
@@ -228,8 +282,8 @@ public class RobotMainTeleop extends LinearOpMode {
             telemetry.addLine("BL Motor PWR: " + leftBackMotor.getPower());
             telemetry.addLine("Vertical Slide: " + craneMotorY.getPower());
             telemetry.addLine("Extendo: " + extendoX.getPower() + "\n");
-            telemetry.addLine("Vertical Slide: " + craneMotorYPos);
-            telemetry.addLine("Extendo: " + extendoXPos + "\n");
+            telemetry.addLine("Vertical Slide Pos: " + craneMotorYPos);
+            telemetry.addLine("Extendo Pos: " + extendoXPos + "\n");
             telemetry.addLine("Pitch: " + imu.getRobotYawPitchRollAngles().getPitch(AngleUnit.DEGREES));
             telemetry.addLine("Roll: " + imu.getRobotYawPitchRollAngles().getRoll(AngleUnit.DEGREES));
             telemetry.addLine("Yaw: " + imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));

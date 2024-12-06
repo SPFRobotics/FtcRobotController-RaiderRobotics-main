@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes2324.Outdated.Others;
+/*package org.firstinspires.ftc.teamcode.OpModes2324.Outdated.Others;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot.MecanumChassis;
 
 @Autonomous
 @Disabled
-public class newAutoGroup extends LinearOpMode {
+public class newAutoGroupCloseBlue extends LinearOpMode {
     MecanumChassis chassis = new MecanumChassis(this);
     //Intake intake = new Intake(this);
     ColorCam color = new ColorCam(this);
@@ -66,6 +66,6 @@ public class newAutoGroup extends LinearOpMode {
         aTag.moveToAprilTag(aTag.id);
         chassis.rotate(180, .5);
         //chassis.move(.5, "left", aTag.robotDistanceToAprilTag[0]);
-       // chassis.move(.5, "backward", aTag.robotDistanceToAprilTag[1]);
+        //chassis.move(.5, "backward", aTag.robotDistanceToAprilTag[1]);
     }
-}
+}*/
