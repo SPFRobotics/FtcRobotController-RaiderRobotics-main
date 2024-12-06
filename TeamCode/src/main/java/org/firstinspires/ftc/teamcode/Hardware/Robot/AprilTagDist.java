@@ -15,43 +15,57 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 public class AprilTagDist {
     private LinearOpMode opmode = null;
+    public AprilTagDist(LinearOpMode lom){ opmode = lom; }
 
-    public AprilTagDist(LinearOpMode lom) {
-        opmode = lom;
-    }
+    public double inToCm(double inches) { return inches * 2.54; }
+        AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder()
+                .setDrawAxes(true)
+                .setDrawCubeProjection(true)
+                .setDrawTagID(true)
+                .setDrawTagOutline(true)
+                .build();
 
-    public double inToCm(double inches) {
-        return inches * 2.54;
-    }
-
-    AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder()
-            .setDrawAxes(true)
-            .setDrawCubeProjection(true)
-            .setDrawTagID(true)
-            .setDrawTagOutline(true)
-            .build();
-
-    VisionPortal visionPortal = new VisionPortal.Builder()
-            .addProcessor(tagProcessor)
-            .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-            .setCameraResolution(new Size(640, 480))
-            .build();
-
-    public double getDist() {
+        VisionPortal visionPortal = new VisionPortal.Builder()
+                .addProcessor(tagProcessor)
+                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                .setCameraResolution(new Size(640, 480))
+                .build();
+    public double getDist(){
         double dist = 0;
-        if (!tagProcessor.getDetections().isEmpty()) {
+            if (!tagProcessor.getDetections().isEmpty()){
+                AprilTagDetection tag = tagProcessor.getDetections().get(0);
+                double x = tag.ftcPose.x;
+                double y = tag.ftcPose.y;
+                dist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+            }
+        return dist;
+    }
+
+    public double getDistX(){
+        double dist = 0;
+        if (!tagProcessor.getDetections().isEmpty()){
             AprilTagDetection tag = tagProcessor.getDetections().get(0);
-            double x = tag.ftcPose.x;
-            double y = tag.ftcPose.y;
-            dist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+            dist = tag.ftcPose.x;
         }
         return dist;
     }
-        public LinearOpMode getOpmode(){
-            return opmode;
+    public double getDistY(){
+        double dist = 0;
+        if (!tagProcessor.getDetections().isEmpty()){
+            AprilTagDetection tag = tagProcessor.getDetections().get(0);
+            dist = tag.ftcPose.y;
         }
-
-        public void setOpmode (LinearOpMode opmode){
-            this.opmode = opmode;
-        }
+        return dist;
     }
+
+    public LinearOpMode getOpmode() {
+        return opmode;
+    }
+
+    public void setOpmode(LinearOpMode opmode) {
+        this.opmode = opmode;
+    }
+}
+
+
+
