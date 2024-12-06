@@ -34,8 +34,8 @@ public class AprilTagDist {
         double dist = 0;
             if (!tagProcessor.getDetections().isEmpty()){
                 AprilTagDetection tag = tagProcessor.getDetections().get(0);
-                double x = tag.ftcPose.x;
-                double y = tag.ftcPose.y;
+                double x = inToCm(tag.ftcPose.x);
+                double y = inToCm(tag.ftcPose.y);
                 dist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
             }
         return dist;
@@ -45,7 +45,7 @@ public class AprilTagDist {
         double dist = 0;
         if (!tagProcessor.getDetections().isEmpty()){
             AprilTagDetection tag = tagProcessor.getDetections().get(0);
-            dist = tag.ftcPose.x;
+            dist = inToCm(tag.ftcPose.x);
         }
         return dist;
     }
@@ -53,7 +53,7 @@ public class AprilTagDist {
         double dist = 0;
         if (!tagProcessor.getDetections().isEmpty()){
             AprilTagDetection tag = tagProcessor.getDetections().get(0);
-            dist = tag.ftcPose.y;
+            dist = inToCm(tag.ftcPose.y);
         }
         return dist;
     }
