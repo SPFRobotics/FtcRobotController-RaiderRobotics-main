@@ -308,9 +308,9 @@ public class MecanumChassis {
     public void rotate(double angle, double power) {
         double minPower = 0.3;
         double Kp = 0.04; //this is for proportional control (ie. the closer you are the target angle the slower you will go)
-        double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        double startAngle = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
         double targetAngle = AngleUnit.normalizeDegrees(startAngle + angle);
-        double error = (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
+        double error = AngleUnit.normalizeDegrees((imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle));
         double power1 = 0;
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
