@@ -174,7 +174,6 @@ public class MecanumChassis {
         opmode.telemetry.addData("test", "done!");
         opmode.telemetry.update();
     }
-
     public void moveWithCorrections(double movePower, @NonNull String moveDirection, double moveDistance, double angle) {
         stop_and_reset_encoders_all(); //Sets encoder count to 0
         //run_using_encoders_all();
