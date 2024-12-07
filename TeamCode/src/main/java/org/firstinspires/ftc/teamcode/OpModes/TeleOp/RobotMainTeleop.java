@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.teamcode.Hardware.Robot.LinearSlide;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.Odometry;
@@ -99,6 +100,7 @@ public class RobotMainTeleop extends LinearOpMode {
 
 
         //Crane position
+        LinearSlide verticalSlide = new LinearSlide(this);
         craneMotorY.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double craneMotorYPos = 0;
 
@@ -210,13 +212,17 @@ public class RobotMainTeleop extends LinearOpMode {
             }
             */
 
-            //Using the d-pad to set the power of the motors
             craneMotorYPos = craneMotorY.getCurrentPosition();
-            if(craneMotorYPos < 3100 && gamepad2.dpad_up){
-                craneMotorY.setPower(1);
+            //Automated rising
+
+
+            //Using the left-thumbstick on the y-axis to set the power of the motors
+
+            if(craneMotorYPos < 3100 && gamepad2.left_stick_y < 0){
+                craneMotorY.setPower(-gamepad2.left_stick_y);
             }
-            else if(craneMotorYPos > 200 && gamepad2.dpad_down){
-                craneMotorY.setPower(-1);
+            else if(craneMotorYPos > 150 && gamepad2.left_stick_y > 0){
+                craneMotorY.setPower(-gamepad2.left_stick_y);
             }
             else{
                 craneMotorY.setPower(0);
