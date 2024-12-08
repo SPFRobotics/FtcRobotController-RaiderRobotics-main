@@ -61,6 +61,7 @@ public class RobotMainTeleop extends LinearOpMode {
         leftClawServo = hardwareMap.get(Servo.class, "intakeLeftClaw");
         topRightClaw = hardwareMap.get(Servo.class, "outtakeRightClaw");
         topLeftClaw = hardwareMap.get(Servo.class, "outtakeLeftClaw");
+        LinearSlide verticalSlide = new LinearSlide(this);
 
 
         //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
@@ -87,20 +88,19 @@ public class RobotMainTeleop extends LinearOpMode {
 
         //Defines servo position
         //w stands or write while r and l are for left and right
-        double wClawPos = 0;
-        double rClawPos = 0;
-        double lClawPos = 0;
+        double wClawPos = 0.7;
+        double rClawPos = 0.18;
+        double lClawPos = 0.18;
 
         //Initialize all servos to 0
-        topRightClaw.setPosition(0.0);
-        topLeftClaw.setPosition(0.0);
-        rightClawServo.setPosition(0.3);
-        leftClawServo.setPosition(0.3);
-        wristClawServo.setPosition(0);
+        //topRightClaw.setPosition(0.0);
+        //topLeftClaw.setPosition(0.0);
+        rightClawServo.setPosition(rClawPos);
+        leftClawServo.setPosition(lClawPos);
+        wristClawServo.setPosition(wClawPos);
 
 
         //Crane position
-        LinearSlide verticalSlide = new LinearSlide(this);
         craneMotorY.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double craneMotorYPos = 0;
 
@@ -214,7 +214,7 @@ public class RobotMainTeleop extends LinearOpMode {
 
             craneMotorYPos = craneMotorY.getCurrentPosition();
             //Automated rising
-
+            //verticalSlide.slide(30, 0.1);
 
             //Using the left-thumbstick on the y-axis to set the power of the motors
 
@@ -227,6 +227,7 @@ public class RobotMainTeleop extends LinearOpMode {
             else{
                 craneMotorY.setPower(0);
             }
+
             /*if(craneMotorY.getCurrentPosition() >= 3300&&craneMotorY.getPower()>0){
                 craneMotorY.setPower(0);
             }
@@ -242,10 +243,10 @@ public class RobotMainTeleop extends LinearOpMode {
 
 
             //Claw Wrist Control
-            if (gamepad2.right_bumper && wClawPos < 1 && wClawPos < 0.52){
+            if (gamepad2.right_bumper && wClawPos < 1 && wClawPos < 0.6){
                 wClawPos += 0.02;
             }
-            if (gamepad2.left_bumper && wClawPos > 0){
+            if (gamepad2.left_bumper && wClawPos > 0.059999999){
                 wClawPos -= 0.02;
             }
             wristClawServo.setPosition(wClawPos);
@@ -287,6 +288,7 @@ public class RobotMainTeleop extends LinearOpMode {
             telemetry.addLine("BR Motor PWR: " + rightBackMotor.getPower());
             telemetry.addLine("BL Motor PWR: " + leftBackMotor.getPower());
             telemetry.addLine("Vertical Slide: " + craneMotorY.getPower());
+            telemetry.addLine("Wrist Pos: " + wristClawServo.getPosition());
             telemetry.addLine("Extendo: " + extendoX.getPower() + "\n");
             telemetry.addLine("Vertical Slide Pos: " + craneMotorYPos);
             telemetry.addLine("Extendo Pos: " + extendoXPos + "\n");
