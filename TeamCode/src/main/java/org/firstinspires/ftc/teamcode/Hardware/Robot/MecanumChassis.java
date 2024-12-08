@@ -306,9 +306,9 @@ public class MecanumChassis {
     }
 
     public void rotate(double angle, double power) {
-        double minPower = 0.3;
+        double minPower = 0.2;
         double Kp = 0.04; //this is for proportional control (ie. the closer you are the target angle the slower you will go)
-        double startAngle = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
         double targetAngle = AngleUnit.normalizeDegrees(startAngle + angle);
         double error = AngleUnit.normalizeDegrees((imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle));
         double power1 = 0;
@@ -317,15 +317,16 @@ public class MecanumChassis {
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // rotate until the target angle is reached
-        //System.out.printf("%f start angle = ",imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-        //System.out.printf("%f error = ", error);
+
         while (opmode.opModeIsActive() && Math.abs(error) > .5) {
+            System.out.println("start angle = " + imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+            System.out.println("error = " + error);
             //powerZero();
             error = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
             // the closer the robot is to the target angle, the slower it rotates
             //power = Range.clip(Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) / 90, 0.1, 0.5);
             opmode.telemetry.addData("real power", power*(error*Kp));
-            power1 = Range.clip((power*(error*Kp)),-0.8,0.8); //"Range.clip(value, minium, maxium)" takes the first term and puts it in range of the min and max provided
+            power1 = Range.clip((power*(error*Kp)),-power,power); //"Range.clip(value, minium, maxium)" takes the first term and puts it in range of the min and max provided
             if (Math.abs(power1) < minPower) {
                 power1 = minPower * (power1/Math.abs(power1));
             }
