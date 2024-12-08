@@ -81,8 +81,8 @@ public class RobotMainTeleop extends LinearOpMode {
         craneMotorY.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         extendoX.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        craneMotorY.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        extendoX.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //craneMotorY.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //extendoX.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
         //Defines servo position
@@ -103,7 +103,6 @@ public class RobotMainTeleop extends LinearOpMode {
         LinearSlide verticalSlide = new LinearSlide(this);
         craneMotorY.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double craneMotorYPos = 0;
-        verticalSlide.initSlides();
 
         //Extendo Position
         extendoX.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -137,6 +136,14 @@ public class RobotMainTeleop extends LinearOpMode {
             double y = gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x * -1.1;
             double rx = gamepad1.right_stick_x;
+
+            //Robot Speed Control Using the right_trigger
+            if (gamepad1.right_trigger != 0) {
+                y /= 2;
+                x /= 2;
+                rx /= 2;
+            }
+
 
             // Get's the robots start foward facing position
             double fowardDef = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
@@ -176,13 +183,6 @@ public class RobotMainTeleop extends LinearOpMode {
                 leftBackMotor.setPower((y - x + rx) / denominator);
             }
 
-            //Robot Speed Control Using the right_trigger
-            if (gamepad1.right_trigger != 0) {
-                y = 0;
-                x = 0;
-                rx = 0;
-            }
-
             //Math for Mecanum drive
 
             //Extendo will extend to a negative position
@@ -213,19 +213,25 @@ public class RobotMainTeleop extends LinearOpMode {
             }
             */
 
+            if (gamepad2.touchpad){
+                craneMotorY.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                craneMotorY.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                craneMotorY.setPower(-gamepad2.left_stick_y);
+            }
+
             craneMotorYPos = craneMotorY.getCurrentPosition();
             //Automated rising
-            //verticalSlide.slide(35, 1);
+            //verticalSlide.slideToPosition(35, 1);
 
             //Using the left-thumbstick on the y-axis to set the power of the motors
 
-            if(craneMotorYPos < 3100 && gamepad2.left_stick_y < 0){
+            if(craneMotorYPos < 3100 && gamepad2.left_stick_y < 0 && !gamepad2.touchpad){
                 craneMotorY.setPower(-gamepad2.left_stick_y);
             }
-            else if(craneMotorYPos > 150 && gamepad2.left_stick_y > 0){
+            else if(craneMotorYPos > 150 && gamepad2.left_stick_y > 0 && !gamepad2.touchpad){
                 craneMotorY.setPower(-gamepad2.left_stick_y);
             }
-            else{
+            else if(!gamepad2.touchpad){
                 craneMotorY.setPower(0);
             }
 

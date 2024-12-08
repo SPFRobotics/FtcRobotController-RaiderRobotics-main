@@ -48,4 +48,11 @@ public class LinearSlide {
 
         lift.setPower(0);
     }
+
+    /*public void slideToPosition(double distance, double power){
+        int encoderAmount = (int)(Unit.inchToLift_convert(distance));
+        lift.setTargetPosition((int)liftPosition);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setPower(power);
+    }*/
 }
