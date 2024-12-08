@@ -61,7 +61,6 @@ public class RobotMainTeleop extends LinearOpMode {
         leftClawServo = hardwareMap.get(Servo.class, "intakeLeftClaw");
         topRightClaw = hardwareMap.get(Servo.class, "outtakeRightClaw");
         topLeftClaw = hardwareMap.get(Servo.class, "outtakeLeftClaw");
-        LinearSlide verticalSlide = new LinearSlide(this);
 
 
         //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
@@ -101,8 +100,10 @@ public class RobotMainTeleop extends LinearOpMode {
 
 
         //Crane position
+        LinearSlide verticalSlide = new LinearSlide(this);
         craneMotorY.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double craneMotorYPos = 0;
+        verticalSlide.initSlides();
 
         //Extendo Position
         extendoX.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -177,9 +178,9 @@ public class RobotMainTeleop extends LinearOpMode {
 
             //Robot Speed Control Using the right_trigger
             if (gamepad1.right_trigger != 0) {
-                y /= 2;
-                x /= 2;
-                rx /= 2;
+                y = 0;
+                x = 0;
+                rx = 0;
             }
 
             //Math for Mecanum drive
@@ -214,7 +215,7 @@ public class RobotMainTeleop extends LinearOpMode {
 
             craneMotorYPos = craneMotorY.getCurrentPosition();
             //Automated rising
-            //verticalSlide.slide(30, 0.1);
+            //verticalSlide.slide(35, 1);
 
             //Using the left-thumbstick on the y-axis to set the power of the motors
 
@@ -243,11 +244,11 @@ public class RobotMainTeleop extends LinearOpMode {
 
 
             //Claw Wrist Control
-            if (gamepad2.right_bumper && wClawPos < 1 && wClawPos < 0.6){
-                wClawPos += 0.02;
+            if (gamepad2.right_bumper && wClawPos > (0.03999999) + 0.02){
+                wClawPos -= 0.05;
             }
-            if (gamepad2.left_bumper && wClawPos > 0.059999999){
-                wClawPos -= 0.02;
+            if (gamepad2.left_bumper && wClawPos < 0.71){
+                wClawPos += 0.05;
             }
             wristClawServo.setPosition(wClawPos);
             //Limit: 0.52
