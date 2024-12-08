@@ -226,13 +226,13 @@ public class RobotMainTeleop extends LinearOpMode {
 
             //Using the left-thumbstick on the y-axis to set the power of the motors
 
-            if(craneMotorYPos < 3100 && gamepad2.left_stick_y < 0 && !gamepad2.touchpad){
+            if(craneMotorYPos < 3100 && gamepad2.left_stick_y < 0 && !gamepad2.share){
                 craneMotorY.setPower(-gamepad2.left_stick_y);
             }
-            else if(craneMotorYPos > 150 && gamepad2.left_stick_y > 0 && !gamepad2.touchpad){
+            else if(craneMotorYPos > 150 && gamepad2.left_stick_y > 0 && !gamepad2.share){
                 craneMotorY.setPower(-gamepad2.left_stick_y);
             }
-            else if(!gamepad2.touchpad){
+            else if(!gamepad2.share){
                 craneMotorY.setPower(0);
             }
 
