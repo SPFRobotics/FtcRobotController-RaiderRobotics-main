@@ -49,7 +49,8 @@ public class AutoObsZoneLuke extends LinearOpMode {
         slide.slide(18.5, 1);
         claw.open();
         chassis.move(.5, "backward", 60);
-        chassis.move(.5, "right", 90);
         slide.slide(0, 1);
+        chassis.move(.5, "right", 130);
+
     }
 }
