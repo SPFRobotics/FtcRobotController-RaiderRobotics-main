@@ -213,7 +213,8 @@ public class RobotMainTeleop extends LinearOpMode {
             }
             */
 
-            if (gamepad2.touchpad){
+            //Calibrate where 0 is
+            if (gamepad2.share){
                 craneMotorY.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 craneMotorY.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 craneMotorY.setPower(-gamepad2.left_stick_y);
