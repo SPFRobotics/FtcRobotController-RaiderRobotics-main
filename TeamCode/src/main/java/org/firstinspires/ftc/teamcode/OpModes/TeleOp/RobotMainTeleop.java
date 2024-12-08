@@ -214,11 +214,11 @@ public class RobotMainTeleop extends LinearOpMode {
             */
 
             //Calibrate where 0 is
-            if (gamepad2.share){
+            /*if (gamepad2.share){
                 craneMotorY.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 craneMotorY.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 craneMotorY.setPower(-gamepad2.left_stick_y);
-            }
+            }*/
 
             craneMotorYPos = craneMotorY.getCurrentPosition();
             //Automated rising

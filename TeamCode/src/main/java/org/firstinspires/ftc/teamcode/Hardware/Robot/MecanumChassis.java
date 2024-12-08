@@ -72,8 +72,8 @@ public class MecanumChassis {
 
         imu = opmode.hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
         imu.resetYaw();
@@ -309,7 +309,7 @@ public class MecanumChassis {
         double minPower = 0.2;
         double Kp = 0.04; //this is for proportional control (ie. the closer you are the target angle the slower you will go)
         double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-        double targetAngle = AngleUnit.normalizeDegrees(startAngle + angle);
+        double targetAngle = startAngle + angle;
         double error = AngleUnit.normalizeDegrees((imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle));
         double power1 = 0;
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -319,8 +319,6 @@ public class MecanumChassis {
         // rotate until the target angle is reached
 
         while (opmode.opModeIsActive() && Math.abs(error) > .5) {
-            System.out.println("start angle = " + imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-            System.out.println("error = " + error);
             //powerZero();
             error = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
             // the closer the robot is to the target angle, the slower it rotates
