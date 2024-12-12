@@ -34,17 +34,42 @@ public class Outreach1 extends LinearOpMode{
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        boolean cosmeticMode = false;
+        boolean triggersDown = false;
+
         waitForStart();
         while (opModeIsActive()){
-            double y = gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x * 1.1;
-            double rx = gamepad1.right_stick_x;
+            if (gamepad1.right_trigger == 1 && gamepad1.left_trigger == 1 && !cosmeticMode && !triggersDown){
+                cosmeticMode = true;
+                triggersDown = true;
+            }
 
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            rightFront.setPower((y - x - rx) / denominator);
-            leftFront.setPower((y + x + rx) / denominator);
-            rightBack.setPower((y + x - rx) / denominator);
-            leftBack.setPower((y - x + rx) / denominator);
+            if (gamepad1.right_trigger == 1 && gamepad1.left_trigger == 1 && cosmeticMode && !triggersDown){
+                cosmeticMode = false;
+                triggersDown = true;
+            }
+
+            if (gamepad1.right_trigger < 1 && gamepad1.left_trigger < 1){
+                triggersDown = false;
+            }
+
+            if (cosmeticMode){
+                rightFront.setPower(0.5);
+                leftFront.setPower(-0.5);
+                rightBack.setPower(0.5);
+                leftBack.setPower(-0.5);
+
+            }else{
+                double y = gamepad1.left_stick_y;
+                double x = gamepad1.left_stick_x * 1.1;
+                double rx = gamepad1.right_stick_x;
+
+                double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+                rightFront.setPower((y - x - rx) / denominator);
+                leftFront.setPower((y + x + rx) / denominator);
+                rightBack.setPower((y + x - rx) / denominator);
+                leftBack.setPower((y - x + rx) / denominator);
+            }
         }
     }
 }
