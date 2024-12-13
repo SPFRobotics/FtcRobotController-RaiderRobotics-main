@@ -131,11 +131,15 @@ public class RobotMainTeleop extends LinearOpMode {
         imu.initialize(parameters);
         imu.resetYaw();
 
-        //Moves the Vertical Linear Slide back to 0 before the Op-Mode becomes active?
-        while (craneMotorY.getCurrentPosition() != 0){
+        /*while (craneMotorY.getCurrentPosition() != 0 && !opModeIsActive()){
+            craneMotorY.setTargetPosition(0);
+            craneMotorY.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            craneMotorY.setPower(1);
+        }*/
 
+        if (opModeIsActive()){
+            craneMotorY.setPower(0);
         }
-
         waitForStart();
         while (opModeIsActive()) {
             //Variables for wheels
@@ -191,8 +195,17 @@ public class RobotMainTeleop extends LinearOpMode {
 
             //Math for Mecanum drive
 
-            //Extendo will extend to a negative position
-            extendoXPos = extendoX.getCurrentPosition();
+            //Extendo will extend to a negative position!!
+
+            if (gamepad1.right_bumper){
+                extendoX.setPower(-1);
+            }
+            else{
+                extendoX.setPower(1);
+            }
+
+            //This code will only work if extendo has encoders!!!!!
+            /*extendoXPos = extendoX.getCurrentPosition();
             if (extendoXPos > -1700 && gamepad1.right_bumper){
                 extendoX.setPower(-1);
             }
@@ -201,7 +214,7 @@ public class RobotMainTeleop extends LinearOpMode {
             }
             else{
                 extendoX.setPower(0);
-            }
+            }*/
 
             //For Vertical slide
             /*
