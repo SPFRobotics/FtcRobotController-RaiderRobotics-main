@@ -110,8 +110,8 @@ public class RobotMainTeleop extends LinearOpMode {
 
         //Boolean conditions
         boolean isStillPressed1 = false;
-        boolean isStillPressed2 = false;
         boolean fieldOri = false;
+        boolean isStillPressed2 = false;
         boolean automatedPlacement = false;
 
         telemetry.setAutoClear(true);
@@ -129,6 +129,11 @@ public class RobotMainTeleop extends LinearOpMode {
 
         imu.initialize(parameters);
         imu.resetYaw();
+
+        //Moves the Vertical Linear Slide back to 0 before the Op-Mode becomes active?
+        while (craneMotorY.getCurrentPosition() != 0){
+
+        }
 
         waitForStart();
         while (opModeIsActive()) {
