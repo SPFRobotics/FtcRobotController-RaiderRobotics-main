@@ -1,14 +1,13 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.testing;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class MecanumChassisConvertCmm {
+public class MecanumChassisConvertCm {
     private LinearOpMode opmode = null;
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -118,6 +117,11 @@ public class MecanumChassisConvertCmm {
 
         //Initialize IMU: The IMU provides heading/direction of the robot. It can be used to turn
         // the robot and also could be used to help keep the robot straight when moving forward or strafing.
+
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+
+        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
         //****** TODO: See SensorIMUOrthoganal.java sample code lines 108-115
     }
 
@@ -131,7 +135,10 @@ public class MecanumChassisConvertCmm {
 
         // Combine the power for each axis-motion to determine each wheel's power.
         // Set up a variable for each drive wheel to save the power level for telemetry.
-        double leftFrontWheel  = axial + lateral + yaw;
+        double leftFrontPower  = axial + lateral + yaw;
+        double rightFrontPower = axial - lateral - yaw;
+        double leftBackPower   = axial - lateral + yaw;
+        double rightBackPower  = axial + lateral - yaw;
         //*****TODO: See BasicOmniOpMode_Linear example. Also check out GMO https://gm0.org/en/latest/docs/software/tutorials/mecanum-drive.html
 
 

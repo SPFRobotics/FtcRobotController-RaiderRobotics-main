@@ -16,8 +16,8 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot.Odometry;
 
 import java.text.DecimalFormat;
 
-@TeleOp(name="RobotMainTeleOp")
-public class RobotMainTeleop extends LinearOpMode {
+@TeleOp(name="RobotMainTeleOpSingle")
+public class RobotMainTeleopSingle extends LinearOpMode {
     Odometry odometry = new Odometry(this);
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -46,8 +46,7 @@ public class RobotMainTeleop extends LinearOpMode {
 
         //CHECK PORTS!!!!!!!!!!
         //Configured from looking IN FRONT OF THE ROBOT!!!
-        odometry.init();
-        odometry.setPose(0,0,0);
+
         //Motors
         rightFrontMotor = hardwareMap.get(DcMotor.class, "frontRight");
         leftFrontMotor = hardwareMap.get(DcMotor.class, "frontLeft");
@@ -111,8 +110,8 @@ public class RobotMainTeleop extends LinearOpMode {
 
         //Boolean conditions
         boolean isStillPressed1 = false;
-        boolean fieldOri = false;
         boolean isStillPressed2 = false;
+        boolean fieldOri = false;
         boolean automatedPlacement = false;
 
         telemetry.setAutoClear(true);
@@ -130,11 +129,6 @@ public class RobotMainTeleop extends LinearOpMode {
 
         imu.initialize(parameters);
         imu.resetYaw();
-
-        //Moves the Vertical Linear Slide back to 0 before the Op-Mode becomes active?
-        while (craneMotorY.getCurrentPosition() != 0){
-
-        }
 
         waitForStart();
         while (opModeIsActive()) {
@@ -193,10 +187,10 @@ public class RobotMainTeleop extends LinearOpMode {
 
             //Extendo will extend to a negative position
             extendoXPos = extendoX.getCurrentPosition();
-            if (extendoXPos > -1700 && gamepad1.right_bumper){
+            if (extendoXPos > -1700 && gamepad1.dpad_right){
                 extendoX.setPower(-1);
             }
-            else if (extendoXPos < 0 && gamepad1.left_bumper){
+            else if (extendoXPos < 0 && gamepad1.dpad_left){
                 extendoX.setPower(1);
             }
             else{
@@ -220,10 +214,15 @@ public class RobotMainTeleop extends LinearOpMode {
             */
 
             //Calibrate where 0 is
-            if (gamepad2.share){
+            if (gamepad1.share){
                 craneMotorY.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 craneMotorY.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                craneMotorY.setPower(-gamepad2.left_stick_y);
+                if (gamepad1.right_trigger > 0){
+                    craneMotorY.setPower(gamepad1.right_trigger);
+                }
+                if (gamepad1.left_trigger > 0){
+                    craneMotorY.setPower(-gamepad1.left_trigger);
+                }
             }
 
             craneMotorYPos = craneMotorY.getCurrentPosition();
@@ -232,13 +231,13 @@ public class RobotMainTeleop extends LinearOpMode {
 
             //Using the left-thumbstick on the y-axis to set the power of the motors
 
-            if(craneMotorYPos < 3100 && gamepad2.left_stick_y < 0 && !gamepad2.share){
-                craneMotorY.setPower(-gamepad2.left_stick_y);
+            if(craneMotorYPos < 3100 && gamepad1.right_trigger > 0 && !gamepad1.share){
+                craneMotorY.setPower(gamepad1.right_trigger);
             }
-            else if(craneMotorYPos > 150 && gamepad2.left_stick_y > 0 && !gamepad2.share){
-                craneMotorY.setPower(-gamepad2.left_stick_y);
+            else if(craneMotorYPos > 150 && gamepad1.left_trigger > 0 && !gamepad1.share){
+                craneMotorY.setPower(-gamepad1.left_trigger);
             }
-            else if(!gamepad2.share){
+            else if(!gamepad1.share){
                 craneMotorY.setPower(0);
             }
 
@@ -257,10 +256,10 @@ public class RobotMainTeleop extends LinearOpMode {
 
 
             //Claw Wrist Control
-            if (gamepad2.right_bumper && wClawPos > (0.03999999) + 0.02){
+            if (gamepad1.right_bumper && wClawPos > (0.03999999) + 0.02){
                 wClawPos -= 0.05;
             }
-            if (gamepad2.left_bumper && wClawPos < 0.71){
+            if (gamepad1.left_bumper && wClawPos < 0.71){
                 wClawPos += 0.05;
             }
             wristClawServo.setPosition(wClawPos);
@@ -269,7 +268,7 @@ public class RobotMainTeleop extends LinearOpMode {
 
             //POTENTIAL NEW CODE that makes closing and opening the claw for both the top and bottom claws 1 button
             //Intake
-            if (gamepad2.y){
+            if (gamepad1.y){
                 rightClawServo.setPosition(0.1);
                 leftClawServo.setPosition(0.1);
             }
@@ -278,7 +277,7 @@ public class RobotMainTeleop extends LinearOpMode {
                 leftClawServo.setPosition(0.18);
             }
             //Outtake
-            if (gamepad2.a){
+            if (gamepad1.a){
                 topRightClaw.setPosition(0.15);
                 topLeftClaw.setPosition(0.15);
 
@@ -322,10 +321,6 @@ public class RobotMainTeleop extends LinearOpMode {
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
             telemetry.addLine("==========================================");
-            telemetry.addLine("Odometry Info: ");
-            telemetry.addLine("X: " + odometry.getX());
-            telemetry.addLine("Y: " + odometry.getY());
-            telemetry.addLine("Heading: " + odometry.getHeading());
         }
 
     }
