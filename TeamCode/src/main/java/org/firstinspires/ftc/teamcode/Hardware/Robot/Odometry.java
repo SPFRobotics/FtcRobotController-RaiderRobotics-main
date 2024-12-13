@@ -14,8 +14,8 @@ public class Odometry {
     private LinearOpMode opMode = null;
     private final double TRACKWIDTH_CM = 31.45;
     private final double CM_PER_TICK = (3.2 * Math.PI)/2000;
-    // 2000 PPR encoder; 32 mm diameter (0.16 cm).
-    private final double OFFSET_CM = 0;
+    // 2000 PPR encoder; 32 mm diameter = 3.2 cm
+    private final double OFFSET_CM = 11.50;
 
     double[] pose = new double[3];
     double[] prevEncoder = new double[3]; // prevEncoder[0] is left; prevEncoder[1] is center; prevEncoder[2] is right
@@ -24,9 +24,9 @@ public class Odometry {
         opMode = lom;
     }
     public void init(){
-        leftPod = opMode.hardwareMap.dcMotor.get("Motor4");
-        rightPod = opMode.hardwareMap.dcMotor.get("Motor6");
-        centerPod = opMode.hardwareMap.dcMotor.get("Motor5");
+        leftPod = opMode.hardwareMap.dcMotor.get("extendo");
+        rightPod = opMode.hardwareMap.dcMotor.get("rightOdomPod");
+        centerPod = opMode.hardwareMap.dcMotor.get("centerOdomPod");
         leftPod.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         centerPod.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightPod.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -46,9 +46,6 @@ public class Odometry {
         double deltaCenterPod = ticksToCM(centerPod.getCurrentPosition() - prevEncoder[1]);
         double deltaRightPod =  ticksToCM(rightPod.getCurrentPosition() - prevEncoder[2]);
 
-        System.out.println(deltaLeftPod);
-        System.out.println(deltaCenterPod);
-        System.out.println(deltaRightPod);
 
         double phi = (deltaLeftPod - deltaRightPod) / TRACKWIDTH_CM; // need units to be consistent for this calculation
         // see Gm0, phi (deltaHeading) is the  changes in right and left Pods divided by trackwidth, which we measured on the robot to be the constant TRACKWIDTH_cm
@@ -74,7 +71,7 @@ public class Odometry {
     public double getY(){
         return pose[1];
     }
-    public double getTheta(){
+    public double getHeading(){
         return pose[2];
     }
 
