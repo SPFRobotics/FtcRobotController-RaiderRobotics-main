@@ -12,10 +12,10 @@ public class Odometry {
     private DcMotor rightPod = null;
     private DcMotor centerPod = null;
     private LinearOpMode opMode = null;
-    private final double TRACKWIDTH_CM = 31.45;
+    private final double TRACKWIDTH_CM = 31.115;
     private final double CM_PER_TICK = (3.2 * Math.PI)/2000;
     // 2000 PPR encoder; 32 mm diameter = 3.2 cm
-    private final double OFFSET_CM = 11.50;
+    private final double OFFSET_CM = 11;
 
     double[] pose = new double[3];
     double[] prevEncoder = new double[3]; // prevEncoder[0] is left; prevEncoder[1] is center; prevEncoder[2] is right

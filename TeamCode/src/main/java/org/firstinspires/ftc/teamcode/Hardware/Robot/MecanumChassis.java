@@ -21,6 +21,7 @@ import java.util.List;
 
 public class MecanumChassis {
     public LinearOpMode opmode = null;
+    Odometry odom = new Odometry(opmode);
     public static final double strafeMult = 1.1;
     public DcMotor backLeft = null;
     public DcMotor backRight = null;
@@ -53,10 +54,12 @@ public class MecanumChassis {
     public double inToCm(int inches) { return inches * 2.54; }
     public double cm_convert(double cm) { return cm * (537.7 / (9.6012 * Math.PI)); }
     public void initializeMovement() {
+        odom.init();
         backLeft = opmode.hardwareMap.dcMotor.get("backLeft");
         backRight = opmode.hardwareMap.dcMotor.get("backRight");
         frontLeft = opmode.hardwareMap.dcMotor.get("frontLeft");
         frontRight = opmode.hardwareMap.dcMotor.get("frontRight");
+        odom.setPose(0,0,0);
 
 
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -162,11 +165,16 @@ public class MecanumChassis {
             opmode.terminateOpModeNow();
         }
         while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()) {
+            odom.updateOdom();
+            opmode.telemetry.addData("X", odom.getX());
+            opmode.telemetry.addData("Y", odom.getY());
+            opmode.telemetry.addData("Heading", odom.getHeading());
             opmode.telemetry.addData("test", "attempting to move...");
             opmode.telemetry.addData("power back right", backRight.getPower());
             opmode.telemetry.addData("power back left", backLeft.getPower());
             opmode.telemetry.addData("power front right", frontRight.getPower());
             opmode.telemetry.addData("power front left", frontLeft.getPower());
+
             opmode.telemetry.update();
         }
         powerZero();
@@ -319,6 +327,10 @@ public class MecanumChassis {
         // rotate until the target angle is reached
 
         while (opmode.opModeIsActive() && Math.abs(error) > .5) {
+            odom.updateOdom();
+            opmode.telemetry.addData("X", odom.getX());
+            opmode.telemetry.addData("Y", odom.getY());
+            opmode.telemetry.addData("Heading", odom.getHeading());
             //powerZero();
             error = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
             // the closer the robot is to the target angle, the slower it rotates

@@ -142,6 +142,7 @@ public class RobotMainTeleop extends LinearOpMode {
         }
         waitForStart();
         while (opModeIsActive()) {
+            odometry.updateOdom();
             //Variables for wheels
             double y = gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x * -1.1;
@@ -200,8 +201,11 @@ public class RobotMainTeleop extends LinearOpMode {
             if (gamepad1.right_bumper){
                 extendoX.setPower(-1);
             }
-            else{
+            else if (gamepad1.left_bumper){
                 extendoX.setPower(1);
+            }
+            else{
+                extendoX.setPower(0);
             }
 
             //This code will only work if extendo has encoders!!!!!
@@ -323,7 +327,6 @@ public class RobotMainTeleop extends LinearOpMode {
             telemetry.addLine("Roll: " + imu.getRobotYawPitchRollAngles().getRoll(AngleUnit.DEGREES));
             telemetry.addLine("Yaw: " + imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
-
             //Driver Mode Logic
             if (fieldOri) {
                 telemetry.addLine("Driver Mode: Field Oriented");
@@ -331,14 +334,17 @@ public class RobotMainTeleop extends LinearOpMode {
             else{
                 telemetry.addLine("Driver Mode: Robot Oriented");
             }
-            //Servo positions and motor positions coming soon!!!!
+
+            //Reading on odometry
+            telemetry.addLine("\n\nOdometry Info: ");
+            telemetry.addLine("X (CM): " + odometry.getX());
+            telemetry.addLine("X (Ticks): " + odometry.getX()*1600/(Math.PI*3.2));
+            telemetry.addLine("Y (CM): " + odometry.getY());
+            telemetry.addLine("Y (Ticks): " + odometry.getY()*1600/(Math.PI*3.2));
+            telemetry.addLine("Heading: " + odometry.getHeading());
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
             telemetry.addLine("==========================================");
-            telemetry.addLine("Odometry Info: ");
-            telemetry.addLine("X: " + odometry.getX());
-            telemetry.addLine("Y: " + odometry.getY());
-            telemetry.addLine("Heading: " + odometry.getHeading());
         }
 
     }

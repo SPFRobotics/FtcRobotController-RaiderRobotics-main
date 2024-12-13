@@ -75,7 +75,7 @@ public class TestBotTeleop extends LinearOpMode {
             //TELEMETRY
             telemetry.addData("X: ", odometry.getX());
             telemetry.addData("Y: ", odometry.getY());
-            telemetry.addData("Theta: ", odometry.getTheta());
+            telemetry.addData("Theta: ", odometry.getHeading());
             telemetry.update();
         }
 
