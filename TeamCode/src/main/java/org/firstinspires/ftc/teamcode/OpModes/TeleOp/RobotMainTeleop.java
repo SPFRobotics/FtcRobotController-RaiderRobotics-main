@@ -80,7 +80,7 @@ public class RobotMainTeleop extends LinearOpMode {
 
 
         craneMotorY.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        extendoX.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //extendoX.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //craneMotorY.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //extendoX.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -106,8 +106,7 @@ public class RobotMainTeleop extends LinearOpMode {
         double craneMotorYPos = 0;
 
         //Extendo Position
-        extendoX.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        double extendoXPos = 0;
+        //double extendoXPos = 0;
 
         //Boolean conditions
         boolean isStillPressed1 = false;
@@ -322,7 +321,7 @@ public class RobotMainTeleop extends LinearOpMode {
             telemetry.addLine("Wrist Pos: " + wristClawServo.getPosition());
             telemetry.addLine("Extendo: " + extendoX.getPower() + "\n");
             telemetry.addLine("Vertical Slide Pos: " + craneMotorYPos);
-            telemetry.addLine("Extendo Pos: " + extendoXPos + "\n");
+           //telemetry.addLine("Extendo Pos: " + extendoXPos + "\n");
             telemetry.addLine("Pitch: " + imu.getRobotYawPitchRollAngles().getPitch(AngleUnit.DEGREES));
             telemetry.addLine("Roll: " + imu.getRobotYawPitchRollAngles().getRoll(AngleUnit.DEGREES));
             telemetry.addLine("Yaw: " + imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
