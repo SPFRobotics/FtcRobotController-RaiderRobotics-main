@@ -67,6 +67,8 @@ public class RobotMainTeleop extends LinearOpMode {
         //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
         leftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        extendoX.setDirection(DcMotorSimple.Direction.REVERSE);
+        //Set Servo Direction
         rightClawServo.setDirection(Servo.Direction.REVERSE);
         topLeftClaw.setDirection(Servo.Direction.REVERSE);
 
@@ -197,11 +199,11 @@ public class RobotMainTeleop extends LinearOpMode {
 
             //Extendo will extend to a negative position!!
 
-            if (gamepad1.right_bumper){
-                extendoX.setPower(-1);
-            }
-            else if (gamepad1.left_bumper){
+            if (gamepad1.right_bumper && !gamepad1.left_bumper){
                 extendoX.setPower(1);
+            }
+            if (gamepad1.left_bumper && !gamepad1.right_bumper){
+                extendoX.setPower(-1);
             }
             else{
                 extendoX.setPower(0);
