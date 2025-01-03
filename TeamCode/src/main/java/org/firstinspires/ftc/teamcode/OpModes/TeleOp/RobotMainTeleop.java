@@ -54,7 +54,6 @@ public class RobotMainTeleop extends LinearOpMode {
         rightBackMotor = hardwareMap.get(DcMotor.class, "backRight");
         leftBackMotor = hardwareMap.get(DcMotor.class, "backLeft");
         craneMotorY = hardwareMap.get(DcMotor.class, "lift");
-        craneMotorY.setDirection(DcMotorSimple.Direction.REVERSE);
         extendoX = hardwareMap.get(DcMotor.class, "extendo");
         //Servos
         wristClawServo = hardwareMap.get(Servo.class, "intakeWrist");
@@ -67,6 +66,10 @@ public class RobotMainTeleop extends LinearOpMode {
         //Motors to the right looking from BEHIND the robot must be reversed because the motors mirror each other.
         leftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        craneMotorY.setDirection(DcMotorSimple.Direction.REVERSE);
+        extendoX.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        //Set Servo Direction
         rightClawServo.setDirection(Servo.Direction.REVERSE);
         topLeftClaw.setDirection(Servo.Direction.REVERSE);
 
@@ -101,13 +104,11 @@ public class RobotMainTeleop extends LinearOpMode {
 
 
         //Crane position
-        LinearSlide verticalSlide = new LinearSlide(this);
         craneMotorY.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double craneMotorYPos = 0;
 
         //Extendo Position
-        extendoX.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        double extendoXPos = 0;
+        //double extendoXPos = 0;
 
         //Boolean conditions
         boolean isStillPressed1 = false;
@@ -135,11 +136,11 @@ public class RobotMainTeleop extends LinearOpMode {
             craneMotorY.setTargetPosition(0);
             craneMotorY.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             craneMotorY.setPower(1);
-        }*/
+        }
 
         if (opModeIsActive()){
             craneMotorY.setPower(0);
-        }
+        }*/
         waitForStart();
         while (opModeIsActive()) {
             odometry.updateOdom();
@@ -198,11 +199,11 @@ public class RobotMainTeleop extends LinearOpMode {
 
             //Extendo will extend to a negative position!!
 
-            if (gamepad1.right_bumper){
-                extendoX.setPower(-1);
-            }
-            else if (gamepad1.left_bumper){
+            if (gamepad1.right_bumper && !gamepad1.left_bumper){
                 extendoX.setPower(1);
+            }
+            else if (gamepad1.left_bumper && !gamepad1.right_bumper){
+                extendoX.setPower(-1);
             }
             else{
                 extendoX.setPower(0);
@@ -322,7 +323,7 @@ public class RobotMainTeleop extends LinearOpMode {
             telemetry.addLine("Wrist Pos: " + wristClawServo.getPosition());
             telemetry.addLine("Extendo: " + extendoX.getPower() + "\n");
             telemetry.addLine("Vertical Slide Pos: " + craneMotorYPos);
-            telemetry.addLine("Extendo Pos: " + extendoXPos + "\n");
+           //telemetry.addLine("Extendo Pos: " + extendoXPos + "\n");
             telemetry.addLine("Pitch: " + imu.getRobotYawPitchRollAngles().getPitch(AngleUnit.DEGREES));
             telemetry.addLine("Roll: " + imu.getRobotYawPitchRollAngles().getRoll(AngleUnit.DEGREES));
             telemetry.addLine("Yaw: " + imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
