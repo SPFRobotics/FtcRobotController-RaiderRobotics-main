@@ -27,30 +27,28 @@ public class AutoObsZoneLuke extends LinearOpMode {
         claw.init();
         wristClawServo.setPosition(0.7);
         waitForStart();
-        slide.slide(24, 1); // raises lift high enough to place specimen on chamber
+
         chassis.move(.5,"left",30); // should move towards submersible
-        chassis.move(.5, "forward", 69.01); // should move towards submersible
+        chassis.moveMultitask(.5, "forward", 69.01,24, 1); // should move towards submersible
         slide.slide(18.5,1); // lowers lift (specimen should attach by now)
         claw.open(); // let go of specimen
         // next 2 move commands move towards parking zone
 
         chassis.move(.5, "backward", 50);
-        chassis.move(.5, "right", 86);
-        slide.slide(0, 1);
+        chassis.moveMultitask(.5, "right", 86, 0,1);
+
 
         chassis.rotate(180, 0.5);
         chassis.move(.5, "forward", 19.01);
         claw.close();
-        slide.slide(24, 1);
         chassis.move(.5, "backward", 19.01);
         chassis.rotate(180, 0.5);
-        chassis.move(.5, "left", 71);
+        chassis.moveMultitask(.5, "left", 71,24, 1);
         chassis.move(.5, "forward", 55.5);
         slide.slide(18.5, 1);
         claw.open();
         chassis.move(.5, "backward", 60);
-        slide.slide(0, 1);
-        chassis.move(.5, "right", 130);
+        chassis.moveMultitask(.5, "right", 130, 0, 1);
 
     }
 }
