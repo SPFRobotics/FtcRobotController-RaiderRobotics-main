@@ -19,7 +19,7 @@ import java.text.DecimalFormat;
 @TeleOp(name="RobotMainTeleOp")
 public class RobotMainTeleop extends LinearOpMode {
     Odometry odometry = new Odometry(this);
-    // Declare OpMode members.
+    // Declare OpMode members
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor rightFrontMotor = null;
     private DcMotor leftFrontMotor = null;
@@ -38,7 +38,6 @@ public class RobotMainTeleop extends LinearOpMode {
 
 
     public void runOpMode() {
-
         //Auto uses the classes Claw, Extendo, LinearSlide, MecanumChassis
 
         //Format Telemetry (Not in use)
