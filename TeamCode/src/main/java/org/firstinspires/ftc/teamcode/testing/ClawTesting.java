@@ -14,32 +14,29 @@ import java.lang.reflect.Method;
 
 @TeleOp(name = "ClawTesting")
 public class ClawTesting extends LinearOpMode{
-    //A static method that makes toggling a mode easy
-
-    private boolean ButtonToggle(Method button){
+    //A method that makes toggling a mode easier to accomplish without making 50 new variables and 100 if statements just to toggle something on and off
+    //Accepts a boolean value and uses that expression to set a mode on or off
+    private boolean buttonToggle(boolean button){
         boolean toggleMode = false;
         boolean stillPressed = false;
-        try{
-            if ((boolean) button.invoke(gamepad1) && !toggleMode && !stillPressed){
-                toggleMode = true;
-            }
-            if (toggleMode){
-                return true;
-            }
-            else{
-                return false;
-            }
-        }
-        catch (IllegalAccessException e){
 
+        if (!button){
+            stillPressed = false;
         }
-        catch (IllegalArgumentException e){
-
+        if (button && !toggleMode && !stillPressed) {
+            toggleMode = true;
+            stillPressed = true;
         }
-        catch (Exception e){
-
+        if (button && toggleMode && !stillPressed){
+            toggleMode = false;
+            stillPressed = true;
         }
-        return false;
+        if (toggleMode){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
     private Servo RotationServo = null;
     private Servo WristServo = null;
@@ -56,10 +53,6 @@ public class ClawTesting extends LinearOpMode{
         double RoationServoPos = 0;
         double WristServoPos = 0.5;
         double ClawRotationServoPos = 0;
-
-        //Boolean Expressions
-        boolean toggleClaw = false;
-        boolean stillPressed = false;
 
         ClawServo.setPosition(0.4);
 
@@ -79,6 +72,14 @@ public class ClawTesting extends LinearOpMode{
             if (gamepad1.right_bumper && WristServoPos > 0){
                 WristServoPos -= 0.001;
             }
+
+            if (buttonToggle(gamepad1.y)){
+                WristServoPos = 0;
+            }
+            else{
+                WristServoPos = 0;
+            }
+
             WristServo.setPosition(WristServoPos);
 
             if (gamepad1.b){
@@ -88,22 +89,11 @@ public class ClawTesting extends LinearOpMode{
                 ClawRotationServo.setPosition(0);
             }
 
-            if (!gamepad1.a){
-                stillPressed = false;
-            }
-            if (gamepad1.a && !stillPressed && !toggleClaw){
-                toggleClaw = true;
-                stillPressed = true;
-            }
-            if (toggleClaw){
+            if (buttonToggle(gamepad1.a)){
                 ClawServo.setPosition(0.6);
             }
             else{
                 ClawServo.setPosition(0);
-            }
-            if (gamepad1.a && !stillPressed && toggleClaw){
-                toggleClaw = false;
-                stillPressed = true;
             }
 
             //Telemetry
