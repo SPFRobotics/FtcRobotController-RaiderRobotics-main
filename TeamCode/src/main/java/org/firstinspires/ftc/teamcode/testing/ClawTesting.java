@@ -39,28 +39,49 @@ public class ClawTesting extends LinearOpMode{
     private Servo WristServo = null;
     private Servo ClawRotationServo = null;
     private Servo ClawServo = null;
-    private DcMotor Motor = null;
+    private DcMotor extendo = null;
+    private DcMotor MotorY = null;
 
     public void runOpMode() {
-        RotationServo = hardwareMap.get(Servo.class, "Motor0");
-        WristServo = hardwareMap.get(Servo.class, "Motor1");
-        ClawRotationServo = hardwareMap.get(Servo.class, "Motor2");
-        ClawServo = hardwareMap.get(Servo.class, "Motor3");
-        Motor = hardwareMap.get(DcMotor.class, "Servo0");
+        RotationServo = hardwareMap.get(Servo.class, "Servo0");
+        WristServo = hardwareMap.get(Servo.class, "Servo1");
+        ClawRotationServo = hardwareMap.get(Servo.class, "Servo2");
+        ClawServo = hardwareMap.get(Servo.class, "Servo3");
+        extendo = hardwareMap.get(DcMotor.class, "Motor0");
+        MotorY = hardwareMap.get(DcMotor.class, "Motor1");
+
 
         //Varibles
-        double RoationServoPos = 0.48;
+        double RoationServoPos = 0.5276;
         double WristServoPos = 0.5;
-        double ClawRotationServoPos = 0.47;
+        //double ClawRotationServoPos = 0.47;
 
-        //Boolean
+        //Boolean Expressions
         boolean toggleMode = false;
         boolean stillPressed = false;
+        boolean toggleMode1 = false;
+        boolean stillPressed1 = false;
 
         waitForStart();
         while (opModeIsActive()){
 
-            if (depad )
+            //Reset Claw to default pos
+            if (gamepad1.b){
+                RoationServoPos = 0.5276;
+                WristServoPos = 0.5;
+                ClawRotationServo.setPosition(0.47);
+                ClawServo.setPosition(0.3);
+            }
+
+            //Set claw to efficent position
+            if (gamepad1.a){
+                RoationServoPos = 0.79;
+                WristServoPos = 0.273;
+            }
+
+            //Extend Extendo
+            extendo.setPower(gamepad2.left_stick_y);
+            MotorY.setPower(gamepad2.right_stick_y);
 
             //Rotate Arm
             //*************************************************************
@@ -74,15 +95,7 @@ public class ClawTesting extends LinearOpMode{
             WristServo.setPosition(WristServoPos);
             //*************************************************************
 
-            //Open and close claw
-            //*************************************************************
-            if (gamepad1.left_bumper){
-                ClawRotationServoPos = 0.15;
-            }
-            else{
-                ClawRotationServoPos = 0.47;
-            }
-            ClawRotationServo.setPosition(ClawRotationServoPos);
+            //Claw Open Close Logic
             //*************************************************************
             if (gamepad1.left_trigger != 1){
                 stillPressed = false;
@@ -100,6 +113,27 @@ public class ClawTesting extends LinearOpMode{
             if (gamepad1.left_trigger == 1 && !stillPressed && toggleMode){
                 stillPressed = true;
                 toggleMode = false;
+            }
+            //****************************************************************
+
+            //Rotate Claw Logic
+            //*************************************8
+            if (!gamepad1.left_bumper){
+                stillPressed1 = false;
+            }
+            if (gamepad1.left_bumper && !stillPressed1 && !toggleMode1){
+                toggleMode1 = true;
+                stillPressed1 = true;
+            }
+            if (toggleMode1){
+                ClawRotationServo.setPosition(0.15);
+            }
+            else{
+                ClawRotationServo.setPosition(0.47);
+            }
+            if (gamepad1.left_bumper && !stillPressed1 && toggleMode1){
+                stillPressed1 = true;
+                toggleMode1 = false;
             }
 
             //Telemetry
