@@ -1,8 +1,10 @@
 //This is a class written for testing purposes only to control a new claw system
 //This is not to be used for the actual competition
 package org.firstinspires.ftc.teamcode.testing;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -14,89 +16,94 @@ import java.lang.reflect.Method;
 
 @TeleOp(name = "ClawTesting")
 public class ClawTesting extends LinearOpMode{
-    //A method that makes toggling a mode easier to accomplish without making 50 new variables and 100 if statements just to toggle something on and off
-    //Accepts a boolean value and uses that expression to set a mode on or off
-    private boolean buttonToggle(boolean button){
-        boolean toggleMode = false;
-        boolean stillPressed = false;
 
+    //Boolean
+    /*public void buttonToggle(boolean button, boolean toggleMode, boolean stillPressed){
         if (!button){
             stillPressed = false;
         }
-        if (button && !toggleMode && !stillPressed) {
+        if (button && !stillPressed && !toggleMode){
             toggleMode = true;
             stillPressed = true;
         }
-        if (button && toggleMode && !stillPressed){
-            toggleMode = false;
+        method = toggleMode;
+        if (button && !stillPressed && toggleMode){
             stillPressed = true;
+            toggleMode = false;
         }
-        if (toggleMode){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
+    }*/
+
+    //A method that makes toggling a mode easier to accomplish without making 50 new variables and 100 if statements just to toggle something on and off
+    //Accepts a boolean value and uses that expression to set a mode on or off
     private Servo RotationServo = null;
     private Servo WristServo = null;
     private Servo ClawRotationServo = null;
     private Servo ClawServo = null;
+    private DcMotor Motor = null;
 
     public void runOpMode() {
         RotationServo = hardwareMap.get(Servo.class, "Motor0");
         WristServo = hardwareMap.get(Servo.class, "Motor1");
         ClawRotationServo = hardwareMap.get(Servo.class, "Motor2");
         ClawServo = hardwareMap.get(Servo.class, "Motor3");
+        Motor = hardwareMap.get(DcMotor.class, "Servo0");
 
         //Varibles
-        double RoationServoPos = 0;
+        double RoationServoPos = 0.48;
         double WristServoPos = 0.5;
-        double ClawRotationServoPos = 0;
+        double ClawRotationServoPos = 0.47;
 
-        ClawServo.setPosition(0.4);
+        //Boolean
+        boolean toggleMode = false;
+        boolean stillPressed = false;
 
         waitForStart();
         while (opModeIsActive()){
-            if (gamepad1.left_stick_x < 0 && RoationServoPos < 1){
-                RoationServoPos += 0.001;
-            }
-            if (gamepad1.left_stick_x > 0 && RoationServoPos > 0){
-                RoationServoPos -= 0.001;
-            }
+
+            if (depad )
+
+            //Rotate Arm
+            //*************************************************************
+            RoationServoPos += gamepad1.left_stick_x*0.001;
             RotationServo.setPosition(RoationServoPos);
+            //*************************************************************
 
-            if (gamepad1.left_bumper && WristServoPos < 1){
-                WristServoPos += 0.001;
-            }
-            if (gamepad1.right_bumper && WristServoPos > 0){
-                WristServoPos -= 0.001;
-            }
-
-            if (buttonToggle(gamepad1.y)){
-                WristServoPos = 0;
-            }
-            else{
-                WristServoPos = 0;
-            }
-
+            //Move Wrist
+            //*************************************************************
+            WristServoPos += gamepad1.right_stick_y*0.001;
             WristServo.setPosition(WristServoPos);
+            //*************************************************************
 
-            if (gamepad1.b){
-                ClawRotationServo.setPosition(0.25);
+            //Open and close claw
+            //*************************************************************
+            if (gamepad1.left_bumper){
+                ClawRotationServoPos = 0.15;
             }
             else{
-                ClawRotationServo.setPosition(0);
+                ClawRotationServoPos = 0.47;
             }
-
-            if (buttonToggle(gamepad1.a)){
+            ClawRotationServo.setPosition(ClawRotationServoPos);
+            //*************************************************************
+            if (gamepad1.left_trigger != 1){
+                stillPressed = false;
+            }
+            if (gamepad1.left_trigger == 1 && !stillPressed && !toggleMode){
+                toggleMode = true;
+                stillPressed = true;
+            }
+            if (toggleMode){
                 ClawServo.setPosition(0.6);
             }
             else{
-                ClawServo.setPosition(0);
+                ClawServo.setPosition(0.3);
+            }
+            if (gamepad1.left_trigger == 1 && !stillPressed && toggleMode){
+                stillPressed = true;
+                toggleMode = false;
             }
 
             //Telemetry
+            telemetry.update();
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
             telemetry.addLine("==========================================");

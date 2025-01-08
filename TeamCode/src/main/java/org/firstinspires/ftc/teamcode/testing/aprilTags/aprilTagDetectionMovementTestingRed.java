@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.testing.aprilTags;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -17,6 +18,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 import java.util.Vector;
 
+@Disabled
 @Autonomous
 public class aprilTagDetectionMovementTestingRed extends LinearOpMode {
     //public LinearOpMode opmode = null;
