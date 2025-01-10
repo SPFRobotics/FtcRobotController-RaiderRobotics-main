@@ -278,7 +278,32 @@ public class MecanumChassis {
             opmode.telemetry.addData("power back left", backLeft.getPower());
             opmode.telemetry.addData("power front right", frontRight.getPower());
             opmode.telemetry.addData("power front left", frontLeft.getPower());
-
+            opmode.telemetry.update();
+        }
+        // Loop above breaks after lift is done moving. We still may need to continue moving wheels, so we check again here
+        while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()) {
+            /*odom.updateOdom();
+            opmode.telemetry.addData("X", odom.getX());
+            opmode.telemetry.addData("Y", odom.getY());
+            opmode.telemetry.addData("Heading", odom.getHeading());*/
+            opmode.telemetry.addData("test", "attempting to move...");
+            opmode.telemetry.addData("power back right", backRight.getPower());
+            opmode.telemetry.addData("power back left", backLeft.getPower());
+            opmode.telemetry.addData("power front right", frontRight.getPower());
+            opmode.telemetry.addData("power front left", frontLeft.getPower());
+            opmode.telemetry.update();
+        }
+        // Loops above will both break after wheels are done moving. We should still wait in case the lift wants to move
+        while (lift.isBusy()) {
+            /*odom.updateOdom();
+            opmode.telemetry.addData("X", odom.getX());
+            opmode.telemetry.addData("Y", odom.getY());
+            opmode.telemetry.addData("Heading", odom.getHeading());*/
+            opmode.telemetry.addData("test", "attempting to move...");
+            opmode.telemetry.addData("power back right", backRight.getPower());
+            opmode.telemetry.addData("power back left", backLeft.getPower());
+            opmode.telemetry.addData("power front right", frontRight.getPower());
+            opmode.telemetry.addData("power front left", frontLeft.getPower());
             opmode.telemetry.update();
         }
         powerZero();
