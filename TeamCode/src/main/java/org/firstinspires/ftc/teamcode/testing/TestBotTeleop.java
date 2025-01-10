@@ -1,5 +1,6 @@
-package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
+package org.firstinspires.ftc.teamcode.testing;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot.Odometry;
 
 import java.text.DecimalFormat;
 
+@Disabled
 @TeleOp(name="RobotTestTeleop")
 public class TestBotTeleop extends LinearOpMode {
     Odometry odometry = new Odometry(this);
@@ -75,7 +77,7 @@ public class TestBotTeleop extends LinearOpMode {
             //TELEMETRY
             telemetry.addData("X: ", odometry.getX());
             telemetry.addData("Y: ", odometry.getY());
-            telemetry.addData("Theta: ", odometry.getTheta());
+            telemetry.addData("Theta: ", odometry.getHeading());
             telemetry.update();
         }
 

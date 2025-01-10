@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Hardware.Util.Unit;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import java.util.ArrayList;
@@ -21,7 +22,10 @@ import java.util.List;
 
 public class MecanumChassis {
     public LinearOpMode opmode = null;
+    //Odometry odom = new Odometry(opmode);
     public static final double strafeMult = 1.1;
+    public double liftPosition = 0;
+    public final double liftMaxMotorCounts = 4062;
     public DcMotor backLeft = null;
     public DcMotor backRight = null;
     public DcMotor frontLeft = null;
@@ -32,8 +36,7 @@ public class MecanumChassis {
     public DcMotorEx frontLeft = null;
     public DcMotorEx frontRight = null;*/
 
-    public DcMotor liftLeft = null;
-    public DcMotor liftRight = null;
+    public DcMotor lift = null;
     public IMU imu = null;
 
     private double targetDist = 0;
@@ -53,10 +56,17 @@ public class MecanumChassis {
     public double inToCm(int inches) { return inches * 2.54; }
     public double cm_convert(double cm) { return cm * (537.7 / (9.6012 * Math.PI)); }
     public void initializeMovement() {
+        //odom.init();
         backLeft = opmode.hardwareMap.dcMotor.get("backLeft");
         backRight = opmode.hardwareMap.dcMotor.get("backRight");
         frontLeft = opmode.hardwareMap.dcMotor.get("frontLeft");
         frontRight = opmode.hardwareMap.dcMotor.get("frontRight");
+        lift = opmode.hardwareMap.dcMotor.get("lift");
+        lift.setDirection(DcMotorSimple.Direction.REVERSE);
+        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        //odom.setPose(0,0,0);
 
 
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -72,8 +82,8 @@ public class MecanumChassis {
 
         imu = opmode.hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
         imu.resetYaw();
@@ -110,7 +120,7 @@ public class MecanumChassis {
         frontLeft.setPower(0);
         frontRight.setPower(0);
     }
-    public void move(double movePower, @NonNull String moveDirection, double moveDistance){
+    public void move(double movePower, @NonNull String moveDirection, double moveDistance){ // added support for moving lift and wheels at the same time.
         stop_and_reset_encoders_all(); //Sets encoder count to 0
         //run_using_encoders_all();
         if (moveDirection.equals("forward")) {
@@ -119,6 +129,7 @@ public class MecanumChassis {
             backRight.setTargetPosition((int) cm_convert(moveDistance));
             frontLeft.setTargetPosition((int) cm_convert(moveDistance));
             frontRight.setTargetPosition((int) cm_convert(moveDistance));
+
             run_to_position_all();
             opmode.telemetry.addData("Power", movePower);
             opmode.telemetry.update();
@@ -162,6 +173,132 @@ public class MecanumChassis {
             opmode.terminateOpModeNow();
         }
         while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()) {
+            /*odom.updateOdom();
+            opmode.telemetry.addData("X", odom.getX());
+            opmode.telemetry.addData("Y", odom.getY());
+            opmode.telemetry.addData("Heading", odom.getHeading());*/
+            opmode.telemetry.addData("test", "attempting to move...");
+            opmode.telemetry.addData("power back right", backRight.getPower());
+            opmode.telemetry.addData("power back left", backLeft.getPower());
+            opmode.telemetry.addData("power front right", frontRight.getPower());
+            opmode.telemetry.addData("power front left", frontLeft.getPower());
+
+            opmode.telemetry.update();
+        }
+        powerZero();
+        opmode.sleep(500);
+        opmode.telemetry.addData("test", "done!");
+        opmode.telemetry.update();
+    }
+    public void moveMultitask(double movePower, @NonNull String moveDirection, double moveDistance, double liftMoveHeight, double liftPower){ // added support for moving lift and wheels at the same time.
+        stop_and_reset_encoders_all(); //Sets encoder count to 0
+        //run_using_encoders_all();
+        if (moveDirection.equals("forward")) {
+            //Tell each wheel to move a certain amount
+            backLeft.setTargetPosition((int) cm_convert(moveDistance)); //Converts the
+            backRight.setTargetPosition((int) cm_convert(moveDistance));
+            frontLeft.setTargetPosition((int) cm_convert(moveDistance));
+            frontRight.setTargetPosition((int) cm_convert(moveDistance));
+
+            int encoderAmount = (int)(Unit.inchToLift_convert(liftMoveHeight));
+            liftPosition = encoderAmount;
+            liftPosition = Range.clip(liftPosition,0,liftMaxMotorCounts);
+            lift.setTargetPosition((int)liftPosition);
+            lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            run_to_position_all();
+            opmode.telemetry.addData("Power", movePower);
+            opmode.telemetry.update();
+            backLeft.setPower(movePower);
+            backRight.setPower(movePower);
+            frontLeft.setPower(movePower);
+            frontRight.setPower(movePower);
+            lift.setPower(liftPower);
+
+        } else if (moveDirection.equals("backward")) {
+            backLeft.setTargetPosition((int) cm_convert(-moveDistance));
+            backRight.setTargetPosition((int) cm_convert(-moveDistance));
+            frontLeft.setTargetPosition((int) cm_convert(-moveDistance));
+            frontRight.setTargetPosition((int) cm_convert(-moveDistance));
+            int encoderAmount = (int)(Unit.inchToLift_convert(liftMoveHeight));
+            liftPosition = encoderAmount;
+            liftPosition = Range.clip(liftPosition,0,liftMaxMotorCounts);
+            lift.setTargetPosition((int)liftPosition);
+            lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            run_to_position_all();
+            backLeft.setPower(-movePower);
+            backRight.setPower(-movePower);
+            frontLeft.setPower(-movePower);
+            frontRight.setPower(-movePower);
+            lift.setPower(liftPower);
+        } else if (moveDirection.equals("right")) {
+            backLeft.setTargetPosition((int) cm_convert(-moveDistance*strafeMult));
+            backRight.setTargetPosition((int) cm_convert(moveDistance*strafeMult));
+            frontLeft.setTargetPosition((int) cm_convert(moveDistance*strafeMult));
+            frontRight.setTargetPosition((int) cm_convert(-moveDistance*strafeMult));
+            int encoderAmount = (int)(Unit.inchToLift_convert(liftMoveHeight));
+            liftPosition = encoderAmount;
+            liftPosition = Range.clip(liftPosition,0,liftMaxMotorCounts);
+            lift.setTargetPosition((int)liftPosition);
+            lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            run_to_position_all();
+            backLeft.setPower(-movePower);
+            backRight.setPower(movePower);
+            frontLeft.setPower(movePower);
+            frontRight.setPower(-movePower);
+            lift.setPower(liftPower);
+        } else if (moveDirection.equals("left")) {
+            backLeft.setTargetPosition((int) cm_convert(moveDistance*strafeMult));
+            backRight.setTargetPosition((int) cm_convert(-moveDistance*strafeMult));
+            frontLeft.setTargetPosition((int) cm_convert(-moveDistance*strafeMult));
+            frontRight.setTargetPosition((int) cm_convert(moveDistance*strafeMult));
+            int encoderAmount = (int)(Unit.inchToLift_convert(liftMoveHeight));
+            liftPosition = encoderAmount;
+            liftPosition = Range.clip(liftPosition,0,liftMaxMotorCounts);
+            lift.setTargetPosition((int)liftPosition);
+            lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            run_to_position_all();
+            backLeft.setPower(movePower);
+            backRight.setPower(-movePower);
+            frontLeft.setPower(-movePower);
+            frontRight.setPower(movePower);
+            lift.setPower(liftPower);
+        } else {
+            opmode.telemetry.addData("Error", "move direction must be forward,backward,left, or right.");
+            opmode.telemetry.update();
+            opmode.terminateOpModeNow();
+        }
+        while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()&&lift.isBusy()) {
+            /*odom.updateOdom();
+            opmode.telemetry.addData("X", odom.getX());
+            opmode.telemetry.addData("Y", odom.getY());
+            opmode.telemetry.addData("Heading", odom.getHeading());*/
+            opmode.telemetry.addData("test", "attempting to move...");
+            opmode.telemetry.addData("power back right", backRight.getPower());
+            opmode.telemetry.addData("power back left", backLeft.getPower());
+            opmode.telemetry.addData("power front right", frontRight.getPower());
+            opmode.telemetry.addData("power front left", frontLeft.getPower());
+            opmode.telemetry.update();
+        }
+        // Loop above breaks after lift is done moving. We still may need to continue moving wheels, so we check again here
+        while (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy()) {
+            /*odom.updateOdom();
+            opmode.telemetry.addData("X", odom.getX());
+            opmode.telemetry.addData("Y", odom.getY());
+            opmode.telemetry.addData("Heading", odom.getHeading());*/
+            opmode.telemetry.addData("test", "attempting to move...");
+            opmode.telemetry.addData("power back right", backRight.getPower());
+            opmode.telemetry.addData("power back left", backLeft.getPower());
+            opmode.telemetry.addData("power front right", frontRight.getPower());
+            opmode.telemetry.addData("power front left", frontLeft.getPower());
+            opmode.telemetry.update();
+        }
+        // Loops above will both break after wheels are done moving. We should still wait in case the lift wants to move
+        while (lift.isBusy()) {
+            /*odom.updateOdom();
+            opmode.telemetry.addData("X", odom.getX());
+            opmode.telemetry.addData("Y", odom.getY());
+            opmode.telemetry.addData("Heading", odom.getHeading());*/
             opmode.telemetry.addData("test", "attempting to move...");
             opmode.telemetry.addData("power back right", backRight.getPower());
             opmode.telemetry.addData("power back left", backLeft.getPower());
@@ -306,26 +443,29 @@ public class MecanumChassis {
     }
 
     public void rotate(double angle, double power) {
-        double minPower = 0.3;
+        double minPower = 0.2;
         double Kp = 0.04; //this is for proportional control (ie. the closer you are the target angle the slower you will go)
         double startAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-        double targetAngle = AngleUnit.normalizeDegrees(startAngle + angle);
-        double error = (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
+        double targetAngle = startAngle + angle;
+        double error = AngleUnit.normalizeDegrees((imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle));
         double power1 = 0;
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // rotate until the target angle is reached
-        //System.out.printf("%f start angle = ",imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-        //System.out.printf("%f error = ", error);
+
         while (opmode.opModeIsActive() && Math.abs(error) > .5) {
+            /*odom.updateOdom();
+            opmode.telemetry.addData("X", odom.getX());
+            opmode.telemetry.addData("Y", odom.getY());
+            opmode.telemetry.addData("Heading", odom.getHeading());*/
             //powerZero();
             error = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle);
             // the closer the robot is to the target angle, the slower it rotates
             //power = Range.clip(Math.abs(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - targetAngle) / 90, 0.1, 0.5);
             opmode.telemetry.addData("real power", power*(error*Kp));
-            power1 = Range.clip((power*(error*Kp)),-0.8,0.8); //"Range.clip(value, minium, maxium)" takes the first term and puts it in range of the min and max provided
+            power1 = Range.clip((power*(error*Kp)),-power,power); //"Range.clip(value, minium, maxium)" takes the first term and puts it in range of the min and max provided
             if (Math.abs(power1) < minPower) {
                 power1 = minPower * (power1/Math.abs(power1));
             }

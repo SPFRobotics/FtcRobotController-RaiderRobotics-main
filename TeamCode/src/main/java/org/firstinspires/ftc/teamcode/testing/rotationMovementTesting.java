@@ -21,9 +21,9 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.WHEEL_RADIUS;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TICKS_PER_REV;
 
+@Disabled
 @Config
 @Autonomous
-@Disabled
 public class rotationMovementTesting extends LinearOpMode {
     /*private DcMotor backLeft;
     private DcMotor backRight;

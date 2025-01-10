@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.testing.PID;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Hardware.PIDcontroller;
 
+@Disabled
 @Autonomous
 public class PIDtesting extends LinearOpMode {
     private double kP = 0.0055;

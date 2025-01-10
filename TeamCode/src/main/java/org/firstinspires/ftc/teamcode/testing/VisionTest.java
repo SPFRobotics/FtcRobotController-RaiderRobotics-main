@@ -2,6 +2,7 @@
 package org.firstinspires.ftc.teamcode.testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -11,6 +12,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import org.firstinspires.ftc.teamcode.Hardware.Outdated.cameraDetectColorTest1;
 
+@Disabled
 @Autonomous(name = "Game Object Test")
 public class VisionTest extends LinearOpMode {
 
