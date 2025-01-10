@@ -15,21 +15,21 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 public class AprilTagDist {
     private LinearOpMode opmode = null;
+    AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder()
+            .setDrawAxes(true)
+            .setDrawCubeProjection(true)
+            .setDrawTagID(true)
+            .setDrawTagOutline(true)
+            .build();
+
+    VisionPortal visionPortal = new VisionPortal.Builder()
+            .addProcessor(tagProcessor)
+            .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+            .setCameraResolution(new Size(640, 480))
+            .build();
+
     public AprilTagDist(LinearOpMode lom){ opmode = lom; }
-
     public double inToCm(double inches) { return inches * 2.54; }
-        AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder()
-                .setDrawAxes(true)
-                .setDrawCubeProjection(true)
-                .setDrawTagID(true)
-                .setDrawTagOutline(true)
-                .build();
-
-        VisionPortal visionPortal = new VisionPortal.Builder()
-                .addProcessor(tagProcessor)
-                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-                .setCameraResolution(new Size(640, 480))
-                .build();
     public double getDist(){
         double dist = 0;
             if (!tagProcessor.getDetections().isEmpty()){
