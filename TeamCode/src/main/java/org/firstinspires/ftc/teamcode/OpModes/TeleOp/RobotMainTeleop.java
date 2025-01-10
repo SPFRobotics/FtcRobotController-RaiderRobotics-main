@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -19,7 +20,7 @@ import java.text.DecimalFormat;
 @TeleOp(name="RobotMainTeleOp")
 public class RobotMainTeleop extends LinearOpMode {
     Odometry odometry = new Odometry(this);
-    // Declare OpMode members.
+    // Declare OpMode members
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor rightFrontMotor = null;
     private DcMotor leftFrontMotor = null;
@@ -38,7 +39,6 @@ public class RobotMainTeleop extends LinearOpMode {
 
 
     public void runOpMode() {
-
         //Auto uses the classes Claw, Extendo, LinearSlide, MecanumChassis
 
         //Format Telemetry (Not in use)
