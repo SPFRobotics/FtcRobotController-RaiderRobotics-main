@@ -83,7 +83,7 @@ public class RobotMainTeleop extends LinearOpMode {
 
 
         craneMotorY.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        extendoX.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //extendoX.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //craneMotorY.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //extendoX.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -196,8 +196,6 @@ public class RobotMainTeleop extends LinearOpMode {
             }
 
             //Math for Mecanum drive
-
-            //Extendo will extend to a negative position!!
 
             if (gamepad1.right_bumper && !gamepad1.left_bumper){
                 extendoX.setPower(1);
