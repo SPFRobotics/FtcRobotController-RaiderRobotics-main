@@ -52,7 +52,7 @@ public class ClawTesting extends LinearOpMode{
 
 
         //Varibles
-        double RoationServoPos = 0.5276;
+        double RotationServoPos = 0.5276;
         double WristServoPos = 0.5;
         //double ClawRotationServoPos = 0.47;
 
@@ -67,7 +67,7 @@ public class ClawTesting extends LinearOpMode{
 
             //Reset Claw to default pos
             if (gamepad1.b){
-                RoationServoPos = 0.5276;
+                RotationServoPos = 0.5276;
                 WristServoPos = 0.5;
                 ClawRotationServo.setPosition(0.47);
                 ClawServo.setPosition(0.3);
@@ -75,7 +75,7 @@ public class ClawTesting extends LinearOpMode{
 
             //Set claw to efficent position
             if (gamepad1.a){
-                RoationServoPos = 0.79;
+                RotationServoPos = 0.79;
                 WristServoPos = 0.273;
             }
 
@@ -85,8 +85,8 @@ public class ClawTesting extends LinearOpMode{
 
             //Rotate Arm
             //*************************************************************
-            RoationServoPos += gamepad1.left_stick_x*0.001;
-            RotationServo.setPosition(RoationServoPos);
+            RotationServoPos += gamepad1.left_stick_x*0.001;
+            RotationServo.setPosition(RotationServoPos);
             //*************************************************************
 
             //Move Wrist

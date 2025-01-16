@@ -33,6 +33,26 @@ public class Canada {
         ClawServo = cs;
 
 
+    }
+
+    // - rrs is resetRotationServo, rws is restWristServo, rclrose is resetClawRotationServo, rclse is resetClawServo
+    public void resetClaw(Servo rrs, Servo rws, double rclrose, double rclse){
+        RotationServo = rrs;
+        WristServo = rws;
+        ClawRotationServo.setPosition(rclrose);
+        ClawServo.setPosition(rclse);
+
+
+
+
+
+    }
+
+    // - srs is setRotationServo, sws is setWristServo
+    public void setClaw(Servo srs, Servo sws){
+        RotationServo = srs;
+        WristServo = sws;
+    }
 
 
 
