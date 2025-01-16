@@ -13,17 +13,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
-@Disabled
 
 @TeleOp(name = "ClawTesting")
 public class ClawTesting extends LinearOpMode{
 
-    //List<Boolean> toggleMode = new ArrayList<>();
-    //List<Boolean> stillPressed = new ArrayList<>();
-    
+    //Boolean
     /*public void buttonToggle(boolean button, boolean toggleMode, boolean stillPressed){
         if (!button){
             stillPressed = false;
@@ -70,6 +64,7 @@ public class ClawTesting extends LinearOpMode{
 
         waitForStart();
         while (opModeIsActive()){
+
             //Reset Claw to default pos
             if (gamepad1.b){
                 RoationServoPos = 0.5276;
