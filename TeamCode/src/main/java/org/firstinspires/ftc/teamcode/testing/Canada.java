@@ -1,20 +1,7 @@
 package org.firstinspires.ftc.teamcode.testing;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class Canada {
     private Servo RotationServo = null;
@@ -32,6 +19,9 @@ public class Canada {
         ClawRotationServo = crs;
         ClawServo = cs;
 
+        ClawServo.setPosition(.5);
+        ClawRotationServo.setPosition(0);
+
 
 
 
@@ -40,5 +30,29 @@ public class Canada {
 
 //-------------------------------------------------------------------------------------------------------
 
+    public void closClaw(double closePos){
+
+        closePos = 0;
+        ClawServo.setPosition(closePos);
+
+    }
+
+
+    public void openClaw(double openPos){
+
+        openPos = .6;
+        ClawServo.setPosition(openPos);
+
+    }
+
+    public void rotateClaw(double rotatePos){
+
+        rotatePos = 0.5276;
+        ClawRotationServo.setPosition(rotatePos);
+    }
+
 
 }
+
+
+
