@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.teamcode.Hardware.Button;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
@@ -16,23 +17,6 @@ import java.lang.reflect.Method;
 
 @TeleOp(name = "ClawTesting")
 public class ClawTesting extends LinearOpMode{
-
-    //Boolean
-    /*public void buttonToggle(boolean button, boolean toggleMode, boolean stillPressed){
-        if (!button){
-            stillPressed = false;
-        }
-        if (button && !stillPressed && !toggleMode){
-            toggleMode = true;
-            stillPressed = true;
-        }
-        method = toggleMode;
-        if (button && !stillPressed && toggleMode){
-            stillPressed = true;
-            toggleMode = false;
-        }
-    }*/
-
     //A method that makes toggling a mode easier to accomplish without making 50 new variables and 100 if statements just to toggle something on and off
     //Accepts a boolean value and uses that expression to set a mode on or off
     private Servo RotationServo = null;
@@ -41,6 +25,9 @@ public class ClawTesting extends LinearOpMode{
     private Servo ClawServo = null;
     private DcMotor extendo = null;
     private DcMotor MotorY = null;
+    Button lTrigger = new Button();
+    Button lBumper = new Button();
+
 
     public void runOpMode() {
         RotationServo = hardwareMap.get(Servo.class, "Servo0");
@@ -55,12 +42,6 @@ public class ClawTesting extends LinearOpMode{
         double RotationServoPos = 0.5276;
         double WristServoPos = 0.5;
         //double ClawRotationServoPos = 0.47;
-
-        //Boolean Expressions
-        boolean toggleMode = false;
-        boolean stillPressed = false;
-        boolean toggleMode1 = false;
-        boolean stillPressed1 = false;
 
         waitForStart();
         while (opModeIsActive()){
@@ -97,44 +78,23 @@ public class ClawTesting extends LinearOpMode{
 
             //Claw Open Close Logic
             //*************************************************************
-            if (gamepad1.left_trigger != 1){
-                stillPressed = false;
-            }
-            if (gamepad1.left_trigger == 1 && !stillPressed && !toggleMode){
-                toggleMode = true;
-                stillPressed = true;
-            }
-            if (toggleMode){
+            if (lTrigger.press((int)gamepad1.left_trigger)){
                 ClawServo.setPosition(0.6);
             }
             else{
                 ClawServo.setPosition(0.3);
             }
-            if (gamepad1.left_trigger == 1 && !stillPressed && toggleMode){
-                stillPressed = true;
-                toggleMode = false;
-            }
             //****************************************************************
 
             //Rotate Claw Logic
-            //*************************************8
-            if (!gamepad1.left_bumper){
-                stillPressed1 = false;
-            }
-            if (gamepad1.left_bumper && !stillPressed1 && !toggleMode1){
-                toggleMode1 = true;
-                stillPressed1 = true;
-            }
-            if (toggleMode1){
+            //*************************************
+            if (lBumper.press(gamepad1.left_bumper)){
                 ClawRotationServo.setPosition(0.15);
             }
             else{
                 ClawRotationServo.setPosition(0.47);
             }
-            if (gamepad1.left_bumper && !stillPressed1 && toggleMode1){
-                stillPressed1 = true;
-                toggleMode1 = false;
-            }
+
 
             //Telemetry
             telemetry.update();
