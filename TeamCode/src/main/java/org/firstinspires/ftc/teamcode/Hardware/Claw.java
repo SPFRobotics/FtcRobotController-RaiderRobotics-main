@@ -1,9 +1,7 @@
-package org.firstinspires.ftc.teamcode.testing;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+package org.firstinspires.ftc.teamcode.Hardware;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
-public class Canada {
+public class Claw {
     private Servo RotationServo = null;
     private Servo WristServo = null;
     private Servo ClawRotationServo = null;
@@ -11,7 +9,7 @@ public class Canada {
 
 
     // - rs is RotationServo, ws is WristServo, crs is ClawRotationServo, cs is ClawServo
-    public Canada(Servo rs, Servo ws, Servo crs, Servo cs) {
+    public Claw(Servo rs, Servo ws, Servo crs, Servo cs) {
         RotationServo = rs;
         WristServo = ws;
         ClawRotationServo = crs;
