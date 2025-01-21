@@ -20,4 +20,19 @@ public class Button {
         }
         return activated;
     }
+
+    public boolean press(int button){
+        if (button == 0){
+            stillPressed = false;
+        }
+        if (button == 1 && !stillPressed && !activated){
+            activated = true;
+            stillPressed = true;
+        }
+        else if (button == 1 && !stillPressed && activated) {
+            activated = false;
+            stillPressed = true;
+        }
+        return activated;
+    }
 }
