@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.Hardware.Button;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.LinearSlide;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -19,7 +21,7 @@ import java.text.DecimalFormat;
 
 @TeleOp(name="RobotMainTeleOp")
 public class RobotMainTeleop extends LinearOpMode {
-    Odometry odometry = new Odometry(this);
+    //Odometry odometry = new Odometry(this);
     // Declare OpMode members
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor rightFrontMotor = null;
@@ -36,18 +38,20 @@ public class RobotMainTeleop extends LinearOpMode {
     private Servo topLeftClaw = null;
     private IMU imu = null;
 
+    DecimalFormat df = new DecimalFormat("#.000");
+    Button buttonA = new Button();
+    Button buttonY = new Button();
 
 
     public void runOpMode() {
         //Auto uses the classes Claw, Extendo, LinearSlide, MecanumChassis
 
         //Format Telemetry (Not in use)
-        DecimalFormat df = new DecimalFormat("#.000");
 
         //CHECK PORTS!!!!!!!!!!
         //Configured from looking IN FRONT OF THE ROBOT!!!
-        odometry.init();
-        odometry.setPose(0,0,0);
+        //odometry.init();
+        //odometry.setPose(0,0,0);
         //Motors
         rightFrontMotor = hardwareMap.get(DcMotor.class, "frontRight");
         leftFrontMotor = hardwareMap.get(DcMotor.class, "frontLeft");
@@ -104,7 +108,6 @@ public class RobotMainTeleop extends LinearOpMode {
 
 
         //Crane position
-        craneMotorY.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double craneMotorYPos = 0;
 
         //Extendo Position
@@ -143,11 +146,13 @@ public class RobotMainTeleop extends LinearOpMode {
         }*/
         waitForStart();
         while (opModeIsActive()) {
-            odometry.updateOdom();
+            //odometry.updateOdom();
             //Variables for wheels
             double y = gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x * -1.1;
             double rx = gamepad1.right_stick_x;
+
+            //Math for Mecanum drive
 
             //Robot Speed Control Using the right_trigger
             if (gamepad1.right_trigger != 0) {
@@ -194,8 +199,6 @@ public class RobotMainTeleop extends LinearOpMode {
                 rightBackMotor.setPower((y + x - rx) / denominator);
                 leftBackMotor.setPower((y - x + rx) / denominator);
             }
-
-            //Math for Mecanum drive
 
             if (gamepad1.right_bumper && !gamepad1.left_bumper){
                 extendoX.setPower(1);
@@ -285,7 +288,7 @@ public class RobotMainTeleop extends LinearOpMode {
 
             //POTENTIAL NEW CODE that makes closing and opening the claw for both the top and bottom claws 1 button
             //Intake
-            if (gamepad2.y){
+            if (buttonY.press(gamepad2.y)){
                 rightClawServo.setPosition(0.1);
                 leftClawServo.setPosition(0.1);
             }
@@ -294,10 +297,9 @@ public class RobotMainTeleop extends LinearOpMode {
                 leftClawServo.setPosition(0.18);
             }
             //Outtake
-            if (gamepad2.a){
-                topRightClaw.setPosition(0.15);
-                topLeftClaw.setPosition(0.15);
-
+            if (buttonA.press(gamepad2.a)){
+                topRightClaw.setPosition(0.1);
+                topLeftClaw.setPosition(0.1);
             }
             else{
                 topRightClaw.setPosition(0);
@@ -336,11 +338,11 @@ public class RobotMainTeleop extends LinearOpMode {
 
             //Reading on odometry
             telemetry.addLine("\n\nOdometry Info: ");
-            telemetry.addLine("X (CM): " + odometry.getX());
-            telemetry.addLine("X (Ticks): " + odometry.getX()*1600/(Math.PI*3.2));
-            telemetry.addLine("Y (CM): " + odometry.getY());
-            telemetry.addLine("Y (Ticks): " + odometry.getY()*1600/(Math.PI*3.2));
-            telemetry.addLine("Heading: " + odometry.getHeading());
+            //telemetry.addLine("X (CM): " + odometry.getX());
+            //telemetry.addLine("X (Ticks): " + odometry.getX()*1600/(Math.PI*3.2));
+            //telemetry.addLine("Y (CM): " + odometry.getY());
+            //telemetry.addLine("Y (Ticks): " + odometry.getY()*1600/(Math.PI*3.2));
+            //telemetry.addLine("Heading: " + odometry.getHeading());
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
             telemetry.addLine("==========================================");
