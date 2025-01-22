@@ -40,7 +40,7 @@ public class ClawTesting extends LinearOpMode{
 
         //Varibles
         double RotationServoPos = 0.5276;
-        double WristServoPos = 0.5;
+        double WristServoPos = 1;
         //double ClawRotationServoPos = 0.47;
 
         waitForStart();
@@ -66,13 +66,29 @@ public class ClawTesting extends LinearOpMode{
 
             //Rotate Arm
             //*************************************************************
-            RotationServoPos += gamepad1.left_stick_x*0.001;
+            if (RotationServoPos >= 0 && RotationServoPos <= 1){
+                RotationServoPos += gamepad1.left_stick_x*0.001;
+            }
+            else if (RotationServoPos > 1){
+                RotationServoPos = 1;
+            }
+            else if (WristServoPos < 0){
+                RotationServoPos = 0;
+            }
             RotationServo.setPosition(RotationServoPos);
             //*************************************************************
 
             //Move Wrist
             //*************************************************************
-            WristServoPos += gamepad1.right_stick_y*0.001;
+            if (WristServoPos >= 0 && WristServoPos <= 1) {
+                WristServoPos += gamepad1.right_stick_y * 0.001;
+            }
+            else if (WristServoPos > 1){
+                WristServoPos = 1;
+            }
+            else if (WristServoPos < 0){
+                WristServoPos = 0;
+            }
             WristServo.setPosition(WristServoPos);
             //*************************************************************
 
@@ -101,8 +117,8 @@ public class ClawTesting extends LinearOpMode{
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
             telemetry.addLine("==========================================");
-            telemetry.addLine("Rotation Servo Pos: " + RotationServo.getPosition());
-            telemetry.addLine("Wrist Servo Pos: " + WristServo.getPosition());
+            telemetry.addLine("Rotation Servo Pos: " + RotationServoPos);
+            telemetry.addLine("Wrist Servo Pos: " + WristServoPos);
             telemetry.addLine("Claw Rotation Servo Pos: " + ClawRotationServo.getPosition());
             telemetry.addLine("Claw Servo Pos: " + ClawServo.getPosition());
             telemetry.addLine("==========================================");
