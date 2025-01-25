@@ -7,10 +7,10 @@ public class Claw {
     private LinearOpMode opmode = null;
     private Servo leftArm = null;
     private Servo rightArm = null;
-    private final double LEFT_ARM_OPEN_POS = 0.15;
-    private final double RIGHT_ARM_OPEN_POS = 0.15;
-    private final double LEFT_ARM_CLOSED_POS = 0.0;
-    private final double RIGHT_ARM_CLOSED_POS = 0.0;
+    private final double LEFT_ARM_OPEN_POS = 0;
+    private final double RIGHT_ARM_OPEN_POS = 0;
+    private final double LEFT_ARM_CLOSED_POS = 0.08;
+    private final double RIGHT_ARM_CLOSED_POS = 0.09;
     public Claw(LinearOpMode lom){
         opmode = lom;
     }
@@ -18,8 +18,8 @@ public class Claw {
         leftArm = opmode.hardwareMap.servo.get("outtakeLeftClaw");
         rightArm = opmode.hardwareMap.servo.get("outtakeRightClaw");
         leftArm.setDirection(Servo.Direction.REVERSE);
-        leftArm.setPosition(0.0);
-        rightArm.setPosition(0.0);
+        leftArm.setPosition(LEFT_ARM_CLOSED_POS);
+        rightArm.setPosition(RIGHT_ARM_CLOSED_POS);
     }
     public void close(){
         leftArm.setPosition(LEFT_ARM_CLOSED_POS);

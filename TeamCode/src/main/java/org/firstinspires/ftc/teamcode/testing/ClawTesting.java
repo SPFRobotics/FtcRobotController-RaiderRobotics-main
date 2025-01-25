@@ -22,15 +22,11 @@ public class ClawTesting extends LinearOpMode{
         if (!button){
             stillPressed = false;
         }
-        if (button && !stillPressed && !toggleMode){
-            toggleMode = true;
+        if (button && !stillPressed){
             stillPressed = true;
+            toggleMode = !toggleMode;
         }
-        method = toggleMode;
-        if (button && !stillPressed && toggleMode){
-            stillPressed = true;
-            toggleMode = false;
-        }
+
     }*/
 
     //A method that makes toggling a mode easier to accomplish without making 50 new variables and 100 if statements just to toggle something on and off
