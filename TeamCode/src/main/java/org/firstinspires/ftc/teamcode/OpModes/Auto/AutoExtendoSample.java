@@ -2,14 +2,16 @@ package org.firstinspires.ftc.teamcode.OpModes.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
+
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Hardware.Robot.Claw;
+import org.firstinspires.ftc.teamcode.Hardware.Robot.NewClaw;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.Extendo;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.LinearSlide;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.MecanumChassis;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.teamcode.Hardware.Robot.VirtualForebar;
+
 
 @Autonomous(name = "Auto Extendo Sample", group = "Sample")
 public class AutoExtendoSample extends LinearOpMode {
@@ -17,7 +19,7 @@ public class AutoExtendoSample extends LinearOpMode {
     MecanumChassis chassis = new MecanumChassis(this);
     LinearSlide slide = new LinearSlide(this);
     Extendo extendo = new Extendo(this);
-    Claw claw = new Claw(this);
+    NewClaw claw = new NewClaw(this);
     private Servo leftArm = null;
     private Servo rightArm = null;
     private final double LEFT_ARM_OPEN_POS = 0;
@@ -32,6 +34,10 @@ public class AutoExtendoSample extends LinearOpMode {
         leftArm.setDirection(Servo.Direction.REVERSE);
         leftArm.setPosition(0.05);
         rightArm.setPosition(0.05);
+    }
+
+    public void drop(){
+
     }
 
     public void close() {
@@ -58,14 +64,15 @@ public class AutoExtendoSample extends LinearOpMode {
         waitForStart();
 
         // Move chassis forward
-        chassis.move(.5, "forward", 81.28);
-        chassis.move(.5,"left",30);
+        chassis.move(.5,"left",30); // should move towards submersible
+        chassis.move(.5, "forward", 69.01);
 
         // Move Extendo forward
         extendo.slide(19, 1);
 
         // Get the distance sensor
         DistanceSensor DS = hardwareMap.get(DistanceSensor.class, "distanceSensor");  // Initialize the distance sensor
+
 
         // Check if the distance is less than 10 cm
         if (DS.getDistance(DistanceUnit.CM) < 10) {

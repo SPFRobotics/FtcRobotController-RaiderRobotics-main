@@ -14,7 +14,7 @@ public class Odometry {
     private LinearOpMode opMode = null;
     private final double TRACKWIDTH_CM = 31.115;
     private final double CM_PER_TICK = (3.2 * Math.PI)/2000;
-    // 2000 PPR encoder; 32 mm diameter = 3.2 cm
+    //2000 PPR encoder; 32 mm diameter = 3.2 cm;
     private final double OFFSET_CM = 11;
 
     double[] pose = new double[3];
