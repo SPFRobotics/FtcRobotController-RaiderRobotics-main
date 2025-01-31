@@ -112,7 +112,7 @@ public class NewRobotTeleOp extends LinearOpMode {
                 RotationServoPos = 0.79;
                 WristServoPos = 0.273;
             }
-
+// ara likes to touch little matt gregovs
             //Extend Extendo
             extendo.setPower(gamepad2.left_stick_y);
             MotorY.setPower(gamepad2.right_stick_y);
