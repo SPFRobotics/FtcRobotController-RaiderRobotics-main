@@ -142,26 +142,11 @@ public class NewRobotTeleOp extends LinearOpMode {
             //*************************************************************
             //Rotate Claw Logic
             //*************************************
-            if (LBumper.press(gamepad1.left_bumper)) {
+            if (
+                    LBumper.press(gamepad1.left_bumper)) {
                 ClawRotationServo.setPosition(0.15);
             } else {
                 ClawRotationServo.setPosition(0.47);
-            }
-            //-------------------------------------------------------------------------------------------------
-            //***********************************************************
-            // Slide Logic
-            //*************************************
-
-            if(gamepad2.dpad_up){
-                MotorY.setPower(1);
-            }
-
-            else if (!gamepad2.dpad_up){
-                MotorY.setPower(0);
-
-            }
-
-            while(gamepad2.dpad_up){
             }
 
 
