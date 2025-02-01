@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot.LinearSlide;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.MecanumChassis;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-import org.firstinspires.ftc.teamcode.Hardware.Robot.VirtualForebar;
+//import org.firstinspires.ftc.teamcode.Hardware.Robot.VirtualForebar;
 
 
 @Autonomous(name = "Auto Extendo Sample", group = "Sample")
@@ -57,7 +57,7 @@ public class AutoExtendoSample extends LinearOpMode {
         chassis.initializeMovement();
         slide.initSlides();
         extendo.initSlides();
-        claw.init();
+        //claw.init();
         initialize();  // Initialize the servo positions
 
         // Wait for the start button
