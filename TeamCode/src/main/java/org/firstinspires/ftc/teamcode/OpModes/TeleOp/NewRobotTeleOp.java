@@ -1,3 +1,4 @@
+
 package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -149,12 +150,52 @@ public class NewRobotTeleOp extends LinearOpMode {
                 ClawRotationServo.setPosition(0.47);
             }
 
+            if(gamepad2.dpad_up){
+                MotorY.setPower(1);
+            }
+            while(gamepad2.dpad_up){
+
+            }
+            telemetry.update();
+            //telemetry.addLine("Telemetry Provided By Mr.Spaceman ;)");
+            telemetry.addLine("==========================================");
+            telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
+            telemetry.addLine("==========================================");
+            telemetry.addLine("MOTOR PWR:");
+            telemetry.addLine("FR Motor PWR: " + RightFrontMotor.getPower());
+            telemetry.addLine("FL Motor PWR: " + LeftFrontMotor.getPower());
+            telemetry.addLine("BR Motor PWR: " + RightBackMotor.getPower());
+            telemetry.addLine("BL Motor PWR: " + LeftBackMotor.getPower());
+            telemetry.addLine("Vertical Slide: " + craneMotorY.getPower());
+            telemetry.addLine("Wrist Pos: " + WristServo.getPosition());
+            telemetry.addLine("Extendo: " + extendo.getPower() + "\n");
+            telemetry.addLine("Vertical Slide Pos: " + craneMotorY);
+            //telemetry.addLine("Extendo Pos: " + extendoXPos + "\n");
+            telemetry.addLine("Pitch: " + imu.getRobotYawPitchRollAngles().getPitch(AngleUnit.DEGREES));
+            telemetry.addLine("Roll: " + imu.getRobotYawPitchRollAngles().getRoll(AngleUnit.DEGREES));
+            telemetry.addLine("Yaw: " + imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+
+            //Reading on odometry
+            telemetry.addLine("\n\nOdometry Info: ");
+            //telemetry.addLine("X (CM): " + odometry.getX());
+            //telemetry.addLine("X (Ticks): " + odometry.getX()*1600/(Math.PI*3.2));
+            //telemetry.addLine("Y (CM): " + odometry.getY());
+            //telemetry.addLine("Y (Ticks): " + odometry.getY()*1600/(Math.PI*3.2));
+            //telemetry.addLine("Heading: " + odometry.getHeading());
+            telemetry.addLine("==========================================");
+            telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
+            telemetry.addLine("==========================================");
 
         }
-
-        }
-
 
     }
+
+
+}
+
+
+
+
+
 
 
