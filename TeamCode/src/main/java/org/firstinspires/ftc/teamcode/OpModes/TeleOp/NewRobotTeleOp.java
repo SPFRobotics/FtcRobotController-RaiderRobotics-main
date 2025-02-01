@@ -36,6 +36,7 @@ public class NewRobotTeleOp extends LinearOpMode {
     private DcMotor MotorY = null;
     private IMU imu = null;
     private DcMotor craneMotorY = null;
+    private int sliderotation;
     Button LTrigger= new Button();
     Button LBumper= new Button();
     DecimalFormat df = new DecimalFormat("#.000");
@@ -51,6 +52,7 @@ public class NewRobotTeleOp extends LinearOpMode {
         ClawServo = hardwareMap.get(Servo.class, "Servo3");
         extendo = hardwareMap.get(DcMotor.class, "Motor0");
         MotorY = hardwareMap.get(DcMotor.class, "Motor1");
+        sliderotation = 537;
 
 
 //Both Left Motors are Set in Reverse
@@ -150,10 +152,43 @@ public class NewRobotTeleOp extends LinearOpMode {
                 ClawRotationServo.setPosition(0.47);
             }
 
+            //***********************************************************
+            // Slide Logic
+            //*************************************
+
             if(gamepad2.dpad_up){
                 MotorY.setPower(1);
             }
-            while(gamepad2.dpad_up){
+
+            else if (!gamepad2.dpad_up){
+                MotorY.setPower(0);
+
+            }
+
+            if (gamepad2.dpad_up){
+                MotorY.setTargetPosition(sliderotation * 10);
+
+            }
+
+            else if (!gamepad2.dpad_up){
+                MotorY.setTargetPosition(0);
+            }
+
+            if(gamepad2.dpad_down){
+                MotorY.setPower(-1);
+            }
+
+            else if(gamepad2.dpad_down){
+                MotorY.setPower(0);
+            }
+
+            if (gamepad2.dpad_down){
+                MotorY.setTargetPosition(sliderotation * -1);
+
+            }
+
+            if (gamepad2.dpad_down){
+                MotorY.setTargetPosition(0);
 
             }
             telemetry.update();
