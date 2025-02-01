@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.testing;
+/*package org.firstinspires.ftc.teamcode.testing;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -20,15 +20,16 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.WHEEL_RADIUS;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TICKS_PER_REV;
-
+*/
+/*
 @Disabled
 @Config
 @Autonomous
 public class rotationMovementTesting extends LinearOpMode {
-    /*private DcMotor backLeft;
+    private DcMotor backLeft;
     private DcMotor backRight;
     private DcMotor frontLeft;
-    private DcMotor frontRight;*/
+    private DcMotor frontRight;
     private DcMotorEx backLeft;
     private DcMotorEx backRight;
     private DcMotorEx frontLeft;
@@ -148,10 +149,10 @@ public class rotationMovementTesting extends LinearOpMode {
     private void Initializtion() {
         // Declare our motors
         // Make sure your ID's match your configuration
-        /*frontLeft = hardwareMap.dcMotor.get("frontLeft");
+        frontLeft = hardwareMap.dcMotor.get("frontLeft");
         backLeft = hardwareMap.dcMotor.get("backLeft");
         frontRight = hardwareMap.dcMotor.get("frontRight");
-        backRight = hardwareMap.dcMotor.get("backRight");*/
+        backRight = hardwareMap.dcMotor.get("backRight");
 
         frontLeft = hardwareMap.get(DcMotorEx.class,"frontLeft");
         backLeft = hardwareMap.get(DcMotorEx.class,"backLeft");
@@ -181,3 +182,4 @@ public class rotationMovementTesting extends LinearOpMode {
         return rpm * 1 * 2 * Math.PI * WHEEL_RADIUS / 60.0;
     }
 }
+*/
