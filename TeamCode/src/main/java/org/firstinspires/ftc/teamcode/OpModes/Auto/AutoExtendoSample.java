@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes.Auto;
+/* package org.firstinspires.ftc.teamcode.OpModes.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot.LinearSlide;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.MecanumChassis;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-import org.firstinspires.ftc.teamcode.Hardware.Robot.VirtualForebar;
 
 
 @Autonomous(name = "Auto Extendo Sample", group = "Sample")
@@ -90,4 +89,4 @@ public class AutoExtendoSample extends LinearOpMode {
         sleep(500);
     }
 }
-
+*/
