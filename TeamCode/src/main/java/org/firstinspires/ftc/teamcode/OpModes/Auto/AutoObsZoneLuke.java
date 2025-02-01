@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes.Auto;
 
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot.Claw;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.Extendo;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.LinearSlide;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.MecanumChassis;
+
 // START WITH ROBOT ON A3 WITH RIGHT WHEELS ON COORDINATE LINE
 @Autonomous
 public class AutoObsZoneLuke extends LinearOpMode {
@@ -22,13 +24,12 @@ public class AutoObsZoneLuke extends LinearOpMode {
     public void runOpMode() throws InterruptedException
     {
         wristClawServo = hardwareMap.get(Servo .class, "intakeWrist");
-        chassis.initializeMovement();
         slide.initSlides();
         extendo.initSlides();
         claw.init();
         wristClawServo.setPosition(1);
         waitForStart();
-        sleep(1000);
+        /* PLACES 2 WITHOUT ROADRUNNER
         //telemetry.addData("X", AprilTagDistance.getDistX());
         //telemetry.addData("Y", AprilTagDistance.getDistY());
         chassis.move(.5,"left",30); // should move towards submersible
@@ -55,6 +56,7 @@ public class AutoObsZoneLuke extends LinearOpMode {
         claw.open();
         chassis.move(.5, "backward", 60);
         chassis.moveMultitask(.5, "right", 130, 0, 1);
+        */
 
     }
 }
