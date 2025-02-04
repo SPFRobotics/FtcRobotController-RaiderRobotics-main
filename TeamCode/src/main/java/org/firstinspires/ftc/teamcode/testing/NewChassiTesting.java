@@ -96,16 +96,6 @@ public class NewChassiTesting extends LinearOpMode{
             }
             //****************************************************************
 
-            //Rotate Claw Logic
-            //*************************************
-            /*if (lBumper.press(gamepad1.left_bumper)){
-                ClawRotationServo.setPosition(0.15);
-            }
-            else{
-                ClawRotationServo.setPosition(0);
-            }*/
-
-
             //Telemetry
             telemetry.update();
             telemetry.addLine("==========================================");
