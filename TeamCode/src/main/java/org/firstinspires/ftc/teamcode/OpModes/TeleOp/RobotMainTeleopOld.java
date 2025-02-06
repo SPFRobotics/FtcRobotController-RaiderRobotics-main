@@ -1,26 +1,22 @@
 package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware.Button;
-import org.firstinspires.ftc.teamcode.Hardware.Robot.LinearSlide;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.Hardware.Robot.Odometry;
 
 import java.text.DecimalFormat;
 
-@TeleOp(name="RobotMainTeleOp")
-public class RobotMainTeleop extends LinearOpMode {
+@TeleOp(name="RobotMainTeleOpOld")
+public class RobotMainTeleopOld extends LinearOpMode {
     //Odometry odometry = new Odometry(this);
     // Declare OpMode members
     private ElapsedTime runtime = new ElapsedTime();
@@ -113,12 +109,6 @@ public class RobotMainTeleop extends LinearOpMode {
         //Extendo Position
         //double extendoXPos = 0;
 
-        //Boolean conditions
-        boolean isStillPressed1 = false;
-        boolean fieldOri = false;
-        boolean isStillPressed2 = false;
-        boolean automatedPlacement = false;
-
         telemetry.setAutoClear(true);
 
         //IMU
@@ -166,39 +156,11 @@ public class RobotMainTeleop extends LinearOpMode {
             double fowardDef = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
             //Change between Robot Oriented and Field Oriented Drive using 1 button
-            if (gamepad1.touchpad && !isStillPressed1 && !fieldOri) {
-                gamepad1.rumble(500);
-                fieldOri = true;
-                isStillPressed1 = true;
-            }
-
-            if (gamepad1.touchpad && !isStillPressed1 && fieldOri){
-                gamepad1.rumble(500);
-                fieldOri = false;
-                isStillPressed1 = true;
-            }
-
-            if (!gamepad1.touchpad && isStillPressed1){
-                isStillPressed1 = false;
-            }
-
-            if (fieldOri){
-                rotX = x * Math.cos(-fowardDef) - y * Math.sin(-fowardDef);
-                rotY = x * Math.sin(-fowardDef) + y * Math.cos(-fowardDef);
-
-                double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-                rightFrontMotor.setPower((rotY - rotX - rx) / denominator);
-                leftFrontMotor.setPower((rotY + rotX + rx) / denominator);
-                rightBackMotor.setPower((rotY + rotX - rx) / denominator);
-                leftBackMotor.setPower((rotY - rotX + rx) / denominator);
-            }
-            else{
-                double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-                rightFrontMotor.setPower((y - x - rx) / denominator);
-                leftFrontMotor.setPower((y + x + rx) / denominator);
-                rightBackMotor.setPower((y + x - rx) / denominator);
-                leftBackMotor.setPower((y - x + rx) / denominator);
-            }
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            rightFrontMotor.setPower((y - x - rx) / denominator);
+            leftFrontMotor.setPower((y + x + rx) / denominator);
+            rightBackMotor.setPower((y + x - rx) / denominator);
+            leftBackMotor.setPower((y - x + rx) / denominator);
 
             if (gamepad1.right_bumper && !gamepad1.left_bumper){
                 extendoX.setPower(1);
@@ -306,7 +268,6 @@ public class RobotMainTeleop extends LinearOpMode {
                 topLeftClaw.setPosition(0);
             }
 
-
             //TELEMETRY
             //ALL NAMES CONFIGURED LOOKING AT THE FRONT OF THE ROBOT
             telemetry.update();
@@ -327,14 +288,6 @@ public class RobotMainTeleop extends LinearOpMode {
             telemetry.addLine("Pitch: " + imu.getRobotYawPitchRollAngles().getPitch(AngleUnit.DEGREES));
             telemetry.addLine("Roll: " + imu.getRobotYawPitchRollAngles().getRoll(AngleUnit.DEGREES));
             telemetry.addLine("Yaw: " + imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-
-            //Driver Mode Logic
-            if (fieldOri) {
-                telemetry.addLine("Driver Mode: Field Oriented");
-            }
-            else{
-                telemetry.addLine("Driver Mode: Robot Oriented");
-            }
 
             //Reading on odometry
             telemetry.addLine("\n\nOdometry Info: ");
