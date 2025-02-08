@@ -47,7 +47,7 @@ public class NewRobotTeleOp extends LinearOpMode {
         RightBackMotor = hardwareMap.get(DcMotor.class, "backRight");
         LeftBackMotor = hardwareMap.get(DcMotor.class, "backLeft");
         RotationServo = hardwareMap.get(Servo.class, "Servo0");
-        WristServo = hardwareMap.get(Servo.class, "Servo1");
+        WristServo = hardwareMap.get(Servo.class, "Servo3");
         ClawRotationServo = hardwareMap.get(Servo.class, "Servo2");
         ClawServo = hardwareMap.get(Servo.class, "Servo3");
         extendo = hardwareMap.get(DcMotor.class, "Motor0");
@@ -115,7 +115,7 @@ public class NewRobotTeleOp extends LinearOpMode {
                 RotationServoPos = 0.79;
                 WristServoPos = 0.273;
             }
-// ara likes to touch little matt gregovs
+
             //Extend Extendo
             extendo.setPower(gamepad2.left_stick_y);
             MotorY.setPower(gamepad2.right_stick_y);
