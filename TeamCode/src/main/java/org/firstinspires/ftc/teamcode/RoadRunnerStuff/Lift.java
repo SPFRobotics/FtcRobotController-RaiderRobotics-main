@@ -15,7 +15,7 @@ public class Lift {
     private DcMotor lift;
 
     public Lift(HardwareMap hardwareMap) {
-        lift = hardwareMap.get(DcMotor.class, "liftMotor");
+        lift = hardwareMap.get(DcMotor.class, "lift");
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift.setDirection(DcMotorSimple.Direction.REVERSE);
     }
@@ -91,11 +91,10 @@ public class Lift {
         }
     }
 
-    public Action moveLift(double height){
-        if(Unit.inchToLift_convert(height)>lift.getCurrentPosition()){
-            return new LiftUp(height);
-        }
+    public Action moveDown(double height){
         return new LiftDown(height);
-
+    }
+    public Action moveUp(double height){
+        return new LiftUp(height);
     }
 }

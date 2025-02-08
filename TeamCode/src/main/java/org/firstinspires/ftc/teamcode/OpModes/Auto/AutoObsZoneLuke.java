@@ -25,6 +25,8 @@ import org.firstinspires.ftc.teamcode.RoadRunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.RoadRunnerStuff.TankDrive;
 import org.firstinspires.ftc.teamcode.RoadRunnerStuff.tuning.TuningOpModes;
 
+import java.util.Vector;
+
 // START WITH ROBOT ON A3 WITH RIGHT WHEELS ON COORDINATE LINE
 @Autonomous
 public class AutoObsZoneLuke extends LinearOpMode {
@@ -44,29 +46,41 @@ public class AutoObsZoneLuke extends LinearOpMode {
         extendo.initSlides();
         wristClawServo.setPosition(1);
         waitForStart();
-        Action moveToRungs = drive.actionBuilder(beginPose)
-                .strafeTo(new Vector2d(69.01/2.54, 30/2.54))
-                .build();
-        Action moveToCorner = drive.actionBuilder(beginPose)
-                .strafeTo(new Vector2d(0, -36))
-                .build();
-        Action moveLiftTop = lift.moveLift(22);
-        Action moveLiftPlace = lift.moveLift(18.5);
-        Action moveLiftBottom = lift.moveLift(0);
+        TrajectoryActionBuilder moveToRungs = drive.actionBuilder(beginPose)
+                .strafeTo(new Vector2d(29.669, 11.81));
+
+        TrajectoryActionBuilder pushSamplesBack = moveToRungs.endTrajectory().fresh()
+                .lineToX(25)
+                .strafeTo(new Vector2d(24, -18))
+                .strafeTo(new Vector2d(36,-22))
+                .lineToY(-27)
+                .strafeTo(new Vector2d(5, -28));
+        TrajectoryActionBuilder pushMoreSamplesBack = pushSamplesBack.endTrajectory().fresh()
+                .strafeTo(new Vector2d(42,-27))
+                .strafeTo(new Vector2d(48,-36))
+                .strafeTo(new Vector2d(5, -40));
+        Action moveToRungsAction = moveToRungs.build();
+        Action pushSamplesBackAction = pushSamplesBack.build();
+        Action pushMoreSamplesBackAction  = pushMoreSamplesBack.build();
+        Action moveLiftTop = lift.moveUp(25);
+        Action moveLiftPlace = lift.moveDown(20);
+        Action moveLiftBottom = lift.moveDown(0);
         Action openClaw = clawRef.openClaw();
         Action closeClaw = clawRef.closeClaw();
         Actions.runBlocking(
                 new SequentialAction(
                         new ParallelAction(
-                                moveToRungs,
+                                moveToRungsAction,
                                 moveLiftTop
                         ),
                         moveLiftPlace,
                         openClaw,
+
                         new ParallelAction(
-                                moveToCorner,
-                                moveLiftBottom
-                        )
+                                moveLiftBottom,
+                                pushSamplesBackAction
+                        ),
+                        pushMoreSamplesBackAction
                 )
         );
         /* PLACES 2 WITHOUT ROADRUNNER
