@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import java.text.DecimalFormat;
 
 
-@TeleOp(name="RobotMainTeleOp")
+@TeleOp(name="PossibleRobotMainTeleOp")
 public class PossibleRobotMainTeleOp extends LinearOpMode {
 
     private DcMotor RightFrontMotor = null;
