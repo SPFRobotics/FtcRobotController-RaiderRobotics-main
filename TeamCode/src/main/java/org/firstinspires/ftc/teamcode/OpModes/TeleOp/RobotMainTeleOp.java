@@ -1,6 +1,6 @@
 //This is a class written for testing purposes only to control a new claw system
 //This is not to be used for the actual competition
-package org.firstinspires.ftc.teamcode.testing;
+package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,103 +8,158 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.Hardware.Button;
 
-@TeleOp(name = "NewChassiTesting")
-public class NewChassiTesting extends LinearOpMode{
-    private Servo RotationServo = null;
-    private Servo WristServo = null;
-    private Servo ClawRotationServo = null;
-    private Servo ClawServo = null;
+@TeleOp(name = "RobotMainTeleOp")
+public class RobotMainTeleOp extends LinearOpMode{
+    private Servo FRotationServo = null;
+    private Servo FWristServo = null;
+    private Servo BWristServo = null;
+    private Servo FClawRotationServo = null;
+    private Servo FClawServo = null;
+    private Servo BRClawServo = null;
+    private Servo BLClawServo = null;
     private DcMotor extendo = null;
     private DcMotor MotorYRight = null;
     private DcMotor MotorYLeft = null;
+    private DcMotor FRMotor = null;
+    private DcMotor FLMotor = null;
+    private DcMotor BRMotor = null;
+    private DcMotor BLMotor = null;
     Button lTrigger = new Button();
+    Button rTrigger = new Button();
     Button lBumper = new Button();
 
 
     public void runOpMode() {
-        RotationServo = hardwareMap.get(Servo.class, "Servo0");
-        WristServo = hardwareMap.get(Servo.class, "Servo1");
-        ClawRotationServo = hardwareMap.get(Servo.class, "Servo2");
-        ClawServo = hardwareMap.get(Servo.class, "Servo3");
-        extendo = hardwareMap.get(DcMotor.class, "Motor0");
-        MotorYRight = hardwareMap.get(DcMotor.class, "Motor1");
-        MotorYLeft = hardwareMap.get(DcMotor.class, "Motor3");
+        //Configured looking from the FRONT of the robot
+        /*Hardware mapping is done based on the ports each hardware device is plugged into. The name of the hardware device is followed by the number port it is plugged into.
+          If there are multiple expansion hubs the first digit represents the hub the device is plugged into. Ex: Servo10 means it is plugged into port 0 on the expansion hub.
+          Ex: Motor1 means it is plugged into port 1 on the control hub.
+         */
 
-        WristServo.setDirection(Servo.Direction.REVERSE);
-        MotorYRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        //Servos
+        FRotationServo = hardwareMap.get(Servo.class, "Servo1");
+        FWristServo = hardwareMap.get(Servo.class, "Servo2");
+        FClawRotationServo = hardwareMap.get(Servo.class, "Servo3");
+        FClawServo = hardwareMap.get(Servo.class, "Servo4");
+        BRClawServo = hardwareMap.get(Servo.class, "Servo12");
+        BLClawServo = hardwareMap.get(Servo.class, "Servo11");
+        BWristServo = hardwareMap.get(Servo.class, "Servo10");
+
+        //Motors
+        extendo = hardwareMap.get(DcMotor.class, "Motor12");
+        MotorYRight = hardwareMap.get(DcMotor.class, "Motor1");
+        MotorYLeft = hardwareMap.get(DcMotor.class, "Motor11");
+        FRMotor = hardwareMap.get(DcMotor.class, "Motor0");
+        FLMotor = hardwareMap.get(DcMotor.class, "Motor10");
+        BRMotor = hardwareMap.get(DcMotor.class, "Motor3");
+        BLMotor = hardwareMap.get(DcMotor.class, "Motor13");
+
+
+
+        FWristServo.setDirection(Servo.Direction.REVERSE);
+        MotorYLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        MotorYRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        MotorYLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BLClawServo.setDirection(Servo.Direction.REVERSE);
 
 
         //Varibles
-        double RotationServoPos = 0.75;
-        double WristServoPos = 0.74;
-        //double ClawRotationServoPos = 0.47;
+        double FRotationServoPos = 0.5024;
+        double FWristServoPos = 0.5;
+
+        double FClawRotationServoPos = 0;
+        double BWristPos = 0;
+        FClawServo.setPosition(0.3);
+
 
         waitForStart();
         while (opModeIsActive()){
-
             //Reset Claw to default pos
             if (gamepad1.b){
-                RotationServoPos = 0.507;
-                WristServoPos = 0.8207;
-                ClawRotationServo.setPosition(0);
-                ClawServo.setPosition(0.3);
+                FRotationServoPos = 0.5221;
+                FWristServoPos = 0.70526;
+                FClawRotationServoPos = 0;
+                BWristPos = 0.1131;
             }
 
             //Set claw to efficent position
             if (gamepad1.a){
-                RotationServoPos = 0.79;
-                WristServoPos = 0.273;
-                ClawRotationServo.setPosition(0.65);
+                FRotationServoPos = 0.79;
+                FWristServoPos = 0.273;
+                FClawRotationServoPos = 0.65;
+                BWristPos = 0.48435;
             }
 
             //Extend Extendo
-            //extendo.setPower(gamepad2.left_stick_y);
-            //MotorYRight.setPower(gamepad2.right_stick_y);
-            //MotorYLeft.setPower(gamepad2.right_stick_y);
+            extendo.setPower(gamepad2.left_stick_y);
+            MotorYRight.setPower(gamepad2.right_stick_y);
+            MotorYLeft.setPower(gamepad2.right_stick_y);
             //Rotate Arm
             //*************************************************************
-            RotationServoPos += gamepad1.left_stick_x*0.002;
-            if (RotationServoPos < 0){
-                RotationServoPos = 0;
+            FRotationServoPos += gamepad1.left_stick_x*0.002;
+            if (FRotationServoPos < 0){
+                FRotationServoPos = 0;
             }
-            if (RotationServoPos > 1){
-                RotationServoPos = 1;
+            if (FRotationServoPos > 1){
+                FRotationServoPos = 1;
             }
-            RotationServo.setPosition(RotationServoPos);
+            FRotationServo.setPosition(FRotationServoPos);
+
+            //*************************************************************
+
+            //Back wrist logic
+            //*************************************************************
+            //BWristPos += gamepad1.right_stick_y*0.002;
+            BWristServo.setPosition(BWristPos);
             //*************************************************************
 
             //Move Wrist
             //*************************************************************
 
-            WristServoPos += -gamepad1.left_stick_y * 0.002;
-            if (WristServoPos < 0){
-                WristServoPos = 0;
+            FWristServoPos += -gamepad1.left_stick_y * 0.002;
+            if (FWristServoPos < 0){
+                FWristServoPos = 0;
             }
-            if (WristServoPos > 1){
-                WristServoPos = 1;
+            if (FWristServoPos > 1){
+                FWristServoPos = 1;
             }
-            WristServo.setPosition(WristServoPos);
+            FWristServo.setPosition(FWristServoPos);
             //*************************************************************
 
             //Claw Open Close Logic
             //*************************************************************
             if (lTrigger.press((int)gamepad1.left_trigger)){
-                ClawServo.setPosition(0.6);
+                FClawServo.setPosition(0.6);
             }
             else{
-                ClawServo.setPosition(0.3);
+                FClawServo.setPosition(0.3);
+            }
+
+            if (rTrigger.press((int)gamepad1.right_trigger)){
+                BRClawServo.setPosition(0.5);
+                BLClawServo.setPosition(0.5);
+            }
+            else{
+                BRClawServo.setPosition(0.28);
+                BLClawServo.setPosition(0.28);
             }
             //****************************************************************
+
+
+
+            FClawRotationServo.setPosition(FClawRotationServoPos);
 
             //Telemetry
             telemetry.update();
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
             telemetry.addLine("==========================================");
-            telemetry.addLine("Rotation Servo Pos: " + RotationServoPos);
-            telemetry.addLine("Wrist Servo Pos: " + WristServoPos);
-            telemetry.addLine("Claw Rotation Servo Pos: " + ClawRotationServo.getPosition());
-            telemetry.addLine("Claw Servo Pos: " + ClawServo.getPosition());
+            telemetry.addLine("Rotation Servo Pos: " + FRotationServoPos);
+            telemetry.addLine("Wrist Servo Pos: " + FWristServoPos);
+            telemetry.addLine("Back Wrist Servo Pos: " + BWristPos);
+            telemetry.addLine("Claw Rotation Servo Pos: " + FClawRotationServo.getPosition());
+            telemetry.addLine("Claw Servo Pos: " + FClawServo.getPosition());
+            telemetry.addLine("Vertical Slides: " + MotorYRight.getCurrentPosition());
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
             telemetry.addLine("==========================================");
