@@ -57,20 +57,14 @@ public class RobotMainTeleOp extends LinearOpMode{
 
 
         FWristServo.setDirection(Servo.Direction.REVERSE);
-        MotorYLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        MotorYRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        BLClawServo.setDirection(Servo.Direction.REVERSE);
+        extendo.setDirection(DcMotorSimple.Direction.REVERSE);
+        BRMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        FRMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
         MotorYRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         MotorYLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BLClawServo.setDirection(Servo.Direction.REVERSE);
-
-        //Drive Train
-        double y = -gamepad1.left_stick_y; // Remember, Y stick is reversed!
-        double x = gamepad1.left_stick_x;
-        double rx = gamepad1.right_stick_x;
-
-        FLMotor.setPower(y + x + rx);
-        BLMotor.setPower(y - x + rx);
-        FRMotor.setPower(y - x - rx);
-        BRMotor.setPower(y + x - rx);
 
 
         //Varibles
@@ -84,8 +78,19 @@ public class RobotMainTeleOp extends LinearOpMode{
 
         waitForStart();
         while (opModeIsActive()){
+            //Drive Train
+            double y = -gamepad1.left_stick_y; // Remember, Y stick is reversed!
+            double x = gamepad1.left_stick_x * -1.1;
+            double rx = gamepad1.right_stick_x;
+
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            FLMotor.setPower(y + x + rx);
+            BLMotor.setPower(y - x + rx);
+            FRMotor.setPower(y - x - rx);
+            BRMotor.setPower(y + x - rx);
+
             //Reset Claw to default pos
-            if (gamepad1.b){
+            if (gamepad2.b){
                 FRotationServoPos = 0.5221;
                 FWristServoPos = 0.70526;
                 FClawRotationServoPos = 0;
@@ -93,20 +98,37 @@ public class RobotMainTeleOp extends LinearOpMode{
             }
 
             //Set claw to efficent position
-            if (gamepad1.a){
+            if (gamepad2.a){
                 FRotationServoPos = 0.79;
                 FWristServoPos = 0.273;
                 FClawRotationServoPos = 0.65;
                 BWristPos = 0.48435;
             }
 
-            //Extend Extendo
-            extendo.setPower(gamepad2.left_stick_y);
+            //Set claw to wall position
+            if (gamepad2.y){
+                FRotationServoPos = 0.79;
+                FWristServoPos = 0.273;
+                FClawRotationServoPos = 0.65;
+                BWristPos = 0.48435;
+            }
+
+            //Extend Linear Slides
+
+            if (gamepad1.right_bumper){
+                extendo.setPower(1);
+            }
+            else if (gamepad1.left_bumper){
+                extendo.setPower(-1);
+            }
+            else {
+                extendo.setPower(0);
+            }
             MotorYRight.setPower(gamepad2.right_stick_y);
             MotorYLeft.setPower(gamepad2.right_stick_y);
             //Rotate Arm
             //*************************************************************
-            FRotationServoPos += gamepad1.left_stick_x*0.002;
+            FRotationServoPos += gamepad2.left_stick_x*0.002;
             if (FRotationServoPos < 0){
                 FRotationServoPos = 0;
             }
@@ -126,7 +148,7 @@ public class RobotMainTeleOp extends LinearOpMode{
             //Move Wrist
             //*************************************************************
 
-            FWristServoPos += -gamepad1.left_stick_y * 0.002;
+            FWristServoPos += -gamepad2.left_stick_y * 0.002;
             if (FWristServoPos < 0){
                 FWristServoPos = 0;
             }
@@ -138,14 +160,14 @@ public class RobotMainTeleOp extends LinearOpMode{
 
             //Claw Open Close Logic
             //*************************************************************
-            if (lTrigger.press((int)gamepad1.left_trigger)){
+            if (lTrigger.press((int)gamepad2.left_trigger)){
                 FClawServo.setPosition(0.6);
             }
             else{
                 FClawServo.setPosition(0.3);
             }
 
-            if (rTrigger.press((int)gamepad1.right_trigger)){
+            if (rTrigger.press((int)gamepad2.right_trigger)){
                 BRClawServo.setPosition(0.5);
                 BLClawServo.setPosition(0.5);
             }
