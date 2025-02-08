@@ -62,6 +62,16 @@ public class RobotMainTeleOp extends LinearOpMode{
         MotorYLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BLClawServo.setDirection(Servo.Direction.REVERSE);
 
+        //Drive Train
+        double y = -gamepad1.left_stick_y; // Remember, Y stick is reversed!
+        double x = gamepad1.left_stick_x;
+        double rx = gamepad1.right_stick_x;
+
+        FLMotor.setPower(y + x + rx);
+        BLMotor.setPower(y - x + rx);
+        FRMotor.setPower(y - x - rx);
+        BRMotor.setPower(y + x - rx);
+
 
         //Varibles
         double FRotationServoPos = 0.5024;
