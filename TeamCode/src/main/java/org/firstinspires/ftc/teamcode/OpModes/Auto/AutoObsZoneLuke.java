@@ -12,13 +12,15 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot.AprilTagDist;
-import org.firstinspires.ftc.teamcode.Hardware.Robot.Claw;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.Extendo;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.LinearSlide;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.MecanumChassis;
+import org.firstinspires.ftc.teamcode.RoadRunnerStuff.Claw;
+import org.firstinspires.ftc.teamcode.RoadRunnerStuff.Lift;
 import org.firstinspires.ftc.teamcode.RoadRunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.RoadRunnerStuff.TankDrive;
 import org.firstinspires.ftc.teamcode.RoadRunnerStuff.tuning.TuningOpModes;
@@ -27,10 +29,7 @@ import org.firstinspires.ftc.teamcode.RoadRunnerStuff.tuning.TuningOpModes;
 @Autonomous
 public class AutoObsZoneLuke extends LinearOpMode {
 
-    MecanumChassis chassis = new MecanumChassis(this);
-    LinearSlide slide = new LinearSlide(this);
     Extendo extendo = new Extendo(this);
-    Claw claw = new Claw(this);
     Servo wristClawServo = null;
     // AprilTagDist AprilTagDistance = new AprilTagDist(this);
     @Override
@@ -38,24 +37,36 @@ public class AutoObsZoneLuke extends LinearOpMode {
     {
         Pose2d beginPose = new Pose2d(0, 0, 0);
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
+        Lift lift = new Lift(hardwareMap);
+        Claw clawRef = new Claw(hardwareMap);
 
         wristClawServo = hardwareMap.get(Servo .class, "intakeWrist");
-        slide.initSlides();
         extendo.initSlides();
-        claw.init();
         wristClawServo.setPosition(1);
         waitForStart();
-        Action traj1 = drive.actionBuilder(beginPose)
-                .lineToX(69.01/2.54)
-                .lineToX(30/2.54)
+        Action moveToRungs = drive.actionBuilder(beginPose)
+                .strafeTo(new Vector2d(69.01/2.54, 30/2.54))
                 .build();
-        Action traj2 = drive.actionBuilder(beginPose)
-                .strafeTo(new Vector2d(69.01/2.54,30/2.54))
-                .strafeTo(new Vector2d(0,-48))
+        Action moveToCorner = drive.actionBuilder(beginPose)
+                .strafeTo(new Vector2d(0, -36))
                 .build();
+        Action moveLiftTop = lift.moveLift(22);
+        Action moveLiftPlace = lift.moveLift(18.5);
+        Action moveLiftBottom = lift.moveLift(0);
+        Action openClaw = clawRef.openClaw();
+        Action closeClaw = clawRef.closeClaw();
         Actions.runBlocking(
                 new SequentialAction(
-                        traj2
+                        new ParallelAction(
+                                moveToRungs,
+                                moveLiftTop
+                        ),
+                        moveLiftPlace,
+                        openClaw,
+                        new ParallelAction(
+                                moveToCorner,
+                                moveLiftBottom
+                        )
                 )
         );
         /* PLACES 2 WITHOUT ROADRUNNER
