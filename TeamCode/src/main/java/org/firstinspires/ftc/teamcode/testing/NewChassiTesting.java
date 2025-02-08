@@ -25,6 +25,7 @@ public class NewChassiTesting extends LinearOpMode{
     private DcMotor BRMotor = null;
     private DcMotor BLMotor = null;
     Button lTrigger = new Button();
+    Button rTrigger = new Button();
     Button lBumper = new Button();
 
 
@@ -57,13 +58,17 @@ public class NewChassiTesting extends LinearOpMode{
 
         FWristServo.setDirection(Servo.Direction.REVERSE);
         MotorYLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        MotorYRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        MotorYLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BLClawServo.setDirection(Servo.Direction.REVERSE);
 
 
         //Varibles
         double FRotationServoPos = 0.5024;
-        double FWristServoPos = 0.7243;
+        double FWristServoPos = 0.5;
+
         double FClawRotationServoPos = 0;
-        double bWristPos = 0;
+        double BWristPos = 0;
         FClawServo.setPosition(0.3);
 
 
@@ -71,9 +76,10 @@ public class NewChassiTesting extends LinearOpMode{
         while (opModeIsActive()){
             //Reset Claw to default pos
             if (gamepad1.b){
-                FRotationServoPos = 0.5024;
-                FWristServoPos = 0.7243;
+                FRotationServoPos = 0.5221;
+                FWristServoPos = 0.70526;
                 FClawRotationServoPos = 0;
+                BWristPos = 0.1531;
             }
 
             //Set claw to efficent position
@@ -81,6 +87,7 @@ public class NewChassiTesting extends LinearOpMode{
                 FRotationServoPos = 0.79;
                 FWristServoPos = 0.273;
                 FClawRotationServoPos = 0.65;
+                BWristPos = 0.48435;
             }
 
             //Extend Extendo
@@ -102,8 +109,8 @@ public class NewChassiTesting extends LinearOpMode{
 
             //Back wrist logic
             //*************************************************************
-            bWristPos += gamepad1.right_stick_y*0.002;
-            BWristServo.setPosition(bWristPos);
+            //BWristPos += gamepad1.right_stick_y*0.002;
+            BWristServo.setPosition(BWristPos);
             //*************************************************************
 
             //Move Wrist
@@ -127,6 +134,15 @@ public class NewChassiTesting extends LinearOpMode{
             else{
                 FClawServo.setPosition(0.3);
             }
+
+            if (rTrigger.press((int)gamepad1.right_trigger)){
+                BRClawServo.setPosition(0.5);
+                BLClawServo.setPosition(0.5);
+            }
+            else{
+                BRClawServo.setPosition(0.28);
+                BLClawServo.setPosition(0.28);
+            }
             //****************************************************************
 
 
@@ -140,8 +156,10 @@ public class NewChassiTesting extends LinearOpMode{
             telemetry.addLine("==========================================");
             telemetry.addLine("Rotation Servo Pos: " + FRotationServoPos);
             telemetry.addLine("Wrist Servo Pos: " + FWristServoPos);
+            telemetry.addLine("Back Wrist Servo Pos: " + BWristPos);
             telemetry.addLine("Claw Rotation Servo Pos: " + FClawRotationServo.getPosition());
             telemetry.addLine("Claw Servo Pos: " + FClawServo.getPosition());
+            telemetry.addLine("Vertical Slides: " + MotorYRight.getCurrentPosition());
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
             telemetry.addLine("==========================================");
