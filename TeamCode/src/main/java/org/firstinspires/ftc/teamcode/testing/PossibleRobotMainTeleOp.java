@@ -1,28 +1,23 @@
 
-package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
+package org.firstinspires.ftc.teamcode.testing;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.ServoController;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware.Button;
-import org.firstinspires.ftc.teamcode.Hardware.Robot.LinearSlide;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.Hardware.Robot.Odometry;
 
 import java.text.DecimalFormat;
 
 
-@TeleOp(name="NewRobotTeleOp")
-public class NewRobotTeleOp extends LinearOpMode {
+@TeleOp(name="RobotMainTeleOp")
+public class PossibleRobotMainTeleOp extends LinearOpMode {
 
     private DcMotor RightFrontMotor = null;
     private DcMotor LeftFrontMotor = null;
@@ -76,26 +71,20 @@ public class NewRobotTeleOp extends LinearOpMode {
         if (isStopRequested()) return;
         waitForStart();
         while (opModeIsActive()) {
-            double y = gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x * -1.1;
-            double rx = gamepad1.right_stick_x;
-
             if (gamepad1.options) {
                 imu.resetYaw();
             }
             double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
             // Rotate the movement direction counter to the bot's rotation
-            double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-            double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double LeftFrontPower = (y + x + rx) / denominator;
-            double LeftBackPower = (y - x + rx) / denominator;
-            double RightFrontPower = (y - x - rx) / denominator;
-            double RightBackPower = (y + x - rx) / denominator;
-            RightFrontMotor.setPower(RightFrontPower);
-            LeftFrontMotor.setPower(LeftFrontPower);
-            RightBackMotor.setPower(RightBackPower);
-            LeftBackMotor.setPower(LeftBackPower);
+
+            double y = gamepad1.left_stick_y;
+            double x = gamepad1.left_stick_x * -1.1;
+            double rx = gamepad1.right_stick_x;
+
+            LeftBackMotor.setPower(y + x + rx);
+            LeftBackMotor.setPower(y - x + rx);
+            RightFrontMotor.setPower(y - x - rx);
+            RightBackMotor.setPower(y + x - rx);
 //Open Claw
             if (LTrigger.press((int) gamepad1.left_trigger)) {
                 ClawServo.setPosition(0.6);
