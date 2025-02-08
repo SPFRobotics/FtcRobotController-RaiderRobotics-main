@@ -13,7 +13,7 @@ public class NewChassiTesting extends LinearOpMode{
     private Servo FRotationServo = null;
     private Servo FWristServo = null;
     private Servo BWristServo = null;
-    private Servo FClawFRotationServo = null;
+    private Servo FClawRotationServo = null;
     private Servo FClawServo = null;
     private Servo BRClawServo = null;
     private Servo BLClawServo = null;
@@ -36,18 +36,18 @@ public class NewChassiTesting extends LinearOpMode{
          */
 
         //Servos
-        FRotationServo = hardwareMap.get(Servo.class, "Servo?");
-        FWristServo = hardwareMap.get(Servo.class, "Servo?");
-        FClawFRotationServo = hardwareMap.get(Servo.class, "Servo?");
-        FClawServo = hardwareMap.get(Servo.class, "Servo?");
-        BRClawServo = hardwareMap.get(Servo.class, "Servo?");
-        BLClawServo = hardwareMap.get(Servo.class, "Servo?");
-        BWristServo = hardwareMap.get(Servo.class, "Servo?");
+        FRotationServo = hardwareMap.get(Servo.class, "Servo1");
+        FWristServo = hardwareMap.get(Servo.class, "Servo2");
+        FClawRotationServo = hardwareMap.get(Servo.class, "Servo3");
+        FClawServo = hardwareMap.get(Servo.class, "Servo4");
+        BRClawServo = hardwareMap.get(Servo.class, "Servo12");
+        BLClawServo = hardwareMap.get(Servo.class, "Servo11");
+        BWristServo = hardwareMap.get(Servo.class, "Servo10");
 
         //Motors
-        extendo = hardwareMap.get(DcMotor.class, "Motor11");
+        extendo = hardwareMap.get(DcMotor.class, "Motor12");
         MotorYRight = hardwareMap.get(DcMotor.class, "Motor1");
-        MotorYLeft = hardwareMap.get(DcMotor.class, "Motor12");
+        MotorYLeft = hardwareMap.get(DcMotor.class, "Motor11");
         FRMotor = hardwareMap.get(DcMotor.class, "Motor0");
         FLMotor = hardwareMap.get(DcMotor.class, "Motor10");
         BRMotor = hardwareMap.get(DcMotor.class, "Motor3");
@@ -56,30 +56,31 @@ public class NewChassiTesting extends LinearOpMode{
 
 
         FWristServo.setDirection(Servo.Direction.REVERSE);
-        MotorYRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        MotorYLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         //Varibles
-        double FRotationServoPos = 0.75;
-        double FWristServoPos = 0.74;
-        //double FClawFRotationServoPos = 0.47;
+        double FRotationServoPos = 0.5024;
+        double FWristServoPos = 0.7243;
+        double FClawRotationServoPos = 0;
+        double bWristPos = 0;
+        FClawServo.setPosition(0.3);
+
 
         waitForStart();
         while (opModeIsActive()){
-
             //Reset Claw to default pos
             if (gamepad1.b){
-                FRotationServoPos = 0.507;
-                FWristServoPos = 0.8207;
-                FClawFRotationServo.setPosition(0);
-                FClawServo.setPosition(0.3);
+                FRotationServoPos = 0.5024;
+                FWristServoPos = 0.7243;
+                FClawRotationServoPos = 0;
             }
 
             //Set claw to efficent position
             if (gamepad1.a){
                 FRotationServoPos = 0.79;
                 FWristServoPos = 0.273;
-                FClawFRotationServo.setPosition(0.65);
+                FClawRotationServoPos = 0.65;
             }
 
             //Extend Extendo
@@ -96,6 +97,13 @@ public class NewChassiTesting extends LinearOpMode{
                 FRotationServoPos = 1;
             }
             FRotationServo.setPosition(FRotationServoPos);
+
+            //*************************************************************
+
+            //Back wrist logic
+            //*************************************************************
+            bWristPos += gamepad1.right_stick_y*0.002;
+            BWristServo.setPosition(bWristPos);
             //*************************************************************
 
             //Move Wrist
@@ -121,6 +129,10 @@ public class NewChassiTesting extends LinearOpMode{
             }
             //****************************************************************
 
+
+
+            FClawRotationServo.setPosition(FClawRotationServoPos);
+
             //Telemetry
             telemetry.update();
             telemetry.addLine("==========================================");
@@ -128,7 +140,7 @@ public class NewChassiTesting extends LinearOpMode{
             telemetry.addLine("==========================================");
             telemetry.addLine("Rotation Servo Pos: " + FRotationServoPos);
             telemetry.addLine("Wrist Servo Pos: " + FWristServoPos);
-            telemetry.addLine("Claw Rotation Servo Pos: " + FClawFRotationServo.getPosition());
+            telemetry.addLine("Claw Rotation Servo Pos: " + FClawRotationServo.getPosition());
             telemetry.addLine("Claw Servo Pos: " + FClawServo.getPosition());
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
