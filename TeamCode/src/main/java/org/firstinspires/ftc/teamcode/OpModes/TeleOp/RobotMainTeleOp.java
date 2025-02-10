@@ -36,8 +36,6 @@ public class RobotMainTeleOp extends LinearOpMode{
     Button lBumper = new Button();
     Button rBumper = new Button();
     Button b = new Button();
-    private static ElapsedTime timer1 = new ElapsedTime();
-    private static ElapsedTime timer2 = new ElapsedTime();
 
     public void runOpMode() {
         //Configured looking from the FRONT of the robot
@@ -89,12 +87,8 @@ public class RobotMainTeleOp extends LinearOpMode{
         FClawServo.setPosition(0.3);
 
         //Boolean expressions
-        boolean stillPressed1 = false;
-        boolean stillPressed2 = false;
         boolean wasPressed1 = false;
-
         int num = 0;
-
 
         waitForStart();
         while (opModeIsActive()){
@@ -109,38 +103,31 @@ public class RobotMainTeleOp extends LinearOpMode{
             FRMotor.setPower((y - x - rx) / denominator);
             BRMotor.setPower((y + x - rx) / denominator);
 
-            //Reset Claw to default pos
+            //Reset Claw to transit position
             if (b.press(gamepad2.b)){
                 FRotationServoPos = 0.5221;
                 FWristServoPos = 0.7587;
                 FClawRotationServoPos = 0;
                 BWristPos = 0.1131;
-                wasPressed1 = true;
-                timer1.reset();
-                timer2.reset();
             }
-            if (timer1.milliseconds() >= 2000 && wasPressed1){
-                rTrigger.changeState(true);
-                wasPressed1 = false;
-                timer1.reset();
-            }
-            if (timer2.milliseconds() >= 2000)
 
 
-            //Set claw to efficent position
+            //Set claw to pickup position
             if (gamepad2.a){
                 FRotationServoPos = 0.79;
                 FWristServoPos = 0.273;
                 FClawRotationServoPos = 0.65;
                 BWristPos = 0.48435;
+                rTrigger.changeState(false);
+                lTrigger.changeState(true);
             }
 
-            //Set claw to wall position
+            //Set claw to face perpendicular to the wall
             if (gamepad2.y){
                 FRotationServoPos = 0.5221;
                 FWristServoPos = 0.273;
                 FClawRotationServoPos = 0.65;
-                BWristPos = 0.48435;
+                BWristPos = 0.5;
             }
 
             //Extend Linear Slides
@@ -156,11 +143,11 @@ public class RobotMainTeleOp extends LinearOpMode{
             }*/
 
             //Vertical
-            /*if (!slideStop.isPressed()) {
+            /*if (!slideStop.isPressed() && gamepad2.right_stick_y > 0) {
                 MotorYRight.setPower(gamepad2.right_stick_y);
                 MotorYLeft.setPower(gamepad2.right_stick_y);
             }
-            else if (gamepad2.right_stick_y < 0){
+            else{
                 MotorYRight.setPower(0);
                 MotorYLeft.setPower(0);
             }*/
@@ -215,18 +202,11 @@ public class RobotMainTeleOp extends LinearOpMode{
             }
             //****************************************************************
 
-            if (FClawRotationServoPos > 1 || FClawRotationServoPos + 0.325 > 1){
-                FClawRotationServoPos = 1;
-            }
-            else if (FClawRotationServoPos < 0 || FClawRotationServoPos - 0.325 < 0){
-                FClawRotationServoPos = 0;
-            }
-
-            if (lBumper.press(gamepad2.left_bumper)){
+            if (FClawRotationServoPos < 0.975 && lBumper.press(gamepad2.left_bumper)){
                 FClawRotationServoPos += 0.325;
             }
 
-            if (rBumper.press(gamepad2.right_bumper)){
+            if (FClawRotationServoPos > 0.325 && rBumper.press(gamepad2.right_bumper)){
                 FClawRotationServoPos -= 0.325;
             }
 
@@ -238,7 +218,6 @@ public class RobotMainTeleOp extends LinearOpMode{
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
             telemetry.addLine("==========================================");
-            telemetry.addLine("Timer: " + timer1.milliseconds());
             telemetry.addLine("Rotation Servo Pos: " + FRotationServo.getPosition());
             telemetry.addLine("Wrist Servo Pos: " + FWristServo.getPosition());
             telemetry.addLine("Back Wrist Servo Pos: " + BWristServo.getPosition());
