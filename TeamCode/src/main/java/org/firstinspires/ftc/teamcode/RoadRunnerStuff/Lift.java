@@ -12,12 +12,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.Hardware.Util.Unit;
 
 public class Lift {
-    private DcMotor lift;
+    private DcMotor liftLeft;
+    private DcMotor liftRight;
 
     public Lift(HardwareMap hardwareMap) {
-        lift = hardwareMap.get(DcMotor.class, "lift");
-        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        lift.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftLeft = hardwareMap.get(DcMotor.class, "liftLeft");
+        liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftRight = hardwareMap.get(DcMotor.class, "liftRight");
+        liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
     public class LiftUp implements Action {
 
@@ -35,19 +38,21 @@ public class Lift {
         public boolean run(@NonNull TelemetryPacket packet) {
             // powers on motor, if it is not on
             if (!initialized) {
-                lift.setPower(1);
+                liftLeft.setPower(1);
+                liftRight.setPower(1);
                 initialized = true;
             }
 
             // checks lift's current position
-            double pos = lift.getCurrentPosition();
+            double pos = liftLeft.getCurrentPosition();
             packet.put("liftPos", pos);
             if (pos < encoderTicks) {
                 // true causes the action to rerun
                 return true;
             } else {
                 // false stops action rerun
-                lift.setPower(0);
+                liftLeft.setPower(0);
+                liftRight.setPower(0);
                 return false;
             }
             // overall, the action powers the lift until it surpasses
@@ -71,23 +76,23 @@ public class Lift {
         public boolean run(@NonNull TelemetryPacket packet) {
             // powers on motor, if it is not on
             if (!initialized) {
-                lift.setPower(-1);
+                liftLeft.setPower(-1);
+                liftRight.setPower(-1);
                 initialized = true;
             }
 
             // checks lift's current position
-            double pos = lift.getCurrentPosition();
+            double pos = liftLeft.getCurrentPosition();
             packet.put("liftPos", pos);
             if (pos > encoderTicks) {
                 // true causes the action to rerun
                 return true;
             } else {
                 // false stops action rerun
-                lift.setPower(0);
+                liftLeft.setPower(0);
+                liftRight.setPower(0);
                 return false;
             }
-            // overall, the action powers the lift until it surpasses
-            // 3000 encoder ticks, then powers it off
         }
     }
 
