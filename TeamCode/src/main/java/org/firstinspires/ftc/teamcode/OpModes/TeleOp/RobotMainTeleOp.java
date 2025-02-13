@@ -45,38 +45,44 @@ public class RobotMainTeleOp extends LinearOpMode{
          */
 
         //Servos
-        FRotationServo = hardwareMap.get(Servo.class, "Servo1");
-        FWristServo = hardwareMap.get(Servo.class, "Servo2");
-        FClawRotationServo = hardwareMap.get(Servo.class, "Servo3");
-        FClawServo = hardwareMap.get(Servo.class, "Servo4");
-        BRClawServo = hardwareMap.get(Servo.class, "Servo12");
-        BLClawServo = hardwareMap.get(Servo.class, "Servo11");
-        BWristServo = hardwareMap.get(Servo.class, "Servo10");
+        FRotationServo = hardwareMap.get(Servo.class, "frontRotation");
+        FWristServo = hardwareMap.get(Servo.class, "frontWrist");
+        FClawRotationServo = hardwareMap.get(Servo.class, "frontClawRotation");
+        FClawServo = hardwareMap.get(Servo.class, "frontClaw");
+        BLClawServo = hardwareMap.get(Servo.class, "backLeftClaw");
+        BRClawServo = hardwareMap.get(Servo.class, "backRightClaw");
+        BWristServo = hardwareMap.get(Servo.class, "backWrist");
         slideStop = hardwareMap.get(TouchSensor.class, "Button0");
 
         //Motors
-        extendo = hardwareMap.get(DcMotor.class, "Motor12");
-        MotorYRight = hardwareMap.get(DcMotor.class, "Motor1");
-        MotorYLeft = hardwareMap.get(DcMotor.class, "Motor11");
-        FRMotor = hardwareMap.get(DcMotor.class, "Motor0");
-        FLMotor = hardwareMap.get(DcMotor.class, "Motor10");
-        BRMotor = hardwareMap.get(DcMotor.class, "Motor3");
-        BLMotor = hardwareMap.get(DcMotor.class, "Motor13");
+        extendo = hardwareMap.get(DcMotor.class, "extendo");
+        MotorYLeft = hardwareMap.get(DcMotor.class, "liftRight");
+        MotorYRight = hardwareMap.get(DcMotor.class, "liftLeft");
+        FLMotor = hardwareMap.get(DcMotor.class, "backRight");
+        FRMotor = hardwareMap.get(DcMotor.class, "frontLeft");
+        BLMotor = hardwareMap.get(DcMotor.class, "frontRight");
+        BRMotor = hardwareMap.get(DcMotor.class, "backLeft");
+
+        //Enable encoders
+        extendo.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
 
         FWristServo.setDirection(Servo.Direction.REVERSE);
         MotorYRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        BLClawServo.setDirection(Servo.Direction.REVERSE);
+        BRClawServo.setDirection(Servo.Direction.REVERSE);
         extendo.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        MotorYRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         MotorYLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        MotorYRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        FLMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        BLMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FRMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BRMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        FLMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BLMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        extendo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        MotorYLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        MotorYRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Varibles
         double FRotationServoPos = 0.5024;
@@ -98,10 +104,10 @@ public class RobotMainTeleOp extends LinearOpMode{
             double y = -gamepad1.right_stick_x;
 
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            FLMotor.setPower((y + x + rx) / denominator);
-            BLMotor.setPower((y - x + rx) / denominator);
-            FRMotor.setPower((y - x - rx) / denominator);
-            BRMotor.setPower((y + x - rx) / denominator);
+            FRMotor.setPower((y + x + rx) / denominator);
+            BRMotor.setPower((y - x + rx) / denominator);
+            FLMotor.setPower((y - x - rx) / denominator);
+            BLMotor.setPower((y + x - rx) / denominator);
 
             //Reset Claw to transit position
             if (b.press(gamepad2.b)){
@@ -114,12 +120,10 @@ public class RobotMainTeleOp extends LinearOpMode{
 
             //Set claw to pickup position
             if (gamepad2.a){
-                FRotationServoPos = 0.79;
+                FRotationServoPos = 0.3302;
                 FWristServoPos = 0.273;
                 FClawRotationServoPos = 0.65;
                 BWristPos = 0.48435;
-                rTrigger.changeState(false);
-                lTrigger.changeState(true);
             }
 
             //Set claw to face perpendicular to the wall
@@ -132,7 +136,7 @@ public class RobotMainTeleOp extends LinearOpMode{
 
             //Extend Linear Slides
             //Horizontal
-            /*if (gamepad1.right_bumper){
+            if (gamepad1.right_bumper){
                 extendo.setPower(1);
             }
             else if (gamepad1.left_bumper){
@@ -140,20 +144,24 @@ public class RobotMainTeleOp extends LinearOpMode{
             }
             else {
                 extendo.setPower(0);
-            }*/
+            }
 
             //Vertical
-            /*if (!slideStop.isPressed() && gamepad2.right_stick_y > 0) {
-                MotorYRight.setPower(gamepad2.right_stick_y);
-                MotorYLeft.setPower(gamepad2.right_stick_y);
+            if (gamepad2.dpad_up) {
+                MotorYLeft.setPower(1);
+                MotorYRight.setPower(1);
+            }
+            else if (!slideStop.isPressed() && gamepad2.dpad_down){
+                MotorYLeft.setPower(-1);
+                MotorYRight.setPower(-1);
             }
             else{
-                MotorYRight.setPower(0);
                 MotorYLeft.setPower(0);
-            }*/
+                MotorYRight.setPower(0);
+            }
             //Rotate Arm
             //*************************************************************
-            FRotationServoPos += gamepad2.left_stick_x*0.002;
+            FRotationServoPos += gamepad2.left_stick_x*0.004;
             if (FRotationServoPos < 0){
                 FRotationServoPos = 0;
             }
@@ -166,7 +174,7 @@ public class RobotMainTeleOp extends LinearOpMode{
 
             //Back wrist logic
             //*************************************************************
-            BWristPos += gamepad2.right_stick_y*0.002;
+            BWristPos += gamepad2.right_stick_y*0.004;
             BWristServo.setPosition(BWristPos);
             //*************************************************************
 
@@ -193,12 +201,12 @@ public class RobotMainTeleOp extends LinearOpMode{
             }
 
             if (rTrigger.toggle((int)gamepad2.right_trigger)){
-                BRClawServo.setPosition(0.25);
                 BLClawServo.setPosition(0.25);
+                BRClawServo.setPosition(0.25);
             }
             else{
-                BRClawServo.setPosition(0.50);
                 BLClawServo.setPosition(0.50);
+                BRClawServo.setPosition(0.50);
             }
             //****************************************************************
 
@@ -226,6 +234,7 @@ public class RobotMainTeleOp extends LinearOpMode{
             telemetry.addLine("Claw Servo Pos: " + FClawServo.getPosition());
             telemetry.addLine("Vertical Slides: " + MotorYRight.getCurrentPosition());
             telemetry.addLine("Slide Stop State: " + slideStop.isPressed());
+            telemetry.addLine("Extendo: " + extendo.getCurrentPosition());
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
             telemetry.addLine("==========================================");
