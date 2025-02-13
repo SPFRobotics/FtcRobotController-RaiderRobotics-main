@@ -26,7 +26,7 @@ public class Lift {
 
         // checks if the lift motor has been powered on
         private boolean initialized = false;
-        private static final int liftMaxMotorCounts = 4062;
+        private static final int liftMaxMotorCounts = (int)(15*(537.7 / (3.78 * Math.PI)));
         private int encoderTicks;
         LiftUp(double height){
             encoderTicks = (int) Unit.inchToLift_convert(height);
