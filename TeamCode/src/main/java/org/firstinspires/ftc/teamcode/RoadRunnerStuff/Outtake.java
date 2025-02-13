@@ -7,7 +7,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class Claw {
+public class Outtake {
     private Servo leftArm = null;
     private Servo rightArm = null;
     private Servo wrist = null;
@@ -18,7 +18,7 @@ public class Claw {
     private final double WRIST_TRANSIT_POS = 0.1131;
     private final double WRIST_PICKUP_POS = 0.48435;
 
-    public Claw(HardwareMap hardwareMap) {
+    public Outtake(HardwareMap hardwareMap) {
         rightArm = hardwareMap.get(Servo.class, "Servo12");
         leftArm = hardwareMap.get(Servo.class, "Servo11");
         wrist = hardwareMap.get(Servo.class, "Servo10");
@@ -63,5 +63,18 @@ public class Claw {
     public Action placeSpec(){
         return new placeSpec();
     }
+    public class PrepareIntake implements Action{
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            wrist.setPosition(WRIST_TRANSIT_POS);
+            leftArm.setPosition(LEFT_ARM_OPEN_POS);
+            rightArm.setPosition(RIGHT_ARM_OPEN_POS);
+            return false;
+        }
+    }
+    public Action prepareIntake(){
+        return new PrepareIntake();
+    }
+
 }
 
