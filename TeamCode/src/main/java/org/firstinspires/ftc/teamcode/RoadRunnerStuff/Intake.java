@@ -19,13 +19,13 @@ public class Intake {
     private final double ARM_ROTATION_POS = 0.5221;
     private final double CLAW_ROTATION_INTAKE =0.65;
     private final double CLAW_ROTATION_TRANSFER =0;
-    private final double WRIST_TRANSFER_POS = 0.7587;
-    private final double WRIST_INTAKE_POS = 0.273;
+    private final double WRIST_TRANSFER_POS = 0.73;
+    private final double WRIST_INTAKE_POS = 0.4;
     public Intake(HardwareMap hardwareMap){
-        armRotation = hardwareMap.get(Servo.class, "Servo1");
-        wrist = hardwareMap.get(Servo.class, "Servo2");
-        clawRotation = hardwareMap.get(Servo.class, "Servo3");
-        claw = hardwareMap.get(Servo.class, "Servo4");
+        armRotation = hardwareMap.get(Servo.class, "frontRotation");
+        wrist = hardwareMap.get(Servo.class, "frontWrist");
+        clawRotation = hardwareMap.get(Servo.class, "frontClawRotation");
+        claw = hardwareMap.get(Servo.class, "frontClaw");
         wrist.setDirection(Servo.Direction.REVERSE);
 
         // Initialize positions

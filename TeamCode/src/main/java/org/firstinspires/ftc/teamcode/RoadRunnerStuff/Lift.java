@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Hardware.Util.Unit;
 
 public class Lift {
     private DcMotor liftLeft;
@@ -26,10 +25,11 @@ public class Lift {
 
         // checks if the lift motor has been powered on
         private boolean initialized = false;
-        private static final int liftMaxMotorCounts = (int)(15*(537.7 / (3.78 * Math.PI)));
+        private static final int liftMaxMotorCounts = (int)(15*(537.7 / (4.409)));
         private int encoderTicks;
+
         LiftUp(double height){
-            encoderTicks = (int) Unit.inchToLift_convert(height);
+            encoderTicks = inchToMotorTicks(height);
         }
 
 
@@ -67,7 +67,7 @@ public class Lift {
         private static final int liftMaxMotorCounts = 4062;
         private int encoderTicks;
         LiftDown(double height){
-            encoderTicks = (int) Unit.inchToLift_convert(height);
+            encoderTicks = inchToMotorTicks(height);
         }
 
 
@@ -101,5 +101,8 @@ public class Lift {
     }
     public Action moveUp(double height){
         return new LiftUp(height);
+    }
+    int inchToMotorTicks(double inches){
+        return (int)(inches*(537.7 / (4.409)));
     }
 }

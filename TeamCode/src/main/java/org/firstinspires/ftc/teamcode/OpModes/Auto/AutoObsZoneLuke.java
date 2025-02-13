@@ -37,7 +37,7 @@ public class AutoObsZoneLuke extends LinearOpMode {
         // Movements:
 
         TrajectoryActionBuilder moveToRungs = drive.actionBuilder(beginPose)
-                .strafeTo(new Vector2d(29.669, 11.81));
+                .strafeTo(new Vector2d(30, 11.81));
         TrajectoryActionBuilder pushSamplesBack = moveToRungs.endTrajectory().fresh()
                 .lineToX(25)
                 .strafeTo(new Vector2d(24, -18))
@@ -47,24 +47,32 @@ public class AutoObsZoneLuke extends LinearOpMode {
         TrajectoryActionBuilder pushMoreSamplesBack = pushSamplesBack.endTrajectory().fresh()
                 .strafeTo(new Vector2d(42,-31))
                 .strafeTo(new Vector2d(48,-40))
-                .strafeTo(new Vector2d(3, -41));
+                .strafeTo(new Vector2d(5, -41));
         Action moveToRungsAction = moveToRungs.build();
+        Action moveBackToPlace = moveToRungs.endTrajectory().fresh().lineToX(28).waitSeconds(0.25).build();
         Action pushSamplesBackAction = pushSamplesBack.build();
         Action pushMoreSamplesBackAction  = pushMoreSamplesBack.build();
         // Necessary Actions:
         /*Action moveLiftTop = lift.moveUp(15);
         Action moveLiftBottom = lift.moveDown(0);*/
-        Action placeSpec = outtake.placeSpec();
+        Action placeSpec = new SequentialAction(
+                outtake.lowerSpec(),
+                moveBackToPlace,
+                outtake.openClaw(),
+                drive.actionBuilder(beginPose).waitSeconds(.1).build()
+        );
         Action prepareIntake = new ParallelAction(intake.prepareIntake(), outtake.prepareIntake());
-        Action completeTransfer = new ParallelAction(
+        Action completeTransfer = new SequentialAction(
                 intake.closeClaw(),
+                drive.actionBuilder(beginPose).waitSeconds(.25).build(),
                 intake.prepareTransfer(),
-                drive.actionBuilder(beginPose).waitSeconds(1).build(),
+                drive.actionBuilder(beginPose).waitSeconds(0.7).build(),
                 outtake.closeClaw(),
+                drive.actionBuilder(beginPose).waitSeconds(.2).build(),
                 intake.openClaw());
         Actions.runBlocking(
                 new SequentialAction(
-                        new ParallelAction(
+                        /*new ParallelAction(
                                 moveToRungsAction
                                 //moveLiftTop
                         ),
@@ -73,13 +81,12 @@ public class AutoObsZoneLuke extends LinearOpMode {
                         new ParallelAction(
                                 //moveLiftBottom,
                                 pushSamplesBackAction
-                        ),
+                        ),*/
                         new ParallelAction(
-                                pushMoreSamplesBackAction,
+                                //pushMoreSamplesBackAction,
                                 prepareIntake
                         ),
                         completeTransfer
-
                 )
         );
         /* PLACES 2 WITHOUT ROADRUNNER
