@@ -39,12 +39,9 @@ public class AutoObsZoneLuke extends LinearOpMode {
     {
         Pose2d beginPose = new Pose2d(0, 0, 0);
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
-        Lift lift = new Lift(hardwareMap);
-        Claw clawRef = new Claw(hardwareMap);
+        //Lift lift = new Lift(hardwareMap);
+        //Claw clawRef = new Claw(hardwareMap);
 
-        wristClawServo = hardwareMap.get(Servo .class, "intakeWrist");
-        extendo.initSlides();
-        wristClawServo.setPosition(1);
         waitForStart();
         TrajectoryActionBuilder moveToRungs = drive.actionBuilder(beginPose)
                 .strafeTo(new Vector2d(29.669, 11.81));
@@ -52,32 +49,29 @@ public class AutoObsZoneLuke extends LinearOpMode {
         TrajectoryActionBuilder pushSamplesBack = moveToRungs.endTrajectory().fresh()
                 .lineToX(25)
                 .strafeTo(new Vector2d(24, -18))
-                .strafeTo(new Vector2d(36,-22))
-                .lineToY(-27)
-                .strafeTo(new Vector2d(5, -28));
+                .strafeTo(new Vector2d(34,-21))
+                .lineToY(-29)
+                .strafeTo(new Vector2d(5, -30));
         TrajectoryActionBuilder pushMoreSamplesBack = pushSamplesBack.endTrajectory().fresh()
-                .strafeTo(new Vector2d(42,-27))
-                .strafeTo(new Vector2d(48,-36))
-                .strafeTo(new Vector2d(5, -40));
+                .strafeTo(new Vector2d(42,-31))
+                .strafeTo(new Vector2d(48,-40))
+                .strafeTo(new Vector2d(3, -41));
         Action moveToRungsAction = moveToRungs.build();
         Action pushSamplesBackAction = pushSamplesBack.build();
         Action pushMoreSamplesBackAction  = pushMoreSamplesBack.build();
-        Action moveLiftTop = lift.moveUp(25);
-        Action moveLiftPlace = lift.moveDown(20);
-        Action moveLiftBottom = lift.moveDown(0);
-        Action openClaw = clawRef.openClaw();
-        Action closeClaw = clawRef.closeClaw();
+        /*Action moveLiftTop = lift.moveUp(15);
+        Action moveLiftBottom = lift.moveDown(0);*/
         Actions.runBlocking(
                 new SequentialAction(
                         new ParallelAction(
-                                moveToRungsAction,
-                                moveLiftTop
+                                moveToRungsAction
+                                //moveLiftTop
                         ),
-                        moveLiftPlace,
-                        openClaw,
+                        //moveLiftPlace,
+                        //openClaw,
 
                         new ParallelAction(
-                                moveLiftBottom,
+                                //moveLiftBottom,
                                 pushSamplesBackAction
                         ),
                         pushMoreSamplesBackAction

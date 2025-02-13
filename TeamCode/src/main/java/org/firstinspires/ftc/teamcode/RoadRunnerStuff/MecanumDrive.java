@@ -63,12 +63,12 @@ public final class MecanumDrive {
 
         // drive model parameters
         public double inPerTick = (3.2*Math.PI/2.54)/2000; // theoretical***
-        public double lateralInPerTick = 0.0012086314875566582;
-        public double trackWidthTicks = 7427.118485119361;
+        public double lateralInPerTick = 0.0013792031892721289;
+        public double trackWidthTicks =  7178.716112460931;
 
         // feedforward parameters (in tick units)
-        public double kS = 1.544799969679405;
-        public double kV = 0.0003700265283531827;
+        public double kS = 1.1980848816858654;
+        public double kV = 0.0003733602772183411;
         public double kA = 0.0001;
 
         // path profile parameters (in inches)
@@ -233,7 +233,7 @@ public final class MecanumDrive {
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
         lazyImu = new LazyImu(hardwareMap, "imu", new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
