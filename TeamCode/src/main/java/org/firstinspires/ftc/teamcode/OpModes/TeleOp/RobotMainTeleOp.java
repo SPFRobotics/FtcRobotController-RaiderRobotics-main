@@ -36,6 +36,28 @@ public class RobotMainTeleOp extends LinearOpMode{
     Button lBumper = new Button();
     Button rBumper = new Button();
     Button b = new Button();
+    Button touchpad = new Button();
+
+    //Varibles
+    double FRotationServoPos = 0.5024;
+    double FWristServoPos = 0.5;
+
+    double FClawRotationServoPos = 0;
+    static double BWristPos = 0;
+    static double BWristPosCurrent = 0;
+
+    //Boolean expressions
+    boolean wasPressed1 = false;
+
+    private static float servoTrack(Servo x, int pos, int current){
+        if (x.getPosition() < pos) {
+             current += 0.001;
+        }
+        else if (x.getPosition() > pos){
+            current -= 0.001;
+        }
+        return current;
+    }
 
     public void runOpMode() {
         //Configured looking from the FRONT of the robot
@@ -84,17 +106,7 @@ public class RobotMainTeleOp extends LinearOpMode{
         MotorYLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         MotorYRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //Varibles
-        double FRotationServoPos = 0.5024;
-        double FWristServoPos = 0.5;
-
-        double FClawRotationServoPos = 0;
-        double BWristPos = 0;
-        FClawServo.setPosition(0.3);
-
-        //Boolean expressions
-        boolean wasPressed1 = false;
-        int num = 0;
+        //FClawServo.setPosition(0.3);
 
         waitForStart();
         while (opModeIsActive()){
@@ -117,7 +129,6 @@ public class RobotMainTeleOp extends LinearOpMode{
                 BWristPos = 0.1131;
             }
 
-
             //Set claw to pickup position
             if (gamepad2.a){
                 FRotationServoPos = 0.3302;
@@ -129,7 +140,7 @@ public class RobotMainTeleOp extends LinearOpMode{
             //Set claw to face perpendicular to the wall
             if (gamepad2.y){
                 FRotationServoPos = 0.5221;
-                FWristServoPos = 0.273;
+                FWristServoPos = 0.4;
                 FClawRotationServoPos = 0.65;
                 BWristPos = 0.5;
             }
@@ -145,19 +156,24 @@ public class RobotMainTeleOp extends LinearOpMode{
             else {
                 extendo.setPower(0);
             }
-
             //Vertical
-            if (gamepad2.dpad_up) {
-                MotorYLeft.setPower(1);
-                MotorYRight.setPower(1);
-            }
-            else if (!slideStop.isPressed() && gamepad2.dpad_down){
-                MotorYLeft.setPower(-1);
-                MotorYRight.setPower(-1);
+            if (touchpad.toggle(gamepad2.touchpad) && !slideStop.isPressed()){
+                MotorYLeft.setPower(-0.5);
+                MotorYRight.setPower(-0.5);
             }
             else{
-                MotorYLeft.setPower(0);
-                MotorYRight.setPower(0);
+                if (gamepad2.dpad_up) {
+                    MotorYLeft.setPower(1);
+                    MotorYRight.setPower(1);
+                }
+                else if (!slideStop.isPressed() && gamepad2.dpad_down){
+                    MotorYLeft.setPower(-1);
+                    MotorYRight.setPower(-1);
+                }
+                else{
+                    MotorYLeft.setPower(0);
+                    MotorYRight.setPower(0);
+                }
             }
             //Rotate Arm
             //*************************************************************
