@@ -38,7 +38,6 @@ public class RobotMainTeleOp extends LinearOpMode{
     Button b = new Button();
     Button touchpad = new Button();
     private static ElapsedTime timer1 = new ElapsedTime();
-    private static ElapsedTime timer2 = new ElapsedTime();
 
     //Varibles
     double FRotationServoPos = 0.5024;
@@ -117,7 +116,6 @@ public class RobotMainTeleOp extends LinearOpMode{
                 wasPressed1 = true;
                 rTrigger.changeState(false);
                 timer1.reset();
-                timer2.reset();
             }
             if (timer1.milliseconds() >= 1000 && wasPressed1){
                 rTrigger.changeState(true);
