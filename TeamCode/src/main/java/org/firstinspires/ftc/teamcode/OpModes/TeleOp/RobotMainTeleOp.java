@@ -122,7 +122,6 @@ public class RobotMainTeleOp extends LinearOpMode{
             }
             if (timer1.milliseconds() >= 2000 && wasPressed1){
                 lTrigger.changeState(false);
-                timer2.reset();
             }
             if (timer1.milliseconds() >= 2500 && wasPressed1){
                 wasPressed1 = false;
