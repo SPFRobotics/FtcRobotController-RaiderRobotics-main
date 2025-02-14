@@ -11,11 +11,11 @@ public class Outtake {
     private Servo leftArm = null;
     private Servo rightArm = null;
     private Servo wrist = null;
-    private final double LEFT_ARM_OPEN_POS = 0.5;
-    private final double RIGHT_ARM_OPEN_POS = 0.5;
+    private final double LEFT_ARM_OPEN_POS = 0.7;
+    private final double RIGHT_ARM_OPEN_POS = 0.7;
     private final double LEFT_ARM_CLOSED_POS = 0.28;
     private final double RIGHT_ARM_CLOSED_POS = 0.28;
-    private final double WRIST_TRANSIT_POS = 0.155;
+    private final double WRIST_TRANSIT_POS = 0.145;
     private final double WRIST_PICKUP_POS = 0.48435;
 
     public Outtake(HardwareMap hardwareMap) {
@@ -72,6 +72,15 @@ public class Outtake {
     }
     public Action prepareIntake(){
         return new PrepareIntake();
+    }
+    public class PrepareOuttake implements Action{
+        public boolean run(@NonNull TelemetryPacket packet) {
+            wrist.setPosition(WRIST_PICKUP_POS);
+            return false;
+        }
+    }
+    public Action prepareOuttake(){
+        return new PrepareOuttake();
     }
 
 }

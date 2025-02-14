@@ -53,6 +53,7 @@ public class Lift {
                 // false stops action rerun
                 liftLeft.setPower(0);
                 liftRight.setPower(0);
+                initialized = false;
                 return false;
             }
             // overall, the action powers the lift until it surpasses
@@ -91,6 +92,7 @@ public class Lift {
                 // false stops action rerun
                 liftLeft.setPower(0);
                 liftRight.setPower(0);
+                initialized = false;
                 return false;
             }
         }

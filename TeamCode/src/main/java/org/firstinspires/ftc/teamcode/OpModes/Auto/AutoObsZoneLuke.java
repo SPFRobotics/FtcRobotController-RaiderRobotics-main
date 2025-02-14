@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot.Extendo;
 import org.firstinspires.ftc.teamcode.RoadRunnerStuff.Intake;
+import org.firstinspires.ftc.teamcode.RoadRunnerStuff.Lift;
 import org.firstinspires.ftc.teamcode.RoadRunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.RoadRunnerStuff.Outtake;
 
@@ -29,38 +30,87 @@ public class AutoObsZoneLuke extends LinearOpMode {
     {
         Pose2d beginPose = new Pose2d(0, 0, 0);
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
-        //Lift lift = new Lift(hardwareMap);
+        Lift lift = new Lift(hardwareMap);
         Outtake outtake = new Outtake(hardwareMap);
         Intake intake = new Intake(hardwareMap);
 
         waitForStart();
-        // Movements:
+        // Movements (in order of execution):
 
         TrajectoryActionBuilder moveToRungs = drive.actionBuilder(beginPose)
-                .strafeTo(new Vector2d(30, 11.81));
-        TrajectoryActionBuilder pushSamplesBack = moveToRungs.endTrajectory().fresh()
-                .lineToX(25)
-                .strafeTo(new Vector2d(24, -18))
-                .strafeTo(new Vector2d(34,-21))
-                .lineToY(-29)
+                .strafeTo(new Vector2d(30, 15));
+        Action moveToRungsAction = moveToRungs.build();
+        TrajectoryActionBuilder moveBackToPlace = moveToRungs.endTrajectory().fresh().lineToX(28);
+        Action moveBackToPlaceAction = moveBackToPlace.build();
+        TrajectoryActionBuilder pushSamplesBack = moveBackToPlace.endTrajectory().fresh()
+                .strafeTo(new Vector2d(15,-10))
+                .strafeTo(new Vector2d(34,-29))
                 .strafeTo(new Vector2d(5, -30));
-        TrajectoryActionBuilder pushMoreSamplesBack = pushSamplesBack.endTrajectory().fresh()
+        TrajectoryActionBuilder pushSamplesBack2 = pushSamplesBack.endTrajectory().fresh()
                 .strafeTo(new Vector2d(42,-31))
                 .strafeTo(new Vector2d(48,-40))
                 .strafeTo(new Vector2d(5, -41));
-        Action moveToRungsAction = moveToRungs.build();
-        Action moveBackToPlace = moveToRungs.endTrajectory().fresh().lineToX(28).waitSeconds(0.25).build();
+        TrajectoryActionBuilder pushSamplesBack3 = pushSamplesBack2.endTrajectory().fresh()
+                .strafeTo(new Vector2d(42,-37))
+                .strafeTo(new Vector2d(48,-46))
+                .strafeTo(new Vector2d(2, -47));
+        TrajectoryActionBuilder moveToRungs2 = pushSamplesBack3.endTrajectory().fresh()
+                .strafeTo(new Vector2d(30, 13));
+        Action moveToRungs2Action = moveToRungs2.build();
+        TrajectoryActionBuilder moveBackToPlace2 = moveToRungs2.endTrajectory().fresh().lineToX(28);
+        Action moveBackToPlace2Action = moveBackToPlace.build();
+        TrajectoryActionBuilder moveToCorner = moveBackToPlace2.endTrajectory().fresh()
+                .strafeTo(new Vector2d(5,2));
+        Action moveToCornerAction = moveToCorner.build();
+        TrajectoryActionBuilder moveToRungs3 = moveToCorner.endTrajectory().fresh()
+                .strafeTo(new Vector2d(30, 11));
+        Action moveToRungs3Action = moveToRungs3.build();
+        TrajectoryActionBuilder moveBackToPlace3 = moveToRungs3.endTrajectory().fresh().lineToX(28);
+        Action moveBackToPlace3Action = moveBackToPlace.build();
+        TrajectoryActionBuilder moveToCorner2 = moveBackToPlace2.endTrajectory().fresh()
+                .strafeTo(new Vector2d(5,2));
+        Action moveToCorner2Action = moveToCorner2.build();
+        TrajectoryActionBuilder moveToRungs4 = moveToCorner2.endTrajectory().fresh()
+                .strafeTo(new Vector2d(30,9));
+        Action moveToRungs4Action = moveToRungs4.build();
+        TrajectoryActionBuilder moveBackToPlace4 = moveToRungs4.endTrajectory().fresh().lineToX(28);
+        Action moveBackToPlace4Action = moveBackToPlace4.build();
+        TrajectoryActionBuilder moveToCorner3 = moveBackToPlace2.endTrajectory().fresh()
+                .strafeTo(new Vector2d(5,2));
+        Action moveToCorner3Action = moveToCorner3.build();
+
         Action pushSamplesBackAction = pushSamplesBack.build();
-        Action pushMoreSamplesBackAction  = pushMoreSamplesBack.build();
+        Action pushsamplesback2Action  = pushSamplesBack2.build();
+        Action pushsamplesback3Action  = pushSamplesBack3.build();
         // Necessary Actions:
-        /*Action moveLiftTop = lift.moveUp(15);
-        Action moveLiftBottom = lift.moveDown(0);*/
+        Action moveLiftTop = lift.moveUp(13.7);
+        Action moveLiftBottom = lift.moveDown(0);
+
         Action placeSpec = new SequentialAction(
+                outtake.prepareOuttake(),
                 outtake.lowerSpec(),
-                moveBackToPlace,
-                outtake.openClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.1).build()
+                moveBackToPlaceAction,
+                outtake.openClaw()
         );
+        Action placeSpec2 = new SequentialAction(
+                outtake.prepareOuttake(),
+                outtake.lowerSpec(),
+                moveBackToPlace2Action,
+                outtake.openClaw()
+        );
+        Action placeSpec3 = new SequentialAction(
+                outtake.prepareOuttake(),
+                outtake.lowerSpec(),
+                moveBackToPlace3Action,
+                outtake.openClaw()
+        );
+        Action placeSpec4 = new SequentialAction(
+                outtake.prepareOuttake(),
+                outtake.lowerSpec(),
+                moveBackToPlace4Action,
+                outtake.openClaw()
+        );
+
         Action prepareIntake = new ParallelAction(intake.prepareIntake(), outtake.prepareIntake());
         Action completeTransfer = new SequentialAction(
                 intake.closeClaw(),
@@ -68,25 +118,40 @@ public class AutoObsZoneLuke extends LinearOpMode {
                 intake.prepareTransfer(),
                 drive.actionBuilder(beginPose).waitSeconds(0.7).build(),
                 outtake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.2).build(),
+                drive.actionBuilder(beginPose).waitSeconds(.5).build(),
                 intake.openClaw());
         Actions.runBlocking(
                 new SequentialAction(
-                        /*new ParallelAction(
-                                moveToRungsAction
-                                //moveLiftTop
+                        new ParallelAction(
+                                moveToRungsAction,
+                                moveLiftTop
                         ),
                         placeSpec,
 
                         new ParallelAction(
-                                //moveLiftBottom,
+                                moveLiftBottom,
                                 pushSamplesBackAction
-                        ),*/
+                        ),
+                        pushsamplesback2Action,
                         new ParallelAction(
-                                //pushMoreSamplesBackAction,
+                                pushsamplesback3Action,
                                 prepareIntake
                         ),
-                        completeTransfer
+
+                        completeTransfer,
+                        new ParallelAction(moveToRungs2Action, moveLiftTop),
+                        placeSpec2,
+                        new ParallelAction(moveToCornerAction, moveLiftBottom, prepareIntake),
+
+                        completeTransfer,
+                        new ParallelAction(moveToRungs3Action, moveLiftTop),
+                        placeSpec3,
+                        new ParallelAction(moveToCorner2Action, moveLiftBottom, prepareIntake),
+
+                        completeTransfer,
+                        new ParallelAction(moveToRungs4Action, moveLiftTop),
+                        placeSpec4,
+                        new ParallelAction(moveToCorner2Action, moveLiftBottom)
                 )
         );
         /* PLACES 2 WITHOUT ROADRUNNER
