@@ -37,34 +37,21 @@ public class RobotMainTeleOp extends LinearOpMode{
     Button rBumper = new Button();
     Button b = new Button();
     Button touchpad = new Button();
+    private static ElapsedTime timer1 = new ElapsedTime();
+    private static ElapsedTime timer2 = new ElapsedTime();
 
     //Varibles
     double FRotationServoPos = 0.5024;
     double FWristServoPos = 0.5;
 
     double FClawRotationServoPos = 0;
-    static double BWristPos = 0;
-    static double BWristPosCurrent = 0;
+    double BWristPos = 0.5;
 
     //Boolean expressions
     boolean wasPressed1 = false;
 
-    private static float servoTrack(Servo x, int pos, int current){
-        if (x.getPosition() < pos) {
-             current += 0.001;
-        }
-        else if (x.getPosition() > pos){
-            current -= 0.001;
-        }
-        return current;
-    }
-
     public void runOpMode() {
-        //Configured looking from the FRONT of the robot
-        /*Hardware mapping is done based on the ports each hardware device is plugged into. The name of the hardware device is followed by the number port it is plugged into.
-          If there are multiple expansion hubs the first digit represents the hub the device is plugged into. Ex: Servo10 means it is plugged into port 0 on the expansion hub.
-          Ex: Motor1 means it is plugged into port 1 on the control hub.
-         */
+        //Configured looking from BEHIND of the robot
 
         //Servos
         FRotationServo = hardwareMap.get(Servo.class, "frontRotation");
@@ -127,18 +114,40 @@ public class RobotMainTeleOp extends LinearOpMode{
                 FWristServoPos = 0.7587;
                 FClawRotationServoPos = 0;
                 BWristPos = 0.1131;
+                wasPressed1 = true;
+                rTrigger.changeState(false);
+                timer1.reset();
+                timer2.reset();
             }
-
-            //Set claw to pickup position
-            if (gamepad2.a){
+            if (timer1.milliseconds() >= 1000 && wasPressed1){
+                rTrigger.changeState(true);
+            }
+            if (timer1.milliseconds() >= 2000 && wasPressed1){
+                lTrigger.changeState(false);
+                timer2.reset();
+            }
+            if (timer1.milliseconds() >= 2500 && wasPressed1){
+                wasPressed1 = false;
                 FRotationServoPos = 0.3302;
                 FWristServoPos = 0.273;
                 FClawRotationServoPos = 0.65;
                 BWristPos = 0.48435;
             }
 
+            //Set claw to pickup position
+            if (gamepad2.a){
+                wasPressed1 = false;
+                FRotationServoPos = 0.3302;
+                FWristServoPos = 0.273;
+                FClawRotationServoPos = 0.65;
+                BWristPos = 0.48435;
+                rTrigger.changeState(false);
+                lTrigger.changeState(false);
+            }
+
             //Set claw to face perpendicular to the wall
             if (gamepad2.y){
+                wasPressed1 = false;
                 FRotationServoPos = 0.5221;
                 FWristServoPos = 0.4;
                 FClawRotationServoPos = 0.65;
@@ -230,7 +239,7 @@ public class RobotMainTeleOp extends LinearOpMode{
                 FClawRotationServoPos += 0.325;
             }
 
-            if (FClawRotationServoPos > 0.325 && rBumper.press(gamepad2.right_bumper)){
+            if (FClawRotationServoPos > 0.326 && rBumper.press(gamepad2.right_bumper)){
                 FClawRotationServoPos -= 0.325;
             }
 
