@@ -61,4 +61,8 @@ public class Button {
     public void changeState(boolean x){
         activated = x;
     }
+
+    public boolean getState(){
+        return activated;
+    }
 }

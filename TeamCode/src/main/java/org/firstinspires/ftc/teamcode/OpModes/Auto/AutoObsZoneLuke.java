@@ -21,7 +21,6 @@ import org.firstinspires.ftc.teamcode.RoadRunnerStuff.Outtake;
 // START WITH ROBOT ON A3 WITH RIGHT WHEELS ON COORDINATE LINE
 @Autonomous
 public class AutoObsZoneLuke extends LinearOpMode {
-
     Extendo extendo = new Extendo(this);
     Servo wristClawServo = null;
     // AprilTagDist AprilTagDistance = new AprilTagDist(this);

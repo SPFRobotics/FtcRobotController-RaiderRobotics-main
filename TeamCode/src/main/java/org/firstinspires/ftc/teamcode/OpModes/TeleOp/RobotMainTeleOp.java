@@ -38,6 +38,7 @@ public class RobotMainTeleOp extends LinearOpMode{
     Button b = new Button();
     Button touchpad = new Button();
     private static ElapsedTime timer1 = new ElapsedTime();
+    private static ElapsedTime masterClock = new ElapsedTime();
 
     //Varibles
     double FRotationServoPos = 0.5024;
@@ -110,20 +111,30 @@ public class RobotMainTeleOp extends LinearOpMode{
             //Reset Claw to transit position
             if (b.press(gamepad2.b)){
                 FRotationServoPos = 0.5221;
-                FWristServoPos = 0.7587;
-                FClawRotationServoPos = 0;
-                BWristPos = 0.1131;
+                BWristPos = 0.155;
                 wasPressed1 = true;
                 rTrigger.changeState(false);
                 timer1.reset();
             }
+            if (timer1.milliseconds() >= 500 && wasPressed1){
+                FWristServoPos = 0.55;
+            }
             if (timer1.milliseconds() >= 1000 && wasPressed1){
-                rTrigger.changeState(true);
+                FClawRotationServoPos = 0;
+            }
+            if (timer1.milliseconds() >= 1500 && wasPressed1){
+                FWristServoPos = 0.73;
             }
             if (timer1.milliseconds() >= 2000 && wasPressed1){
-                lTrigger.changeState(false);
+                rTrigger.changeState(true);
             }
             if (timer1.milliseconds() >= 2500 && wasPressed1){
+                lTrigger.changeState(false);
+            }
+            if (timer1.milliseconds() >= 3000 && wasPressed1){
+                FWristServoPos = 0.3;
+            }
+            if (timer1.milliseconds() >= 3500 && wasPressed1){
                 wasPressed1 = false;
                 FRotationServoPos = 0.3302;
                 FWristServoPos = 0.273;
@@ -137,7 +148,7 @@ public class RobotMainTeleOp extends LinearOpMode{
                 FRotationServoPos = 0.3302;
                 FWristServoPos = 0.273;
                 FClawRotationServoPos = 0.65;
-                BWristPos = 0.48435;
+                BWristPos = 0.5;
                 rTrigger.changeState(false);
                 lTrigger.changeState(false);
             }
@@ -242,25 +253,59 @@ public class RobotMainTeleOp extends LinearOpMode{
 
             FClawRotationServo.setPosition(FClawRotationServoPos);
 
-
             //Telemetry
             telemetry.update();
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
             telemetry.addLine("==========================================");
-            telemetry.addLine("Rotation Servo Pos: " + FRotationServo.getPosition());
-            telemetry.addLine("Wrist Servo Pos: " + FWristServo.getPosition());
-            telemetry.addLine("Back Wrist Servo Pos: " + BWristServo.getPosition());
-            telemetry.addLine("Back Claw: " + BRClawServo.getPosition());
-            telemetry.addLine("Claw Rotation Servo Pos: " + FClawRotationServo.getPosition());
-            telemetry.addLine("Claw Servo Pos: " + FClawServo.getPosition());
-            telemetry.addLine("Vertical Slides: " + MotorYRight.getCurrentPosition());
+
+            //Display Uptime
+            telemetry.addLine("Up Time:");
+            if (((int)(masterClock.nanoseconds()/1000000000)/3600) == 0 && ((int)(masterClock.nanoseconds()/1000000000)/60) == 0){
+                telemetry.addLine(String.valueOf(((int)(masterClock.nanoseconds()/1000000000)%60) + "." + String.valueOf(masterClock.nanoseconds()%1000000000) + "\n"));
+            }
+            else if (((int)(masterClock.nanoseconds()/1000000000)/3600) == 0){
+                telemetry.addLine(String.valueOf(((int)(masterClock.nanoseconds()/1000000000)/60)+ ":" + ((int)(masterClock.nanoseconds()/1000000000)%60) + "." + String.valueOf(masterClock.nanoseconds()%1000000000) + "\n"));
+            }
+            else{
+                telemetry.addLine(String.valueOf(((int)(masterClock.nanoseconds()/1000000000)/3600)) + ":" + String.valueOf(((int)(masterClock.nanoseconds()/1000000000)/60)) + ":" + String.valueOf(((int)(masterClock.nanoseconds()/1000000000)%60) + "." + String.valueOf(masterClock.nanoseconds()%1000000000) + "\n"));
+            }
+
+            //Display Motor Power Values
+            telemetry.addLine("Motor PWR Values: ");
+            telemetry.addLine("FRMotor PWR:" + String.valueOf(FRMotor.getPower()));
+            telemetry.addLine("FLMotor PWR:" + String.valueOf(FLMotor.getPower()));
+            telemetry.addLine("BRMotor PWR:" + String.valueOf(BRMotor.getPower()));
+            telemetry.addLine("BLMotor PWR: " + String.valueOf(BLMotor.getPower()));
+            telemetry.addLine("Extendo PWR: " + String.valueOf(extendo.getPower()));
+            telemetry.addLine("Right Vertical Slide PWR: " + String.valueOf(MotorYRight.getPower()));
+            telemetry.addLine("Left Vertical Slide PWR: " + String.valueOf(MotorYLeft.getPower()) + "\n");
+
+            //Motor Positions
+            telemetry.addLine("Motor Positions: ");
+            telemetry.addLine("Right Vertical Slide Pos: " + String.valueOf(MotorYRight.getCurrentPosition()));
+            telemetry.addLine("Left Vertical Slide Pos: " + String.valueOf(MotorYLeft.getCurrentPosition()) + "\n");
+
+            //Servo Positions
+            telemetry.addLine("Servo Positions: ");
+            telemetry.addLine("Front Rotation Servo: " + String.valueOf(FRotationServo.getPosition()));
+            telemetry.addLine("Front Wrist Servo: " + String.valueOf(FWristServo.getPosition()));
+            telemetry.addLine("Front Claw Rotation Servo: " + String.valueOf(FClawRotationServo.getPosition()));
+            telemetry.addLine("Front Claw: " + String.valueOf(FClawServo.getPosition()));
+            telemetry.addLine("Back Right Claw Servo: " + String.valueOf(BLClawServo.getPosition()));
+            telemetry.addLine("Back Left Claw Servo: " + String.valueOf(BRClawServo.getPosition()) + "\n");
+
+            //States
+            telemetry.addLine("Right Bumper State: " + rBumper.getState());
+            telemetry.addLine("Left Bumper State: " + lBumper.getState());
+            telemetry.addLine("Right Trigger State: " + rTrigger.getState());
+            telemetry.addLine("Left Trigger State: " + lTrigger.getState());
             telemetry.addLine("Slide Stop State: " + slideStop.isPressed());
-            telemetry.addLine("Extendo: " + extendo.getCurrentPosition());
+            telemetry.addLine("b Button State: " + b.getState());
+
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
             telemetry.addLine("==========================================");
-
         }
 
     }
