@@ -149,8 +149,8 @@ public class RobotMainTeleOp extends LinearOpMode{
                 FWristServoPos = 0.273;
                 FClawRotationServoPos = 0.65;
                 BWristPos = 0.5;
-                rTrigger.changeState(false);
-                lTrigger.changeState(false);
+                //rTrigger.changeState(false);
+                //lTrigger.changeState(false);
             }
 
             //Set claw to face perpendicular to the wall
@@ -194,7 +194,7 @@ public class RobotMainTeleOp extends LinearOpMode{
             }
             //Rotate Arm
             //*************************************************************
-            FRotationServoPos += gamepad2.left_stick_x*0.004;
+            FRotationServoPos += gamepad2.left_stick_x*0.01;
             if (FRotationServoPos < 0){
                 FRotationServoPos = 0;
             }
@@ -207,14 +207,14 @@ public class RobotMainTeleOp extends LinearOpMode{
 
             //Back wrist logic
             //*************************************************************
-            BWristPos += gamepad2.right_stick_y*0.004;
+            BWristPos += gamepad2.right_stick_y*0.01;
             BWristServo.setPosition(BWristPos);
             //*************************************************************
 
             //Move Wrist
             //*************************************************************
 
-            FWristServoPos += -gamepad2.left_stick_y * 0.002;
+            FWristServoPos += -gamepad2.left_stick_y * 0.01;
             if (FWristServoPos < 0){
                 FWristServoPos = 0;
             }
@@ -238,8 +238,8 @@ public class RobotMainTeleOp extends LinearOpMode{
                 BRClawServo.setPosition(0.25);
             }
             else{
-                BLClawServo.setPosition(0.50);
-                BRClawServo.setPosition(0.50);
+                BLClawServo.setPosition(0.7);
+                BRClawServo.setPosition(0.7);
             }
             //****************************************************************
 
