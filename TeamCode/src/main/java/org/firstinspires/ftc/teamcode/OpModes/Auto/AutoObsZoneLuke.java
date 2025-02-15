@@ -43,8 +43,9 @@ public class AutoObsZoneLuke extends LinearOpMode {
         TrajectoryActionBuilder moveBackToPlace = moveToRungs.endTrajectory().fresh().lineToX(28);
         Action moveBackToPlaceAction = moveBackToPlace.build();
         TrajectoryActionBuilder pushSamplesBack = moveBackToPlace.endTrajectory().fresh()
-                .strafeTo(new Vector2d(15,-10))
-                .strafeTo(new Vector2d(34,-29))
+                .waitSeconds(.25)
+                .splineToConstantHeading(new Vector2d(15,-15),0)
+                //.splineTo(new Vector2d(50,-29),0)
                 .strafeTo(new Vector2d(5, -30));
         TrajectoryActionBuilder pushSamplesBack2 = pushSamplesBack.endTrajectory().fresh()
                 .strafeTo(new Vector2d(42,-31))
@@ -53,22 +54,23 @@ public class AutoObsZoneLuke extends LinearOpMode {
         TrajectoryActionBuilder pushSamplesBack3 = pushSamplesBack2.endTrajectory().fresh()
                 .strafeTo(new Vector2d(42,-37))
                 .strafeTo(new Vector2d(48,-46))
-                .strafeTo(new Vector2d(2, -47));
+                .strafeTo(new Vector2d(2,-44));
         TrajectoryActionBuilder moveToRungs2 = pushSamplesBack3.endTrajectory().fresh()
-                .strafeTo(new Vector2d(30, 13));
+                .strafeTo(new Vector2d(30, 12));
         Action moveToRungs2Action = moveToRungs2.build();
         TrajectoryActionBuilder moveBackToPlace2 = moveToRungs2.endTrajectory().fresh().lineToX(28);
-        Action moveBackToPlace2Action = moveBackToPlace.build();
+        Action moveBackToPlace2Action = moveBackToPlace2.build();
         TrajectoryActionBuilder moveToCorner = moveBackToPlace2.endTrajectory().fresh()
-                .strafeTo(new Vector2d(5,2));
+                .waitSeconds(.25)
+                .strafeTo(new Vector2d(2,-20));
         Action moveToCornerAction = moveToCorner.build();
         TrajectoryActionBuilder moveToRungs3 = moveToCorner.endTrajectory().fresh()
-                .strafeTo(new Vector2d(30, 11));
+                .strafeTo(new Vector2d(30, 8));
         Action moveToRungs3Action = moveToRungs3.build();
         TrajectoryActionBuilder moveBackToPlace3 = moveToRungs3.endTrajectory().fresh().lineToX(28);
-        Action moveBackToPlace3Action = moveBackToPlace.build();
+        Action moveBackToPlace3Action = moveBackToPlace3.build();
         TrajectoryActionBuilder moveToCorner2 = moveBackToPlace2.endTrajectory().fresh()
-                .strafeTo(new Vector2d(5,2));
+                .strafeTo(new Vector2d(2,-20));
         Action moveToCorner2Action = moveToCorner2.build();
         TrajectoryActionBuilder moveToRungs4 = moveToCorner2.endTrajectory().fresh()
                 .strafeTo(new Vector2d(30,9));
@@ -76,43 +78,59 @@ public class AutoObsZoneLuke extends LinearOpMode {
         TrajectoryActionBuilder moveBackToPlace4 = moveToRungs4.endTrajectory().fresh().lineToX(28);
         Action moveBackToPlace4Action = moveBackToPlace4.build();
         TrajectoryActionBuilder moveToCorner3 = moveBackToPlace2.endTrajectory().fresh()
-                .strafeTo(new Vector2d(5,2));
+                .strafeTo(new Vector2d(2,-20));
         Action moveToCorner3Action = moveToCorner3.build();
 
         Action pushSamplesBackAction = pushSamplesBack.build();
         Action pushsamplesback2Action  = pushSamplesBack2.build();
         Action pushsamplesback3Action  = pushSamplesBack3.build();
         // Necessary Actions:
-        Action moveLiftTop = lift.moveUp(13.7);
+        Action moveLiftTop = lift.moveUp(13.5);
         Action moveLiftBottom = lift.moveDown(0);
 
         Action placeSpec = new SequentialAction(
-                outtake.prepareOuttake(),
                 outtake.lowerSpec(),
                 moveBackToPlaceAction,
                 outtake.openClaw()
         );
         Action placeSpec2 = new SequentialAction(
-                outtake.prepareOuttake(),
                 outtake.lowerSpec(),
                 moveBackToPlace2Action,
+                drive.actionBuilder(beginPose).waitSeconds(.25).build(),
                 outtake.openClaw()
         );
         Action placeSpec3 = new SequentialAction(
-                outtake.prepareOuttake(),
                 outtake.lowerSpec(),
                 moveBackToPlace3Action,
+                drive.actionBuilder(beginPose).waitSeconds(.25).build(),
                 outtake.openClaw()
         );
         Action placeSpec4 = new SequentialAction(
-                outtake.prepareOuttake(),
                 outtake.lowerSpec(),
                 moveBackToPlace4Action,
                 outtake.openClaw()
         );
 
         Action prepareIntake = new ParallelAction(intake.prepareIntake(), outtake.prepareIntake());
+        Action prepareIntake2 = new ParallelAction(intake.prepareIntake(), outtake.prepareIntake());
+        Action prepareIntake3 = new ParallelAction(intake.prepareIntake(), outtake.prepareIntake());
         Action completeTransfer = new SequentialAction(
+                intake.closeClaw(),
+                drive.actionBuilder(beginPose).waitSeconds(.25).build(),
+                intake.prepareTransfer(),
+                drive.actionBuilder(beginPose).waitSeconds(0.7).build(),
+                outtake.closeClaw(),
+                drive.actionBuilder(beginPose).waitSeconds(.5).build(),
+                intake.openClaw());
+        Action completeTransfer2 = new SequentialAction(
+                intake.closeClaw(),
+                drive.actionBuilder(beginPose).waitSeconds(.25).build(),
+                intake.prepareTransfer(),
+                drive.actionBuilder(beginPose).waitSeconds(0.7).build(),
+                outtake.closeClaw(),
+                drive.actionBuilder(beginPose).waitSeconds(.5).build(),
+                intake.openClaw());
+        Action completeTransfer3 = new SequentialAction(
                 intake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.25).build(),
                 intake.prepareTransfer(),
@@ -138,50 +156,45 @@ public class AutoObsZoneLuke extends LinearOpMode {
                                 prepareIntake
                         ),
 
-                        completeTransfer,
-                        new ParallelAction(moveToRungs2Action, moveLiftTop),
+                        new ParallelAction(moveToRungs2Action, new SequentialAction(completeTransfer, moveLiftTop)),
                         placeSpec2,
-                        new ParallelAction(moveToCornerAction, moveLiftBottom, prepareIntake),
+                        new ParallelAction(moveLiftBottom, moveToCornerAction,  prepareIntake2),
 
-                        completeTransfer,
-                        new ParallelAction(moveToRungs3Action, moveLiftTop),
+                        new ParallelAction(moveToRungs3Action, new SequentialAction(completeTransfer2, moveLiftTop)),
                         placeSpec3,
-                        new ParallelAction(moveToCorner2Action, moveLiftBottom, prepareIntake),
+                        moveLiftBottom
+                        // new ParallelAction(moveToCorner2Action, moveLiftBottom)
 
-                        completeTransfer,
-                        new ParallelAction(moveToRungs4Action, moveLiftTop),
-                        placeSpec4,
-                        new ParallelAction(moveToCorner2Action, moveLiftBottom)
                 )
         );
-        /* PLACES 2 WITHOUT ROADRUNNER
-        //telemetry.addData("X", AprilTagDistance.getDistX());
-        //telemetry.addData("Y", AprilTagDistance.getDistY());
-        chassis.move(.5,"left",30); // should move towards submersible
-        chassis.moveMultitask(.5, "forward", 69.01,24, 1); // should move towards submersible
-        //telemetry.addData("X", AprilTagDistance.getDistX());
-        //telemetry.addData("Y", AprilTagDistance.getDistY());
-        slide.slide(18.5,1); // lowers lift (specimen should attach by now)
-        claw.open(); // let go of specimen
-        // next 2 move commands move towards parking zone
-
-        chassis.move(.5, "backward", 50);
-        chassis.moveMultitask(.5, "right", 86, 0,1);
-
-
-        chassis.rotate(-180, 0.5);
-        chassis.move(.5, "forward", 19.01);
-        claw.close();
-        slide.slide(5,1);
-        chassis.move(.5, "backward", 19.01);
-        chassis.rotate(-180, 0.5);
-        chassis.moveMultitask(.5, "left", 80,24, 1);
-        chassis.move(.5, "forward", 55.5);
-        slide.slide(18.5, 1);
-        claw.open();
-        chassis.move(.5, "backward", 60);
-        chassis.moveMultitask(.5, "right", 130, 0, 1);
-        */
+//        /* PLACES 2 WITHOUT ROADRUNNER
+//        //telemetry.addData("X", AprilTagDistance.getDistX());
+//        //telemetry.addData("Y", AprilTagDistance.getDistY());
+//        chassis.move(.5,"left",30); // should move towards submersible
+//        chassis.moveMultitask(.5, "forward", 69.01,24, 1); // should move towards submersible
+//        //telemetry.addData("X", AprilTagDistance.getDistX());
+//        //telemetry.addData("Y", AprilTagDistance.getDistY());
+//        slide.slide(18.5,1); // lowers lift (specimen should attach by now)
+//        claw.open(); // let go of specimen
+//        // next 2 move commands move towards parking zone
+//
+//        chassis.move(.5, "backward", 50);
+//        chassis.moveMultitask(.5, "right", 86, 0,1);
+//
+//
+//        chassis.rotate(-180, 0.5);
+//        chassis.move(.5, "forward", 19.01);
+//        claw.close();
+//        slide.slide(5,1);
+//        chassis.move(.5, "backward", 19.01);
+//        chassis.rotate(-180, 0.5);
+//        chassis.moveMultitask(.5, "left", 80,24, 1);
+//        chassis.move(.5, "forward", 55.5);
+//        slide.slide(18.5, 1);
+//        claw.open();
+//        chassis.move(.5, "backward", 60);
+//        chassis.moveMultitask(.5, "right", 130, 0, 1);
+//        */
 
     }
 }
