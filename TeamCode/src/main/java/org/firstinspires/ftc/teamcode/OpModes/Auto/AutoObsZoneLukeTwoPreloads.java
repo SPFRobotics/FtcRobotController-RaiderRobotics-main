@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.RoadRunnerStuff.Outtake;
 
 // START WITH ROBOT ON A3 WITH RIGHT WHEELS ON COORDINATE LINE
 @Autonomous
-public class AutoObsZoneLuke extends LinearOpMode {
+public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
 
     Extendo extendo = new Extendo(this);
     Servo wristClawServo = null;
@@ -38,7 +38,7 @@ public class AutoObsZoneLuke extends LinearOpMode {
         // Movements (in order of execution):
 
         TrajectoryActionBuilder moveToRungs = drive.actionBuilder(beginPose)
-                .strafeTo(new Vector2d(30, 15));
+                .strafeTo(new Vector2d(30, 20));
         Action moveToRungsAction = moveToRungs.build();
         TrajectoryActionBuilder moveBackToPlace = moveToRungs.endTrajectory().fresh().lineToX(28);
         Action moveBackToPlaceAction = moveBackToPlace.build();
@@ -52,40 +52,35 @@ public class AutoObsZoneLuke extends LinearOpMode {
         TrajectoryActionBuilder pushSamplesBack2 = pushSamplesBack.endTrajectory().fresh()
                 .strafeTo(new Vector2d(42,-31))
                 .strafeTo(new Vector2d(48,-40))
-                .strafeTo(new Vector2d(5, -41));
-        TrajectoryActionBuilder pushSamplesBack3 = pushSamplesBack2.endTrajectory().fresh()
-                .strafeTo(new Vector2d(42,-37))
-                .strafeTo(new Vector2d(48,-46))
-                .strafeTo(new Vector2d(2,-44));
-        TrajectoryActionBuilder moveToRungs2 = pushSamplesBack3.endTrajectory().fresh()
-                .strafeTo(new Vector2d(30, 12));
+                .strafeTo(new Vector2d(2, -41));
+        TrajectoryActionBuilder moveToRungs2 = pushSamplesBack2.endTrajectory().fresh()
+                .strafeTo(new Vector2d(30, 15));
         Action moveToRungs2Action = moveToRungs2.build();
         TrajectoryActionBuilder moveBackToPlace2 = moveToRungs2.endTrajectory().fresh().lineToX(28);
         Action moveBackToPlace2Action = moveBackToPlace2.build();
         TrajectoryActionBuilder moveToCorner = moveBackToPlace2.endTrajectory().fresh()
                 .waitSeconds(.25)
-                .strafeTo(new Vector2d(2,-20));
+                .strafeTo(new Vector2d(2,-25));
         Action moveToCornerAction = moveToCorner.build();
         TrajectoryActionBuilder moveToRungs3 = moveToCorner.endTrajectory().fresh()
-                .strafeTo(new Vector2d(30, 8));
+                .strafeTo(new Vector2d(30, 10));
         Action moveToRungs3Action = moveToRungs3.build();
         TrajectoryActionBuilder moveBackToPlace3 = moveToRungs3.endTrajectory().fresh().lineToX(28);
         Action moveBackToPlace3Action = moveBackToPlace3.build();
-        TrajectoryActionBuilder moveToCorner2 = moveBackToPlace2.endTrajectory().fresh()
-                .strafeTo(new Vector2d(2,-20));
+        TrajectoryActionBuilder moveToCorner2 = moveBackToPlace3.endTrajectory().fresh()
+                .strafeTo(new Vector2d(2,-25));
         Action moveToCorner2Action = moveToCorner2.build();
         TrajectoryActionBuilder moveToRungs4 = moveToCorner2.endTrajectory().fresh()
-                .strafeTo(new Vector2d(30,9));
+                .strafeTo(new Vector2d(30,5));
         Action moveToRungs4Action = moveToRungs4.build();
         TrajectoryActionBuilder moveBackToPlace4 = moveToRungs4.endTrajectory().fresh().lineToX(28);
         Action moveBackToPlace4Action = moveBackToPlace4.build();
-        TrajectoryActionBuilder moveToCorner3 = moveBackToPlace2.endTrajectory().fresh()
-                .strafeTo(new Vector2d(2,-20));
+        TrajectoryActionBuilder moveToCorner3 = moveBackToPlace4.endTrajectory().fresh()
+                .strafeTo(new Vector2d(2,-40));
         Action moveToCorner3Action = moveToCorner3.build();
 
         Action pushSamplesBackAction = pushSamplesBack.build();
         Action pushsamplesback2Action  = pushSamplesBack2.build();
-        Action pushsamplesback3Action  = pushSamplesBack3.build();
         // Necessary Actions:
         Action moveLiftTop = lift.moveUp(13.5);
         Action moveLiftBottom = lift.moveDown(0);
@@ -113,9 +108,9 @@ public class AutoObsZoneLuke extends LinearOpMode {
                 outtake.openClaw()
         );
 
-        Action prepareIntake = new ParallelAction(intake.prepareIntake(), outtake.prepareIntake());
-        Action prepareIntake2 = new ParallelAction(intake.prepareIntake(), outtake.prepareIntake());
-        Action prepareIntake3 = new ParallelAction(intake.prepareIntake(), outtake.prepareIntake());
+        Action prepareIntake = new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.5).build(), new ParallelAction(intake.prepareIntake(), outtake.prepareIntake()));
+        Action prepareIntake2 = new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.5).build(), new ParallelAction(intake.prepareIntake(), outtake.prepareIntake()));
+        Action prepareIntake3 = new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.5).build(), new ParallelAction(intake.prepareIntake(), outtake.prepareIntake()));
         Action completeTransfer = new SequentialAction(
                 intake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.25).build(),
@@ -152,9 +147,8 @@ public class AutoObsZoneLuke extends LinearOpMode {
                                 moveLiftBottom,
                                 pushSamplesBackAction
                         ),
-                        pushsamplesback2Action,
                         new ParallelAction(
-                                pushsamplesback3Action,
+                                pushsamplesback2Action,
                                 prepareIntake
                         ),
 
@@ -164,8 +158,11 @@ public class AutoObsZoneLuke extends LinearOpMode {
 
                         new ParallelAction(moveToRungs3Action, new SequentialAction(completeTransfer2, moveLiftTop)),
                         placeSpec3,
-                        moveLiftBottom
-                        // new ParallelAction(moveToCorner2Action, moveLiftBottom)
+                        new ParallelAction(moveToCorner2Action, moveLiftBottom, prepareIntake3),
+
+                        new ParallelAction(moveToRungs4Action, new SequentialAction(completeTransfer3, moveLiftTop)),
+                        placeSpec4,
+                        new ParallelAction(moveToCorner2Action, moveLiftBottom, moveToCorner3Action)
 
                 )
         );
