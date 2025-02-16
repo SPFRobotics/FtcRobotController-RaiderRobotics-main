@@ -20,7 +20,7 @@ public class Intake {
     private final double CLAW_ROTATION_INTAKE =0.65;
     private final double CLAW_ROTATION_TRANSFER =0;
     private final double WRIST_TRANSFER_POS = 0.73;
-    private final double WRIST_INTAKE_POS = 0.4;
+    private final double WRIST_INTAKE_POS = 0.35;
     public Intake(HardwareMap hardwareMap){
         armRotation = hardwareMap.get(Servo.class, "frontRotation");
         wrist = hardwareMap.get(Servo.class, "frontWrist");
