@@ -65,7 +65,7 @@ public class Lift {
 
         // checks if the lift motor has been powered on
         private boolean initialized = false;
-        private static final int liftMaxMotorCounts = 4062;
+        private static final int liftMaxMotorCounts = (int)(15*(537.7 / (4.409)));
         private int encoderTicks;
         LiftDown(double height){
             encoderTicks = inchToMotorTicks(height);
@@ -85,7 +85,7 @@ public class Lift {
             // checks lift's current position
             double pos = liftLeft.getCurrentPosition();
             packet.put("liftPos", pos);
-            if (pos > encoderTicks) {
+            if (pos > encoderTicks && pos <liftMaxMotorCounts) {
                 // true causes the action to rerun
                 return true;
             } else {
