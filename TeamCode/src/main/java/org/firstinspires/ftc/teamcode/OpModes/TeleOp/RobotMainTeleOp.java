@@ -50,7 +50,10 @@ public class RobotMainTeleOp extends LinearOpMode{
     //Boolean expressions
     boolean wasPressed1 = false;
 
+
     public void runOpMode() {
+        masterClock.reset();
+
         //Configured looking from BEHIND of the robot
 
         //Servos
@@ -161,6 +164,14 @@ public class RobotMainTeleOp extends LinearOpMode{
                 BWristPos = 0.5;
             }
 
+            if (gamepad2.x){
+                wasPressed1 = false;
+                FRotationServoPos = 0.5221;
+                FWristServoPos = 0;
+                FClawRotationServoPos = 0.65;
+                BWristPos = 0.5;
+            }
+
             //Extend Linear Slides
             //Horizontal
             if (gamepad1.right_bumper){
@@ -173,7 +184,6 @@ public class RobotMainTeleOp extends LinearOpMode{
                 extendo.setPower(0);
             }
             //Vertical
-            touchpad.changeState(false);
             if (gamepad2.dpad_up && MotorYRight.getCurrentPosition() < 2220) {
                 MotorYLeft.setPower(1);
                 MotorYRight.setPower(1);
@@ -237,11 +247,11 @@ public class RobotMainTeleOp extends LinearOpMode{
             }
             //****************************************************************
 
-            if (lBumper.press(gamepad2.left_bumper)){
+            if (lBumper.press(gamepad2.left_bumper) && FClawRotationServoPos < 1){
                 FClawRotationServoPos += 0.325;
             }
 
-            if (rBumper.press(gamepad2.right_bumper)){
+            if (rBumper.press(gamepad2.right_bumper) && FClawRotationServoPos > 0){
                 FClawRotationServoPos -= 0.325;
             }
 
