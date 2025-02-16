@@ -11,8 +11,10 @@ public class Outtake {
     private Servo leftArm = null;
     private Servo rightArm = null;
     private Servo wrist = null;
-    private final double LEFT_ARM_OPEN_POS = 0.7;
-    private final double RIGHT_ARM_OPEN_POS = 0.7;
+    private final double LEFT_ARM_OPEN_POS = 0.43;
+    private final double RIGHT_ARM_OPEN_POS = 0.43;
+    private final double LEFT_ARM_TRANSIT_POS = 0.7;
+    private final double RIGHT_ARM_TRANSIT_POS = 0.7;
     private final double LEFT_ARM_CLOSED_POS = 0.28;
     private final double RIGHT_ARM_CLOSED_POS = 0.28;
     private final double WRIST_TRANSIT_POS = 0.145;
@@ -65,8 +67,8 @@ public class Outtake {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             wrist.setPosition(WRIST_TRANSIT_POS);
-            leftArm.setPosition(LEFT_ARM_OPEN_POS);
-            rightArm.setPosition(RIGHT_ARM_OPEN_POS);
+            leftArm.setPosition(LEFT_ARM_TRANSIT_POS);
+            rightArm.setPosition(RIGHT_ARM_TRANSIT_POS);
             return false;
         }
     }
