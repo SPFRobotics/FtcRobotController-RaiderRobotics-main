@@ -132,14 +132,13 @@ public class RobotMainTeleOp extends LinearOpMode{
                 lTrigger.changeState(false);
             }
             if (timer1.milliseconds() >= 3000 && wasPressed1){
-                FWristServoPos = 0.3;
+                BWristPos = 0.48435;
             }
             if (timer1.milliseconds() >= 3500 && wasPressed1){
                 wasPressed1 = false;
                 FRotationServoPos = 0.3302;
                 FWristServoPos = 0.273;
                 FClawRotationServoPos = 0.65;
-                BWristPos = 0.48435;
             }
 
             //Set claw to pickup position
@@ -238,11 +237,11 @@ public class RobotMainTeleOp extends LinearOpMode{
             }
             //****************************************************************
 
-            if (FClawRotationServoPos < 0.975 && lBumper.press(gamepad2.left_bumper)){
+            if (lBumper.press(gamepad2.left_bumper)){
                 FClawRotationServoPos += 0.325;
             }
 
-            if (FClawRotationServoPos > 0.326 && rBumper.press(gamepad2.right_bumper)){
+            if (rBumper.press(gamepad2.right_bumper)){
                 FClawRotationServoPos -= 0.325;
             }
 
