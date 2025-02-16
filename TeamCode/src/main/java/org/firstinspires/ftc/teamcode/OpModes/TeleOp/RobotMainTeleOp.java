@@ -109,7 +109,7 @@ public class RobotMainTeleOp extends LinearOpMode{
             BLMotor.setPower((y + x - rx) / denominator);
 
             //Reset Claw to transit position
-            if (b.press(gamepad2.b)){
+            if (b.press(gamepad2.b) && !gamepad1.options){
                 FRotationServoPos = 0.5221;
                 BWristPos = 0.155;
                 wasPressed1 = true;
@@ -174,23 +174,18 @@ public class RobotMainTeleOp extends LinearOpMode{
                 extendo.setPower(0);
             }
             //Vertical
-            if (touchpad.toggle(gamepad2.touchpad) && !slideStop.isPressed()){
-                MotorYLeft.setPower(-0.5);
-                MotorYRight.setPower(-0.5);
+            touchpad.changeState(false);
+            if (gamepad2.dpad_up && MotorYRight.getCurrentPosition() < 2220) {
+                MotorYLeft.setPower(1);
+                MotorYRight.setPower(1);
+            }
+            else if (!slideStop.isPressed() && gamepad2.dpad_down){
+                MotorYLeft.setPower(-1);
+                MotorYRight.setPower(-1);
             }
             else{
-                if (gamepad2.dpad_up) {
-                    MotorYLeft.setPower(1);
-                    MotorYRight.setPower(1);
-                }
-                else if (!slideStop.isPressed() && gamepad2.dpad_down){
-                    MotorYLeft.setPower(-1);
-                    MotorYRight.setPower(-1);
-                }
-                else{
-                    MotorYLeft.setPower(0);
-                    MotorYRight.setPower(0);
-                }
+                MotorYLeft.setPower(0);
+                MotorYRight.setPower(0);
             }
             //Rotate Arm
             //*************************************************************
@@ -284,7 +279,8 @@ public class RobotMainTeleOp extends LinearOpMode{
             //Motor Positions
             telemetry.addLine("Motor Positions: ");
             telemetry.addLine("Right Vertical Slide Pos: " + String.valueOf(MotorYRight.getCurrentPosition()));
-            telemetry.addLine("Left Vertical Slide Pos: " + String.valueOf(MotorYLeft.getCurrentPosition()) + "\n");
+            telemetry.addLine("Left Vertical Slide Pos: " + String.valueOf(MotorYLeft.getCurrentPosition()));
+            telemetry.addLine("Extendo Pos: " + String.valueOf(extendo.getCurrentPosition()) + "\n");
 
             //Servo Positions
             telemetry.addLine("Servo Positions: ");
