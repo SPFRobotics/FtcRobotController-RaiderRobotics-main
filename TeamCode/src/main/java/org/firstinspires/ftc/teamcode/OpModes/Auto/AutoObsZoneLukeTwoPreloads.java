@@ -52,7 +52,7 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(48,-40),0)
                 .strafeTo(new Vector2d(2, -41));
         TrajectoryActionBuilder moveToRungs2 = pushSamplesBack2.endTrajectory().fresh()
-                .strafeTo(new Vector2d(30, 14));
+                .strafeTo(new Vector2d(30.3, 14));
         Action moveToRungs2Action = moveToRungs2.build();
         TrajectoryActionBuilder moveBackToPlace2 = moveToRungs2.endTrajectory().fresh().lineToX(28);
         Action moveBackToPlace2Action = moveBackToPlace2.build();
@@ -61,7 +61,7 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
                 .strafeTo(new Vector2d(2,-22));
         Action moveToCornerAction = moveToCorner.build();
         TrajectoryActionBuilder moveToRungs3 = moveToCorner.endTrajectory().fresh()
-                .strafeTo(new Vector2d(30, 10));
+                .strafeTo(new Vector2d(30.3, 10));
         Action moveToRungs3Action = moveToRungs3.build();
         TrajectoryActionBuilder moveBackToPlace3 = moveToRungs3.endTrajectory().fresh().lineToX(28);
         Action moveBackToPlace3Action = moveBackToPlace3.build();
@@ -69,7 +69,7 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
                 .strafeTo(new Vector2d(2,-22));
         Action moveToCorner2Action = moveToCorner2.build();
         TrajectoryActionBuilder moveToRungs4 = moveToCorner2.endTrajectory().fresh()
-                .strafeTo(new Vector2d(30,6));
+                .strafeTo(new Vector2d(30.3,6));
         Action moveToRungs4Action = moveToRungs4.build();
         TrajectoryActionBuilder moveBackToPlace4 = moveToRungs4.endTrajectory().fresh().lineToX(28);
         Action moveBackToPlace4Action = moveBackToPlace4.build();
@@ -80,7 +80,7 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
         Action pushSamplesBackAction = pushSamplesBack.build();
         Action pushsamplesback2Action  = pushSamplesBack2.build();
         // Necessary Actions:
-        Action moveLiftTop = lift.moveUp(13.5);
+        Action moveLiftTop = lift.moveUp(13.8);
         Action moveLiftPlace =lift.moveDown(12);
         Action moveLiftBottom = lift.moveDown(0);
 

@@ -55,7 +55,7 @@ public class AutoObsZoneLuke extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(48,-46),0)
                 .strafeTo(new Vector2d(2,-44));
         TrajectoryActionBuilder moveToRungs2 = pushSamplesBack3.endTrajectory().fresh()
-                .strafeTo(new Vector2d(30, 12));
+                .strafeTo(new Vector2d(30.3, 12));
         Action moveToRungs2Action = moveToRungs2.build();
         TrajectoryActionBuilder moveBackToPlace2 = moveToRungs2.endTrajectory().fresh().lineToX(28);
         Action moveBackToPlace2Action = moveBackToPlace2.build();
@@ -64,7 +64,7 @@ public class AutoObsZoneLuke extends LinearOpMode {
                 .strafeTo(new Vector2d(2,-22));
         Action moveToCornerAction = moveToCorner.build();
         TrajectoryActionBuilder moveToRungs3 = moveToCorner.endTrajectory().fresh()
-                .strafeTo(new Vector2d(30, 8));
+                .strafeTo(new Vector2d(30.3, 8));
         Action moveToRungs3Action = moveToRungs3.build();
         TrajectoryActionBuilder moveBackToPlace3 = moveToRungs3.endTrajectory().fresh().lineToX(28);
         Action moveBackToPlace3Action = moveBackToPlace3.build();
@@ -84,7 +84,7 @@ public class AutoObsZoneLuke extends LinearOpMode {
         Action pushsamplesback2Action  = pushSamplesBack2.build();
         Action pushsamplesback3Action  = pushSamplesBack3.build();
         // Necessary Actions:
-        Action moveLiftTop = lift.moveUp(13.5);
+        Action moveLiftTop = lift.moveUp(13.8);
         Action moveLiftBottom = lift.moveDown(0);
         Action moveLiftPlace = lift.moveDown(12);
         Action placeSpec = new SequentialAction(
