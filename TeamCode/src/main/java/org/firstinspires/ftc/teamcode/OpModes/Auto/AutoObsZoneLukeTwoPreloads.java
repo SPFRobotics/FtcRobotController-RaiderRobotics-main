@@ -28,7 +28,7 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException
     {
-        Pose2d beginPose = new Pose2d(-.5, 0, 0);
+        Pose2d beginPose = new Pose2d(-.75, 0, 0);
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
         Lift lift = new Lift(hardwareMap);
         Outtake outtake = new Outtake(hardwareMap);
@@ -81,7 +81,7 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
         Action pushsamplesback2Action  = pushSamplesBack2.build();
         // Necessary Actions:
         Action moveLiftTop = lift.moveUp(13.8);
-        Action moveLiftPlace =lift.moveDown(12);
+        Action moveLiftPlace =lift.moveDown(12.6);
         Action moveLiftBottom = lift.moveDown(0);
 
         Action placeSpec = new SequentialAction(
@@ -109,32 +109,32 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
                 outtake.openClaw()
         );
 
-        Action prepareIntake = new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.2).build(), new ParallelAction(intake.prepareIntake(), outtake.prepareIntake()));
-        Action prepareIntake2 = new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.2).build(), new ParallelAction(intake.prepareIntake(), outtake.prepareIntake()));
-        Action prepareIntake3 = new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.2).build(), new ParallelAction(intake.prepareIntake(), outtake.prepareIntake()));
+        Action prepareIntake =  new ParallelAction(drive.actionBuilder(beginPose).waitSeconds(0.2).build(), intake.prepareIntake(), outtake.prepareIntake());
+        Action prepareIntake2 = new ParallelAction(drive.actionBuilder(beginPose).waitSeconds(0.2).build(), intake.prepareIntake(), outtake.prepareIntake());
+        Action prepareIntake3 = new ParallelAction(drive.actionBuilder(beginPose).waitSeconds(0.2).build(), intake.prepareIntake(), outtake.prepareIntake());
         Action completeTransfer = new SequentialAction(
                 intake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.2).build(),
                 intake.prepareTransfer(),
-                drive.actionBuilder(beginPose).waitSeconds(0.7).build(),
+                drive.actionBuilder(beginPose).waitSeconds(1).build(),
                 outtake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.5).build(),
+                drive.actionBuilder(beginPose).waitSeconds(.2).build(),
                 intake.openClaw());
         Action completeTransfer2 = new SequentialAction(
                 intake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.2).build(),
                 intake.prepareTransfer(),
-                drive.actionBuilder(beginPose).waitSeconds(0.7).build(),
+                drive.actionBuilder(beginPose).waitSeconds(1).build(),
                 outtake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.5).build(),
+                drive.actionBuilder(beginPose).waitSeconds(.2).build(),
                 intake.openClaw());
         Action completeTransfer3 = new SequentialAction(
                 intake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.2).build(),
                 intake.prepareTransfer(),
-                drive.actionBuilder(beginPose).waitSeconds(0.7).build(),
+                drive.actionBuilder(beginPose).waitSeconds(1).build(),
                 outtake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.5).build(),
+                drive.actionBuilder(beginPose).waitSeconds(.2).build(),
                 intake.openClaw());
         Actions.runBlocking(
                 new SequentialAction(
