@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot.Extendo;
@@ -21,8 +22,9 @@ import org.firstinspires.ftc.teamcode.RoadRunnerStuff.Outtake;
 // START WITH ROBOT ON A3 WITH RIGHT WHEELS ON COORDINATE LINE
 @Autonomous
 public class AutoObsZoneLuke extends LinearOpMode {
-    Extendo extendo = new Extendo(this);
+    //Extendo extendo = new Extendo(this);
     Servo wristClawServo = null;
+    private DcMotor extendo = null;
     // AprilTagDist AprilTagDistance = new AprilTagDist(this);
     @Override
     public void runOpMode() throws InterruptedException
@@ -32,6 +34,9 @@ public class AutoObsZoneLuke extends LinearOpMode {
         Lift lift = new Lift(hardwareMap);
         Outtake outtake = new Outtake(hardwareMap);
         Intake intake = new Intake(hardwareMap);
+        extendo = hardwareMap.get(DcMotor.class, "extendo");
+        extendo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         waitForStart();
         // Movements (in order of execution):
