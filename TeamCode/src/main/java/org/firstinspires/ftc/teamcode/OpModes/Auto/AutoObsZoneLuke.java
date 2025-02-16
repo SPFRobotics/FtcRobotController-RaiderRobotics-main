@@ -37,24 +37,24 @@ public class AutoObsZoneLuke extends LinearOpMode {
         // Movements (in order of execution):
 
         TrajectoryActionBuilder moveToRungs = drive.actionBuilder(beginPose)
-                .strafeTo(new Vector2d(30, 15));
+                .splineToConstantHeading(new Vector2d(30, 15),0);
         Action moveToRungsAction = moveToRungs.build();
         TrajectoryActionBuilder moveBackToPlace = moveToRungs.endTrajectory().fresh().lineToX(28);
         Action moveBackToPlaceAction = moveBackToPlace.build();
         TrajectoryActionBuilder pushSamplesBack = moveBackToPlace.endTrajectory().fresh()
-                .waitSeconds(.25)
-                .splineToConstantHeading(new Vector2d(15,-15),0)
-                .splineToConstantHeading(new Vector2d(50,-29),0)
-                //.strafeTo(new Vector2d(15,-15)
-                //.strafeTo(new Vector2d(50,-29)
-                .strafeTo(new Vector2d(5, -30));
+                .waitSeconds(.2)
+                .splineToConstantHeading(new Vector2d(29,-20),0)
+                .splineToConstantHeading(new Vector2d(54,-26),0)
+                .strafeTo(new Vector2d(8, -30));
         TrajectoryActionBuilder pushSamplesBack2 = pushSamplesBack.endTrajectory().fresh()
-                .strafeTo(new Vector2d(42,-31))
-                .strafeTo(new Vector2d(48,-40))
+                .splineToConstantHeading(new Vector2d(28,-28),0)
+                .splineToConstantHeading(new Vector2d(48,-40),0)
                 .strafeTo(new Vector2d(5, -41));
         TrajectoryActionBuilder pushSamplesBack3 = pushSamplesBack2.endTrajectory().fresh()
                 .strafeTo(new Vector2d(42,-37))
                 .strafeTo(new Vector2d(48,-46))
+                .splineToConstantHeading(new Vector2d(28,-37),0)
+                .splineToConstantHeading(new Vector2d(48,-46),0)
                 .strafeTo(new Vector2d(2,-44));
         TrajectoryActionBuilder moveToRungs2 = pushSamplesBack3.endTrajectory().fresh()
                 .strafeTo(new Vector2d(30, 12));
@@ -62,8 +62,8 @@ public class AutoObsZoneLuke extends LinearOpMode {
         TrajectoryActionBuilder moveBackToPlace2 = moveToRungs2.endTrajectory().fresh().lineToX(28);
         Action moveBackToPlace2Action = moveBackToPlace2.build();
         TrajectoryActionBuilder moveToCorner = moveBackToPlace2.endTrajectory().fresh()
-                .waitSeconds(.25)
-                .strafeTo(new Vector2d(2,-20));
+                .waitSeconds(.2)
+                .strafeTo(new Vector2d(2,-22));
         Action moveToCornerAction = moveToCorner.build();
         TrajectoryActionBuilder moveToRungs3 = moveToCorner.endTrajectory().fresh()
                 .strafeTo(new Vector2d(30, 8));
@@ -71,7 +71,7 @@ public class AutoObsZoneLuke extends LinearOpMode {
         TrajectoryActionBuilder moveBackToPlace3 = moveToRungs3.endTrajectory().fresh().lineToX(28);
         Action moveBackToPlace3Action = moveBackToPlace3.build();
         TrajectoryActionBuilder moveToCorner2 = moveBackToPlace2.endTrajectory().fresh()
-                .strafeTo(new Vector2d(2,-20));
+                .splineToConstantHeading(new Vector2d(8,-45),0);
         Action moveToCorner2Action = moveToCorner2.build();
         TrajectoryActionBuilder moveToRungs4 = moveToCorner2.endTrajectory().fresh()
                 .strafeTo(new Vector2d(30,9));
@@ -88,22 +88,23 @@ public class AutoObsZoneLuke extends LinearOpMode {
         // Necessary Actions:
         Action moveLiftTop = lift.moveUp(13.5);
         Action moveLiftBottom = lift.moveDown(0);
-
+        Action moveLiftPlace = lift.moveDown(12);
         Action placeSpec = new SequentialAction(
                 outtake.lowerSpec(),
                 moveBackToPlaceAction,
+                moveLiftPlace,
                 outtake.openClaw()
         );
         Action placeSpec2 = new SequentialAction(
                 outtake.lowerSpec(),
                 moveBackToPlace2Action,
-                drive.actionBuilder(beginPose).waitSeconds(.25).build(),
+                moveLiftPlace,
                 outtake.openClaw()
         );
         Action placeSpec3 = new SequentialAction(
                 outtake.lowerSpec(),
                 moveBackToPlace3Action,
-                drive.actionBuilder(beginPose).waitSeconds(.25).build(),
+                moveLiftPlace,
                 outtake.openClaw()
         );
         Action placeSpec4 = new SequentialAction(
@@ -112,12 +113,12 @@ public class AutoObsZoneLuke extends LinearOpMode {
                 outtake.openClaw()
         );
 
-        Action prepareIntake = new ParallelAction(intake.prepareIntake(), outtake.prepareIntake());
-        Action prepareIntake2 = new ParallelAction(intake.prepareIntake(), outtake.prepareIntake());
+        Action prepareIntake = new ParallelAction(drive.actionBuilder(beginPose).waitSeconds(0.2).build(), intake.prepareIntake(), outtake.prepareIntake());
+        Action prepareIntake2 = new ParallelAction(drive.actionBuilder(beginPose).waitSeconds(0.2).build(), intake.prepareIntake(), outtake.prepareIntake());
         Action prepareIntake3 = new ParallelAction(intake.prepareIntake(), outtake.prepareIntake());
         Action completeTransfer = new SequentialAction(
                 intake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.25).build(),
+                drive.actionBuilder(beginPose).waitSeconds(.2).build(),
                 intake.prepareTransfer(),
                 drive.actionBuilder(beginPose).waitSeconds(0.7).build(),
                 outtake.closeClaw(),
@@ -125,7 +126,7 @@ public class AutoObsZoneLuke extends LinearOpMode {
                 intake.openClaw());
         Action completeTransfer2 = new SequentialAction(
                 intake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.25).build(),
+                drive.actionBuilder(beginPose).waitSeconds(.2).build(),
                 intake.prepareTransfer(),
                 drive.actionBuilder(beginPose).waitSeconds(0.7).build(),
                 outtake.closeClaw(),
@@ -133,7 +134,7 @@ public class AutoObsZoneLuke extends LinearOpMode {
                 intake.openClaw());
         Action completeTransfer3 = new SequentialAction(
                 intake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.25).build(),
+                drive.actionBuilder(beginPose).waitSeconds(.2).build(),
                 intake.prepareTransfer(),
                 drive.actionBuilder(beginPose).waitSeconds(0.7).build(),
                 outtake.closeClaw(),
@@ -163,7 +164,7 @@ public class AutoObsZoneLuke extends LinearOpMode {
 
                         new ParallelAction(moveToRungs3Action, new SequentialAction(completeTransfer2, moveLiftTop)),
                         placeSpec3,
-                        moveLiftBottom
+                        new ParallelAction(moveToCorner2Action, moveLiftBottom)
                         // new ParallelAction(moveToCorner2Action, moveLiftBottom)
 
                 )
