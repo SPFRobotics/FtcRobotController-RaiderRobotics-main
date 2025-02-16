@@ -51,8 +51,6 @@ public class AutoObsZoneLuke extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(48,-40),0)
                 .strafeTo(new Vector2d(5, -41));
         TrajectoryActionBuilder pushSamplesBack3 = pushSamplesBack2.endTrajectory().fresh()
-                .strafeTo(new Vector2d(42,-37))
-                .strafeTo(new Vector2d(48,-46))
                 .splineToConstantHeading(new Vector2d(28,-37),0)
                 .splineToConstantHeading(new Vector2d(48,-46),0)
                 .strafeTo(new Vector2d(2,-44));
