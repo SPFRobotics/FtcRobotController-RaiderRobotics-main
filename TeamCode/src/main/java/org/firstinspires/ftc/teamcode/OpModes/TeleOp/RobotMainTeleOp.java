@@ -224,7 +224,7 @@ public class RobotMainTeleOp extends LinearOpMode{
                 FClawServo.setPosition(0.6);
             }
             else{
-                FClawServo.setPosition(0.4);
+                FClawServo.setPosition(0.3);
             }
 
             if (rTrigger.toggle((int)gamepad2.right_trigger)){
@@ -232,8 +232,8 @@ public class RobotMainTeleOp extends LinearOpMode{
                 BRClawServo.setPosition(0.25);
             }
             else{
-                BLClawServo.setPosition(0.7);
-                BRClawServo.setPosition(0.7);
+                BLClawServo.setPosition(0.43);
+                BRClawServo.setPosition(0.43);
             }
             //****************************************************************
 
