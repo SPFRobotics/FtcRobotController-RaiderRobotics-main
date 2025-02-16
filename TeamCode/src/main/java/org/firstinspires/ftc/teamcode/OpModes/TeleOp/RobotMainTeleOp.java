@@ -44,7 +44,7 @@ public class RobotMainTeleOp extends LinearOpMode{
     double FRotationServoPos = 0.5024;
     double FWristServoPos = 0.5;
 
-    double FClawRotationServoPos = 0;
+    double FClawRotationServoPos = 0.3302;
     double BWristPos = 0.5;
 
     //Boolean expressions
@@ -157,7 +157,7 @@ public class RobotMainTeleOp extends LinearOpMode{
             if (gamepad2.y){
                 wasPressed1 = false;
                 FRotationServoPos = 0.5221;
-                FWristServoPos = 0.4;
+                FWristServoPos = 0.38;
                 FClawRotationServoPos = 0.65;
                 BWristPos = 0.5;
             }
