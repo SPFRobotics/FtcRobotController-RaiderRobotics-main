@@ -18,9 +18,11 @@ public class Intake {
     private final double CLAW_OPEN_POS = 0.3;
     private final double ARM_ROTATION_POS = 0.5221;
     private final double CLAW_ROTATION_INTAKE =0.65;
+    private final double CLAW_ROTATION_GROUND_INTAKE =0.15;
     private final double CLAW_ROTATION_TRANSFER =0;
     private final double WRIST_TRANSFER_POS = 0.73;
     private final double WRIST_INTAKE_POS = 0.39;
+    private final double WRIST_GROUND_INTAKE_POS = 0.2;
     public Intake(HardwareMap hardwareMap){
         armRotation = hardwareMap.get(Servo.class, "frontRotation");
         wrist = hardwareMap.get(Servo.class, "frontWrist");
@@ -64,7 +66,18 @@ public class Intake {
             return false;
         }
     }
+    public class PrepareGroundIntake implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            clawRotation.setPosition(CLAW_ROTATION_GROUND_INTAKE);
+            wrist.setPosition(WRIST_GROUND_INTAKE_POS);
+            return false;
+        }
+    }
     public Action prepareIntake(){
+        return new PrepareIntake();
+    }
+    public Action prepareGroundIntake(){
         return new PrepareIntake();
     }
     public Action prepareTransfer(){

@@ -29,7 +29,7 @@ public class AutoObsZoneLuke extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException
     {
-        Pose2d beginPose = new Pose2d(-.75, 0, 0);
+        Pose2d beginPose = new Pose2d(0, 0, 0);
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
         Lift lift = new Lift(hardwareMap);
         Outtake outtake = new Outtake(hardwareMap);

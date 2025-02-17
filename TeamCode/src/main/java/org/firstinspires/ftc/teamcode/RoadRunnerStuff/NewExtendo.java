@@ -10,26 +10,23 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
-public class Lift {
-    private DcMotor liftLeft;
-    private DcMotor liftRight;
+public class NewExtendo {
+    private DcMotor extendo;
 
-    public Lift(HardwareMap hardwareMap) {
-        liftLeft = hardwareMap.get(DcMotor.class, "liftLeft");
-        liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        liftRight = hardwareMap.get(DcMotor.class, "liftRight");
-        liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    public NewExtendo(HardwareMap hardwareMap) {
+        extendo = hardwareMap.get(DcMotor.class, "liftLeft");
+        extendo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        extendo.setDirection(DcMotorSimple.Direction.REVERSE);
     }
-    public class LiftUp implements Action {
+    public class LiftOut implements Action {
 
         // checks if the lift motor has been powered on
         private boolean initialized = false;
         private static final int liftMaxMotorCounts = (int)(15.5*(537.7 / (4.409)));
         private int encoderTicks;
 
-        LiftUp(double height){
-            encoderTicks = inchToMotorTicks(height);
+        LiftOut(double position){
+            encoderTicks = inchToMotorTicks(position);
         }
 
 
@@ -38,21 +35,19 @@ public class Lift {
         public boolean run(@NonNull TelemetryPacket packet) {
             // powers on motor, if it is not on
             if (!initialized) {
-                liftLeft.setPower(1);
-                liftRight.setPower(1);
+                extendo.setPower(1);
                 initialized = true;
             }
 
             // checks lift's current position
-            double pos = liftLeft.getCurrentPosition();
+            double pos = extendo.getCurrentPosition();
             packet.put("liftPos", pos);
-            if (pos < encoderTicks && pos < liftMaxMotorCounts) {
+            if (pos < encoderTicks && pos > liftMaxMotorCounts) {
                 // true causes the action to rerun
                 return true;
             } else {
                 // false stops action rerun
-                liftLeft.setPower(0);
-                liftRight.setPower(0);
+                extendo.setPower(0);
                 initialized = false;
                 return false;
             }
@@ -61,14 +56,14 @@ public class Lift {
         }
     }
 
-    public class LiftDown implements Action {
+    public class LiftIn implements Action {
 
         // checks if the lift motor has been powered on
         private boolean initialized = false;
         private static final int liftMaxMotorCounts = (int)(15.5*(537.7 / (4.409)));
         private int encoderTicks;
-        LiftDown(double height){
-            encoderTicks = inchToMotorTicks(height);
+        LiftIn(double position){
+            encoderTicks = inchToMotorTicks(position);
         }
 
 
@@ -77,32 +72,30 @@ public class Lift {
         public boolean run(@NonNull TelemetryPacket packet) {
             // powers on motor, if it is not on
             if (!initialized) {
-                liftLeft.setPower(-1);
-                liftRight.setPower(-1);
+                extendo.setPower(-1);
                 initialized = true;
             }
 
             // checks lift's current position
-            double pos = liftLeft.getCurrentPosition();
+            double pos = extendo.getCurrentPosition();
             packet.put("liftPos", pos);
             if (pos > encoderTicks && pos > 0) {
                 // true causes the action to rerun
                 return true;
             } else {
                 // false stops action rerun
-                liftLeft.setPower(0);
-                liftRight.setPower(0);
+                extendo.setPower(0);
                 initialized = false;
                 return false;
             }
         }
     }
 
-    public Action moveDown(double height){
-        return new LiftDown(height);
+    public Action moveIn(double position){
+        return new LiftIn(position);
     }
-    public Action moveUp(double height){
-        return new LiftUp(height);
+    public Action moveOut(double position){
+        return new LiftOut(position);
     }
     int inchToMotorTicks(double inches){
         return (int)(inches*(537.7 / (4.409)));
