@@ -30,7 +30,7 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException
     {
-        Pose2d beginPose = new Pose2d(-.75, 0, 0);
+        Pose2d beginPose = new Pose2d(0, 0, 0);
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
         Lift lift = new Lift(hardwareMap);
         Outtake outtake = new Outtake(hardwareMap);
@@ -54,7 +54,7 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
         TrajectoryActionBuilder pushSamplesBack2 = pushSamplesBack.endTrajectory().fresh()
                 .splineToConstantHeading(new Vector2d(28,-28),0)
                 .splineToConstantHeading(new Vector2d(48,-40),0)
-                .strafeTo(new Vector2d(2, -41));
+                .strafeTo(new Vector2d(1.5, -41));
         TrajectoryActionBuilder moveToRungs2 = pushSamplesBack2.endTrajectory().fresh()
                 .strafeTo(new Vector2d(30.3, 14));
         Action moveToRungs2Action = moveToRungs2.build();
@@ -62,7 +62,7 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
         Action moveBackToPlace2Action = moveBackToPlace2.build();
         TrajectoryActionBuilder moveToCorner = moveBackToPlace2.endTrajectory().fresh()
                 .waitSeconds(.2)
-                .strafeTo(new Vector2d(2,-22));
+                .strafeTo(new Vector2d(1.5,-22));
         Action moveToCornerAction = moveToCorner.build();
         TrajectoryActionBuilder moveToRungs3 = moveToCorner.endTrajectory().fresh()
                 .strafeTo(new Vector2d(30.3, 10));
@@ -70,7 +70,7 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
         TrajectoryActionBuilder moveBackToPlace3 = moveToRungs3.endTrajectory().fresh().lineToX(28);
         Action moveBackToPlace3Action = moveBackToPlace3.build();
         TrajectoryActionBuilder moveToCorner2 = moveBackToPlace3.endTrajectory().fresh()
-                .strafeTo(new Vector2d(2,-22));
+                .strafeTo(new Vector2d(1.5,-22));
         Action moveToCorner2Action = moveToCorner2.build();
         TrajectoryActionBuilder moveToRungs4 = moveToCorner2.endTrajectory().fresh()
                 .strafeTo(new Vector2d(30.3,6));
@@ -118,25 +118,25 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
         Action prepareIntake3 = new ParallelAction(drive.actionBuilder(beginPose).waitSeconds(0.35).build(), intake.prepareIntake(), outtake.prepareIntake());
         Action completeTransfer = new SequentialAction(
                 intake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.2).build(),
+                drive.actionBuilder(beginPose).waitSeconds(.5).build(),
                 intake.prepareTransfer(),
-                drive.actionBuilder(beginPose).waitSeconds(1).build(),
+                drive.actionBuilder(beginPose).waitSeconds(7).build(),
                 outtake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.2).build(),
                 intake.openClaw());
         Action completeTransfer2 = new SequentialAction(
                 intake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.2).build(),
+                drive.actionBuilder(beginPose).waitSeconds(.5).build(),
                 intake.prepareTransfer(),
-                drive.actionBuilder(beginPose).waitSeconds(1).build(),
+                drive.actionBuilder(beginPose).waitSeconds(.7).build(),
                 outtake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.2).build(),
                 intake.openClaw());
         Action completeTransfer3 = new SequentialAction(
                 intake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.2).build(),
+                drive.actionBuilder(beginPose).waitSeconds(.5).build(),
                 intake.prepareTransfer(),
-                drive.actionBuilder(beginPose).waitSeconds(1).build(),
+                drive.actionBuilder(beginPose).waitSeconds(7).build(),
                 outtake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.2).build(),
                 intake.openClaw());
