@@ -44,9 +44,7 @@ public class AutoObsZoneLuke extends LinearOpMode {
         TrajectoryActionBuilder moveToRungs = drive.actionBuilder(beginPose)
                 .splineToConstantHeading(new Vector2d(30, 15),0);
         Action moveToRungsAction = moveToRungs.build();
-        TrajectoryActionBuilder moveBackToPlace = moveToRungs.endTrajectory().fresh().lineToX(28);
-        Action moveBackToPlaceAction = moveBackToPlace.build();
-        TrajectoryActionBuilder pushSamplesBack = moveBackToPlace.endTrajectory().fresh()
+        TrajectoryActionBuilder pushSamplesBack = moveToRungs.endTrajectory().fresh()
                 .waitSeconds(.2)
                 .splineToConstantHeading(new Vector2d(29,-20),0)
                 .splineToConstantHeading(new Vector2d(54,-26),0)
@@ -62,26 +60,20 @@ public class AutoObsZoneLuke extends LinearOpMode {
         TrajectoryActionBuilder moveToRungs2 = pushSamplesBack3.endTrajectory().fresh()
                 .strafeTo(new Vector2d(30.3, 12));
         Action moveToRungs2Action = moveToRungs2.build();
-        TrajectoryActionBuilder moveBackToPlace2 = moveToRungs2.endTrajectory().fresh().lineToX(28);
-        Action moveBackToPlace2Action = moveBackToPlace2.build();
-        TrajectoryActionBuilder moveToCorner = moveBackToPlace2.endTrajectory().fresh()
+        TrajectoryActionBuilder moveToCorner = moveToRungs2.endTrajectory().fresh()
                 .waitSeconds(.2)
                 .strafeTo(new Vector2d(2,-22));
         Action moveToCornerAction = moveToCorner.build();
         TrajectoryActionBuilder moveToRungs3 = moveToCorner.endTrajectory().fresh()
                 .strafeTo(new Vector2d(30.3, 8));
         Action moveToRungs3Action = moveToRungs3.build();
-        TrajectoryActionBuilder moveBackToPlace3 = moveToRungs3.endTrajectory().fresh().lineToX(28);
-        Action moveBackToPlace3Action = moveBackToPlace3.build();
-        TrajectoryActionBuilder moveToCorner2 = moveBackToPlace2.endTrajectory().fresh()
+        TrajectoryActionBuilder moveToCorner2 = moveToRungs3.endTrajectory().fresh()
                 .splineToConstantHeading(new Vector2d(8,-45),0);
         Action moveToCorner2Action = moveToCorner2.build();
         TrajectoryActionBuilder moveToRungs4 = moveToCorner2.endTrajectory().fresh()
                 .strafeTo(new Vector2d(30,9));
         Action moveToRungs4Action = moveToRungs4.build();
-        TrajectoryActionBuilder moveBackToPlace4 = moveToRungs4.endTrajectory().fresh().lineToX(28);
-        Action moveBackToPlace4Action = moveBackToPlace4.build();
-        TrajectoryActionBuilder moveToCorner3 = moveBackToPlace2.endTrajectory().fresh()
+        TrajectoryActionBuilder moveToCorner3 = moveToRungs4.endTrajectory().fresh()
                 .strafeTo(new Vector2d(2,-20));
         Action moveToCorner3Action = moveToCorner3.build();
 
@@ -94,31 +86,26 @@ public class AutoObsZoneLuke extends LinearOpMode {
         Action moveLiftPlace = lift.moveDown(12);
         Action placeSpec = new SequentialAction(
                 outtake.lowerSpec(),
-                moveBackToPlaceAction,
                 moveLiftPlace,
                 outtake.openClaw()
         );
         Action placeSpec2 = new SequentialAction(
                 outtake.lowerSpec(),
-                moveBackToPlace2Action,
                 moveLiftPlace,
                 outtake.openClaw()
         );
         Action placeSpec3 = new SequentialAction(
                 outtake.lowerSpec(),
-                moveBackToPlace3Action,
                 moveLiftPlace,
                 outtake.openClaw()
         );
         Action placeSpec4 = new SequentialAction(
                 outtake.lowerSpec(),
-                moveBackToPlace4Action,
                 outtake.openClaw()
         );
 
         Action prepareIntake = new ParallelAction(drive.actionBuilder(beginPose).waitSeconds(0.2).build(), intake.prepareIntake(), outtake.prepareIntake());
         Action prepareIntake2 = new ParallelAction(drive.actionBuilder(beginPose).waitSeconds(0.2).build(), intake.prepareIntake(), outtake.prepareIntake());
-        Action prepareIntake3 = new ParallelAction(intake.prepareIntake(), outtake.prepareIntake());
         Action completeTransfer = new SequentialAction(
                 intake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.2).build(),

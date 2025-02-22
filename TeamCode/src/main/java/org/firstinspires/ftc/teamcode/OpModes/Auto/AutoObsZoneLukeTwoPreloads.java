@@ -44,10 +44,8 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
         TrajectoryActionBuilder moveToRungs = drive.actionBuilder(beginPose)
                 .splineToConstantHeading(new Vector2d(30, 18),0);
         Action moveToRungsAction = moveToRungs.build();
-        TrajectoryActionBuilder moveBackToPlace = moveToRungs.endTrajectory().fresh().lineToX(28);
-        Action moveBackToPlaceAction = moveBackToPlace.build();
-        TrajectoryActionBuilder pushSamplesBack = moveBackToPlace.endTrajectory().fresh()
-                .waitSeconds(.2)
+        TrajectoryActionBuilder pushSamplesBack = moveToRungs.endTrajectory().fresh()
+                .lineToX(28)
                 .splineToConstantHeading(new Vector2d(29,-20),0)
                 .splineToConstantHeading(new Vector2d(54,-26),0)
                 .strafeTo(new Vector2d(8, -30));
@@ -58,26 +56,21 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
         TrajectoryActionBuilder moveToRungs2 = pushSamplesBack2.endTrajectory().fresh()
                 .strafeTo(new Vector2d(30.3, 14));
         Action moveToRungs2Action = moveToRungs2.build();
-        TrajectoryActionBuilder moveBackToPlace2 = moveToRungs2.endTrajectory().fresh().lineToX(28);
-        Action moveBackToPlace2Action = moveBackToPlace2.build();
-        TrajectoryActionBuilder moveToCorner = moveBackToPlace2.endTrajectory().fresh()
+        TrajectoryActionBuilder moveToCorner = moveToRungs2.endTrajectory().fresh()
                 .waitSeconds(.2)
                 .strafeTo(new Vector2d(1.5,-22));
         Action moveToCornerAction = moveToCorner.build();
         TrajectoryActionBuilder moveToRungs3 = moveToCorner.endTrajectory().fresh()
                 .strafeTo(new Vector2d(30.3, 10));
         Action moveToRungs3Action = moveToRungs3.build();
-        TrajectoryActionBuilder moveBackToPlace3 = moveToRungs3.endTrajectory().fresh().lineToX(28);
-        Action moveBackToPlace3Action = moveBackToPlace3.build();
-        TrajectoryActionBuilder moveToCorner2 = moveBackToPlace3.endTrajectory().fresh()
+
+        TrajectoryActionBuilder moveToCorner2 = moveToRungs3.endTrajectory().fresh()
                 .strafeTo(new Vector2d(1.5,-22));
         Action moveToCorner2Action = moveToCorner2.build();
         TrajectoryActionBuilder moveToRungs4 = moveToCorner2.endTrajectory().fresh()
                 .strafeTo(new Vector2d(30.3,6));
         Action moveToRungs4Action = moveToRungs4.build();
-        TrajectoryActionBuilder moveBackToPlace4 = moveToRungs4.endTrajectory().fresh().lineToX(28);
-        Action moveBackToPlace4Action = moveBackToPlace4.build();
-        TrajectoryActionBuilder moveToCorner3 = moveBackToPlace4.endTrajectory().fresh()
+        TrajectoryActionBuilder moveToCorner3 = moveToRungs4.endTrajectory().fresh()
                 .splineToConstantHeading(new Vector2d(8,-45),0);
         Action moveToCorner3Action = moveToCorner3.build();
 
@@ -85,42 +78,42 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
         Action pushsamplesback2Action  = pushSamplesBack2.build();
         // Necessary Actions:
         Action moveLiftTop = lift.moveUp(13.8);
-        Action moveLiftPlace =lift.moveDown(12.6);
+        Action moveLiftPlace =lift.moveDown(12);
         Action moveLiftBottom = lift.moveDown(0);
 
         Action placeSpec = new SequentialAction(
                 outtake.lowerSpec(),
-                moveBackToPlaceAction,
                 moveLiftPlace,
+                drive.actionBuilder(beginPose).waitSeconds(0.03).build(),
                 outtake.openClaw()
         );
         Action placeSpec2 = new SequentialAction(
                 outtake.lowerSpec(),
-                moveBackToPlace2Action,
                 moveLiftPlace,
+                drive.actionBuilder(beginPose).waitSeconds(0.03).build(),
                 outtake.openClaw()
         );
         Action placeSpec3 = new SequentialAction(
                 outtake.lowerSpec(),
-                moveBackToPlace3Action,
                 moveLiftPlace,
+                drive.actionBuilder(beginPose).waitSeconds(0.03).build(),
                 outtake.openClaw()
         );
         Action placeSpec4 = new SequentialAction(
                 outtake.lowerSpec(),
-                moveBackToPlace4Action,
                 moveLiftPlace,
+                drive.actionBuilder(beginPose).waitSeconds(0.03).build(),
                 outtake.openClaw()
         );
 
-        Action prepareIntake =  new ParallelAction(drive.actionBuilder(beginPose).waitSeconds(0.35).build(), intake.prepareIntake(), outtake.prepareIntake());
-        Action prepareIntake2 = new ParallelAction(drive.actionBuilder(beginPose).waitSeconds(0.35).build(), intake.prepareIntake(), outtake.prepareIntake());
-        Action prepareIntake3 = new ParallelAction(drive.actionBuilder(beginPose).waitSeconds(0.35).build(), intake.prepareIntake(), outtake.prepareIntake());
+        Action prepareIntake =  new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.2).build(), intake.prepareIntake(), outtake.prepareIntake());
+        Action prepareIntake2 = new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.2).build(), intake.prepareIntake(), outtake.prepareIntake());
+        Action prepareIntake3 = new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.2).build(), intake.prepareIntake(), outtake.prepareIntake());
         Action completeTransfer = new SequentialAction(
                 intake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.5).build(),
                 intake.prepareTransfer(),
-                drive.actionBuilder(beginPose).waitSeconds(7).build(),
+                drive.actionBuilder(beginPose).waitSeconds(.7).build(),
                 outtake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.2).build(),
                 intake.openClaw());
@@ -136,7 +129,7 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
                 intake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.5).build(),
                 intake.prepareTransfer(),
-                drive.actionBuilder(beginPose).waitSeconds(7).build(),
+                drive.actionBuilder(beginPose).waitSeconds(.7).build(),
                 outtake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.2).build(),
                 intake.openClaw());
@@ -147,7 +140,6 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
                                 moveLiftTop
                         ),
                         placeSpec,
-
                         new ParallelAction(
                                 moveLiftBottom,
                                 pushSamplesBackAction
@@ -171,34 +163,5 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
 
                 )
         );
-//        /* PLACES 2 WITHOUT ROADRUNNER
-//        //telemetry.addData("X", AprilTagDistance.getDistX());
-//        //telemetry.addData("Y", AprilTagDistance.getDistY());
-//        chassis.move(.5,"left",30); // should move towards submersible
-//        chassis.moveMultitask(.5, "forward", 69.01,24, 1); // should move towards submersible
-//        //telemetry.addData("X", AprilTagDistance.getDistX());
-//        //telemetry.addData("Y", AprilTagDistance.getDistY());
-//        slide.slide(18.5,1); // lowers lift (specimen should attach by now)
-//        claw.open(); // let go of specimen
-//        // next 2 move commands move towards parking zone
-//
-//        chassis.move(.5, "backward", 50);
-//        chassis.moveMultitask(.5, "right", 86, 0,1);
-//
-//
-//        chassis.rotate(-180, 0.5);
-//        chassis.move(.5, "forward", 19.01);
-//        claw.close();
-//        slide.slide(5,1);
-//        chassis.move(.5, "backward", 19.01);
-//        chassis.rotate(-180, 0.5);
-//        chassis.moveMultitask(.5, "left", 80,24, 1);
-//        chassis.move(.5, "forward", 55.5);
-//        slide.slide(18.5, 1);
-//        claw.open();
-//        chassis.move(.5, "backward", 60);
-//        chassis.moveMultitask(.5, "right", 130, 0, 1);
-//        */
-
     }
 }

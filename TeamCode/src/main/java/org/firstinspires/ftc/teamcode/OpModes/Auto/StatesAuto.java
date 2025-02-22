@@ -40,13 +40,12 @@ public class StatesAuto extends LinearOpMode {
         TrajectoryActionBuilder moveToRungs = drive.actionBuilder(beginPose)
                 .splineToConstantHeading(new Vector2d(30, 18),0);
         Action moveToRungsAction = moveToRungs.build();
-        TrajectoryActionBuilder moveBackToPlace = moveToRungs.endTrajectory().fresh().lineToX(28);
-        Action moveBackToPlaceAction = moveBackToPlace.build();
-        Action moveToSpikeMarks = moveBackToPlace.endTrajectory().fresh()
+
+        TrajectoryActionBuilder moveToSpikeMarks = moveToRungs.endTrajectory().fresh()
                 .waitSeconds(.2)
-                .splineToConstantHeading(new Vector2d(29,-20),0)
-                .turn(-135)
-                .build();
+                .splineToConstantHeading(new Vector2d(25,-33),0)
+                .turn(-135);
+        Action moveToSpikeMarksAction = moveToSpikeMarks.build();
 
 
         // Necessary Actions:
@@ -55,38 +54,11 @@ public class StatesAuto extends LinearOpMode {
         Action moveLiftBottom = lift.moveDown(0);
         Action placeSpec = new SequentialAction(
                 outtake.lowerSpec(),
-                moveBackToPlaceAction,
                 moveLiftPlace,
                 outtake.openClaw()
         );
-        /*Action placeSpec2 = new SequentialAction(
-                outtake.lowerSpec(),
-                moveBackToPlace2Action,
-                moveLiftPlace,
-                outtake.openClaw()
-        );
-        Action placeSpec3 = new SequentialAction(
-                outtake.lowerSpec(),
-                moveBackToPlace3Action,
-                moveLiftPlace,
-                outtake.openClaw()
-        );
-        Action placeSpec4 = new SequentialAction(
-                outtake.lowerSpec(),
-                moveBackToPlace4Action,
-                moveLiftPlace,
-                outtake.openClaw()
-        );
-        Action placeSpec5 = new SequentialAction(
-                outtake.lowerSpec(),
-                moveBackToPlace5Action,
-                moveLiftPlace,
-                outtake.openClaw()
-        );*/
 
         Action prepareIntake =  new SequentialAction(intake.prepareIntake(), outtake.prepareIntake());
-        Action prepareIntake2 = new SequentialAction(intake.prepareIntake(), outtake.prepareIntake());
-        Action prepareIntake3 = new SequentialAction(intake.prepareIntake(), outtake.prepareIntake());
         Action completeTransfer = new SequentialAction(
                 intake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.5).build(),
@@ -95,7 +67,7 @@ public class StatesAuto extends LinearOpMode {
                 outtake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.2).build(),
                 intake.openClaw());
-        Action completeTransfer2 = new SequentialAction(
+        /*Action completeTransfer2 = new SequentialAction(
                 intake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.5).build(),
                 intake.prepareTransfer(),
@@ -118,7 +90,7 @@ public class StatesAuto extends LinearOpMode {
                 drive.actionBuilder(beginPose).waitSeconds(7).build(),
                 outtake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.2).build(),
-                intake.openClaw());
+                intake.openClaw());*/
         Actions.runBlocking(
                 new SequentialAction(
                         new ParallelAction(
@@ -129,7 +101,7 @@ public class StatesAuto extends LinearOpMode {
 
                         new ParallelAction(
                                 moveLiftBottom,
-                                moveToSpikeMarks
+                                moveToSpikeMarksAction
                         ),
                         new ParallelAction(
                                 intake.prepareGroundIntake(),
