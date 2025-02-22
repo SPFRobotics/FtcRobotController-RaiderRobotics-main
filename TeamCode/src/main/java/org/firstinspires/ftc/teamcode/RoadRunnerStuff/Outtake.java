@@ -84,6 +84,5 @@ public class Outtake {
     public Action prepareOuttake(){
         return new PrepareOuttake();
     }
-
 }
 
