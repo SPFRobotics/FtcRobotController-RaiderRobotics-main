@@ -231,7 +231,7 @@ public class RobotMainTeleOp extends LinearOpMode{
             //Claw Open Close Logic: Back and Front Claws
             //*************************************************************
             if (lTrigger.toggle((int)gamepad2.left_trigger)){
-                FClawServo.setPosition(0.6);
+                FClawServo.setPosition(0.65);
             }
             else{
                 FClawServo.setPosition(0.3);
