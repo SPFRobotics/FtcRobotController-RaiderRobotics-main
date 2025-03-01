@@ -30,7 +30,8 @@ public class limelighttest extends LinearOpMode {
          * Starts polling for data.
          */
         limelight.start();
-
+        .
+        .
         waitForStart();
         while (opModeIsActive()) {
             LLResult result = limelight.getLatestResult();
@@ -40,7 +41,10 @@ public class limelighttest extends LinearOpMode {
                     telemetry.addData("tx", result.getTx());
                     telemetry.addData("ty", result.getTy());
                     telemetry.addData("Botpose", botpose.toString());
+                    .
+                    .
                 }
+                telemetry.update();
             }
         }
     }
