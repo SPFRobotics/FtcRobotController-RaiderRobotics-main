@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot.Claw;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.LinearSlide;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.MecanumChassis;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 
 @Autonomous(name = "PushBot Autonomous", group = "Autonomous")
@@ -17,12 +18,15 @@ public class PushBot extends LinearOpMode {
     private LinearSlide lift;
     private Claw claw;
     private IMU imu;
+    private DcMotor MotorYRight = null;
+    private DcMotor MotorYLeft = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
         chassis = new MecanumChassis(this);
-        lift = new LinearSlide(this);
+        MotorYLeft = hardwareMap.get(DcMotor.class, "liftRight");
+        MotorYRight = hardwareMap.get(DcMotor.class, "liftLeft");
         claw = new Claw(this);
         imu = hardwareMap.get(IMU.class, "imu");
         imu.resetYaw();
