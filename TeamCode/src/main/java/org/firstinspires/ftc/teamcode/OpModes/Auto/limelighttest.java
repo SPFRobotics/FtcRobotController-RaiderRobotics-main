@@ -12,7 +12,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 import java.util.List;
-//@Autonomous
 public class limelighttest extends LinearOpMode {
 
     private Limelight3A limelight;
