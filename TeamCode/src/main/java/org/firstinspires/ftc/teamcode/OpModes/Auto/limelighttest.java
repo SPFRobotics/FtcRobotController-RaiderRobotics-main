@@ -30,22 +30,30 @@ public class limelighttest extends LinearOpMode {
          * Starts polling for data.
          */
         limelight.start();
-        .
-        .
+
         waitForStart();
         while (opModeIsActive()) {
             LLResult result = limelight.getLatestResult();
-            if (result != null) {
+            /*if (result != null) {
                 if (result.isValid()) {
                     Pose3D botpose = result.getBotpose();
                     telemetry.addData("tx", result.getTx());
                     telemetry.addData("ty", result.getTy());
                     telemetry.addData("Botpose", botpose.toString());
-                    .
-                    .
                 }
-                telemetry.update();
+            }*/
+            if (result != null && result.isValid()) {
+                Pose3D botpose_mt2 = result.getBotpose_MT2();
+                if (botpose_mt2 != null) {
+                    double x = botpose_mt2.getPosition().x;
+                    double y = botpose_mt2.getPosition().y;
+                    telemetry.addData("Location:", "(" + x + ", " + y + ")");
+                    telemetry.addData("Botpose", botpose_mt2.toString());
+                }
+            } else {
+                telemetry.addData("Location:", "Unknown");
             }
+            telemetry.update();
         }
     }
 }
