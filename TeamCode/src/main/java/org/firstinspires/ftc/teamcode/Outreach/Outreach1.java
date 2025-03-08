@@ -13,6 +13,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.Odometry;
+
+
 @TeleOp(name="Outreach1")
 public class Outreach1 extends LinearOpMode{
     private DcMotor rightFront = null;
@@ -65,11 +67,10 @@ public class Outreach1 extends LinearOpMode{
                 double rx = gamepad1.right_stick_x;
 
                 double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-                rightFront.setPower((y + x - rx) / denominator); // swapped x sign
-                leftFront.setPower((y - x + rx) / denominator);  // swapped x sign
-                rightBack.setPower((y - x - rx) / denominator);  // swapped x sign
-                leftBack.setPower((y + x + rx) / denominator);   // swapped x sign
-
+                rightFront.setPower((y - x - rx) / denominator);
+                leftFront.setPower((y + x + rx) / denominator);
+                rightBack.setPower((y + x - rx) / denominator);
+                leftBack.setPower((y - x + rx) / denominator);
             }
         }
     }
