@@ -82,9 +82,9 @@ public class RobotMainTeleOp extends LinearOpMode{
         MotorYLeft = hardwareMap.get(DcMotor.class, "liftRight");
         MotorYRight = hardwareMap.get(DcMotor.class, "liftLeft");
         FLMotor = hardwareMap.get(DcMotor.class, "backRight");
-        FRMotor = hardwareMap.get(DcMotor.class, "frontLeft");
+        FRMotor = hardwareMap.get(DcMotor.class, "backLeft");
         BLMotor = hardwareMap.get(DcMotor.class, "frontRight");
-        BRMotor = hardwareMap.get(DcMotor.class, "backLeft");
+        BRMotor = hardwareMap.get(DcMotor.class, "frontLeft");
 
         //Enable encoders
         extendo.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -95,6 +95,7 @@ public class RobotMainTeleOp extends LinearOpMode{
         MotorYRight.setDirection(DcMotorSimple.Direction.REVERSE);
         BRClawServo.setDirection(Servo.Direction.REVERSE);
         extendo.setDirection(DcMotorSimple.Direction.REVERSE);
+        FRMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         MotorYLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         MotorYRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

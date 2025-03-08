@@ -39,6 +39,9 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.RoadRunnerStuff.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.RoadRunnerStuff.messages.MecanumCommandMessage;
@@ -63,26 +66,26 @@ public final class MecanumDrive {
 
         // drive model parameters
         public double inPerTick = (3.2*Math.PI/2.54)/2000; // theoretical***
-        public double lateralInPerTick = 0.0013792031892721289;
-        public double trackWidthTicks =  7178.716112460931;
+        public double lateralInPerTick = 0.0015613055961937626;
+        public double trackWidthTicks =  6912.936791183934;
 
         // feedforward parameters (in tick units)
-        public double kS = 1.1980848816858654;
-        public double kV = 0.0003733602772183411;
+        public double kS = 1.4350485977139904;
+        public double kV = 0.00037268438858373943;
         public double kA = 0.0001;
 
         // path profile parameters (in inches)
-        public double maxWheelVel = 50;
-        public double minProfileAccel = -30;
-        public double maxProfileAccel = 50;
+        public double maxWheelVel = 125;
+        public double minProfileAccel = -75;
+        public double maxProfileAccel = 125;
 
         // turn profile parameters (in radians)
-        public double maxAngVel = Math.PI; // shared with path
-        public double maxAngAccel = Math.PI;
+        public double maxAngVel = 2.5*Math.PI; // shared with path
+        public double maxAngAccel = 2.5*Math.PI;
 
         // path controller gains
-        public double axialGain = 10;
-        public double lateralGain = 10;
+        public double axialGain = 5;
+        public double lateralGain = 5;
         public double headingGain = 10; // shared with turn
 
         public double axialVelGain = 0.0;
@@ -232,8 +235,20 @@ public final class MecanumDrive {
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        lazyImu = new LazyImu(hardwareMap, "imu", new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        lazyImu = new LazyImu(hardwareMap, "imu",
+                new RevHubOrientationOnRobot(
+                        new Orientation(
+                                AxesReference.INTRINSIC,
+                                AxesOrder.ZXY,
+                                AngleUnit.DEGREES, // Simpler to use Degrees than Radians here
+                                90, // Z
+                                90, // X
+                                37.593f,// Y
+                                0  // acquisitionTime, not used
+                        )
+                )
+        );
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 

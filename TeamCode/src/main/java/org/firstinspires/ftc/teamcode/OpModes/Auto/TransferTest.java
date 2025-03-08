@@ -39,19 +39,20 @@ public class TransferTest extends LinearOpMode {
         waitForStart();
         // Movements (in order of execution):
         Action moveBack = drive.actionBuilder(beginPose).lineToX(-5).build();
-        Action prepareIntake =  new ParallelAction(intake.prepareIntake(), outtake.prepareIntake());
+        //Action prepareIntake =  new ParallelAction(intake.prepareIntake(), outtake.prepareIntake());
         Action completeTransfer = new SequentialAction(
                 intake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.5).build(),
+                drive.actionBuilder(beginPose).waitSeconds(.3).build(),
                 intake.prepareTransfer(),
-                drive.actionBuilder(beginPose).waitSeconds(.7).build(),
+                drive.actionBuilder(beginPose).waitSeconds(.6).build(),
                 outtake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.2).build(),
+                drive.actionBuilder(beginPose).waitSeconds(.25).build(),
                 intake.openClaw());
 
         Actions.runBlocking(
                 new SequentialAction(
-                        prepareIntake,
+                        //prepareIntake,
+                        drive.actionBuilder(beginPose).waitSeconds(2).build(),
                         moveBack,
                         completeTransfer,
                         drive.actionBuilder(beginPose).waitSeconds(5).build()

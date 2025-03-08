@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.RoadRunnerStuff.Lift;
 import org.firstinspires.ftc.teamcode.RoadRunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.RoadRunnerStuff.NewExtendo;
 import org.firstinspires.ftc.teamcode.RoadRunnerStuff.Outtake;
+import org.firstinspires.ftc.teamcode.RoadRunnerStuff.SamplePusher;
 
 // START WITH ROBOT ON A3 WITH RIGHT WHEELS ON COORDINATE LINE
 @Autonomous
@@ -29,84 +30,67 @@ public class StatesAuto extends LinearOpMode {
     {
         Pose2d beginPose = new Pose2d(0, 0, 0);
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
-        Lift lift = new Lift(hardwareMap);
-        Outtake outtake = new Outtake(hardwareMap);
-        Intake intake = new Intake(hardwareMap);
-        NewExtendo extendo = new NewExtendo(hardwareMap);
+        //Lift lift = new Lift(hardwareMap);
+        //Outtake outtake = new Outtake(hardwareMap);
+        //Intake intake = new Intake(hardwareMap);
+        SamplePusher samplePusher = new SamplePusher(hardwareMap);
+        //NewExtendo extendo = new NewExtendo(hardwareMap);
 
         waitForStart();
         // Movements (in order of execution):
 
-        TrajectoryActionBuilder moveToRungs = drive.actionBuilder(beginPose)
-                .splineToConstantHeading(new Vector2d(30, 18),0);
-        Action moveToRungsAction = moveToRungs.build();
+        TrajectoryActionBuilder pushSamplesBack1 = drive.actionBuilder(beginPose)
+                .setReversed(false).splineTo(new Vector2d(40, -20),0);
+        TrajectoryActionBuilder pushSamplesBack2 = pushSamplesBack1.endTrajectory().fresh()
+                .setReversed(true).splineTo(new Vector2d(1, -22),Math.PI);
+        TrajectoryActionBuilder pushSamplesBack3 = pushSamplesBack2.endTrajectory().fresh()
+                .setReversed(false).splineTo(new Vector2d(40, -28),0);
+        TrajectoryActionBuilder pushSamplesBack4 = pushSamplesBack3.endTrajectory().fresh()
+                .setReversed(true).splineTo(new Vector2d(1, -30),Math.PI);
+        TrajectoryActionBuilder pushSamplesBack5 = pushSamplesBack4.endTrajectory().fresh()
+                .setReversed(false).splineTo(new Vector2d(40, -35),0);
+        TrajectoryActionBuilder pushSamplesBack6 = pushSamplesBack5.endTrajectory().fresh()
+                .setReversed(true).splineTo(new Vector2d(1, -35),Math.PI);
+        Action pushSamplesBackAction = new SequentialAction(
+                pushSamplesBack1.build(),
+                samplePusher.lowerArm(),
+                pushSamplesBack2.build(),
+                samplePusher.raiseArm(),
+                pushSamplesBack3.build(),
+                samplePusher.lowerArm(),
+                pushSamplesBack4.build(),
+                samplePusher.raiseArm(),
+                pushSamplesBack5.build(),
+                samplePusher.lowerArm(),
+                pushSamplesBack6.build(),
+                samplePusher.raiseArm()
+        );
 
-        TrajectoryActionBuilder moveToSpikeMarks = moveToRungs.endTrajectory().fresh()
-                .waitSeconds(.2)
-                .splineToConstantHeading(new Vector2d(25,-33),0)
-                .turn(-135);
-        Action moveToSpikeMarksAction = moveToSpikeMarks.build();
 
 
         // Necessary Actions:
-        Action moveLiftTop = lift.moveUp(13.8);
+        /*Action moveLiftTop = lift.moveUp(13.8);
         Action moveLiftPlace =lift.moveDown(12.6);
         Action moveLiftBottom = lift.moveDown(0);
         Action placeSpec = new SequentialAction(
                 outtake.lowerSpec(),
                 moveLiftPlace,
                 outtake.openClaw()
-        );
+        );*/
 
-        Action prepareIntake =  new SequentialAction(intake.prepareIntake(), outtake.prepareIntake());
+        /*Action prepareIntake =  new SequentialAction(intake.prepareIntake(), outtake.prepareIntake());
         Action completeTransfer = new SequentialAction(
                 intake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.5).build(),
+                drive.actionBuilder(beginPose).waitSeconds(.3).build(),
                 intake.prepareTransfer(),
-                drive.actionBuilder(beginPose).waitSeconds(7).build(),
+                drive.actionBuilder(beginPose).waitSeconds(.6).build(),
                 outtake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.2).build(),
-                intake.openClaw());
-        /*Action completeTransfer2 = new SequentialAction(
-                intake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.5).build(),
-                intake.prepareTransfer(),
-                drive.actionBuilder(beginPose).waitSeconds(.7).build(),
-                outtake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.2).build(),
-                intake.openClaw());
-        Action completeTransfer3 = new SequentialAction(
-                intake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.5).build(),
-                intake.prepareTransfer(),
-                drive.actionBuilder(beginPose).waitSeconds(7).build(),
-                outtake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.2).build(),
-                intake.openClaw());
-        Action completeTransfer4 = new SequentialAction(
-                intake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.5).build(),
-                intake.prepareTransfer(),
-                drive.actionBuilder(beginPose).waitSeconds(7).build(),
-                outtake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.2).build(),
+                drive.actionBuilder(beginPose).waitSeconds(.3).build(),
                 intake.openClaw());*/
+
         Actions.runBlocking(
                 new SequentialAction(
-                        new ParallelAction(
-                                moveToRungsAction,
-                                moveLiftTop
-                        ),
-                        placeSpec,
-
-                        new ParallelAction(
-                                moveLiftBottom,
-                                moveToSpikeMarksAction
-                        ),
-                        new ParallelAction(
-                                intake.prepareGroundIntake(),
-                                extendo.moveOut(15)
-                        )
+                        pushSamplesBackAction
                 )
         );
     }
