@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Hardware.Robot.Odometry;
 
-
+@Disabled
 @TeleOp(name="Outreach1")
 public class Outreach1 extends LinearOpMode{
     private DcMotor rightFront = null;

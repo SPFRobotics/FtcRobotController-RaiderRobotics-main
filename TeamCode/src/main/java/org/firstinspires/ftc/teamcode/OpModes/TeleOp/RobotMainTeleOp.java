@@ -11,8 +11,18 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 
 import org.firstinspires.ftc.teamcode.Hardware.Button;
+import org.firstinspires.ftc.teamcode.Hardware.Robot.MecanumChassis;
+import org.firstinspires.ftc.teamcode.RoadRunnerStuff.MecanumDrive;
+import org.firstinspires.ftc.teamcode.RoadRunnerStuff.ThreeDeadWheelLocalizer;
 
 @TeleOp(name = "RobotMainTeleOp")
 public class RobotMainTeleOp extends LinearOpMode{
@@ -36,7 +46,7 @@ public class RobotMainTeleOp extends LinearOpMode{
     Button lBumper = new Button();
     Button rBumper = new Button();
     Button b = new Button();
-    Button touchpad = new Button();
+    Button a = new Button();
     private static ElapsedTime timer1 = new ElapsedTime();
     private static ElapsedTime masterClock = new ElapsedTime();
 
@@ -50,8 +60,9 @@ public class RobotMainTeleOp extends LinearOpMode{
     //Boolean expressions
     boolean wasPressed1 = false;
 
-
     public void runOpMode() {
+        Pose2d beginPose = new Pose2d(0, 0, 0);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
         masterClock.reset();
 
         //Configured looking from BEHIND of the robot
@@ -111,6 +122,28 @@ public class RobotMainTeleOp extends LinearOpMode{
             FLMotor.setPower((y - x - rx) / denominator);
             BLMotor.setPower((y + x - rx) / denominator);
 
+            /*if (a.press(gamepad1.a)){
+                TrajectoryActionBuilder moveToRungs = drive.actionBuilder(beginPose)
+                        .splineToConstantHeading(new Vector2d(30, 18),0);
+                Action moveToRungsAction = moveToRungs.build();
+                Actions.runBlocking(
+                        new SequentialAction(
+                                new ParallelAction(
+                                        moveToRungsAction
+                                )));
+            }*/
+
+            //Horizontal Linear Slides
+            if (gamepad1.right_bumper){
+                extendo.setPower(1);
+            }
+            else if (gamepad1.left_bumper){
+                extendo.setPower(-1);
+            }
+            else {
+                extendo.setPower(0);
+            }
+
             //Reset Claw to transit position
             if (b.press(gamepad2.b) && !gamepad1.options){
                 FRotationServoPos = 0.5221;
@@ -164,6 +197,7 @@ public class RobotMainTeleOp extends LinearOpMode{
                 BWristPos = 0.5;
             }
 
+            //Bring claw to ground
             if (gamepad2.x){
                 wasPressed1 = false;
                 FRotationServoPos = 0.5221;
@@ -172,17 +206,6 @@ public class RobotMainTeleOp extends LinearOpMode{
                 BWristPos = 0.5;
             }
 
-            //Extend Linear Slides
-            //Horizontal
-            if (gamepad1.right_bumper){
-                extendo.setPower(1);
-            }
-            else if (gamepad1.left_bumper){
-                extendo.setPower(-1);
-            }
-            else {
-                extendo.setPower(0);
-            }
             //Vertical
             if (gamepad2.dpad_up && MotorYRight.getCurrentPosition() < 2220) {
                 MotorYLeft.setPower(1);
@@ -306,7 +329,10 @@ public class RobotMainTeleOp extends LinearOpMode{
             telemetry.addLine("Right Trigger State: " + rTrigger.getState());
             telemetry.addLine("Left Trigger State: " + lTrigger.getState());
             telemetry.addLine("Slide Stop State: " + slideStop.isPressed());
-            telemetry.addLine("b Button State: " + b.getState());
+            telemetry.addLine("b Button State: " + b.getState() + "\n");
+
+            //Location Data
+            telemetry.addLine("Location: ");
 
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
