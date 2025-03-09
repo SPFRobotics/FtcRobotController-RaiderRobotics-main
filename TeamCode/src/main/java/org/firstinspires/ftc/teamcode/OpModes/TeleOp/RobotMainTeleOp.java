@@ -17,6 +17,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Hardware.Button;
 import org.firstinspires.ftc.teamcode.OpModes.Values;
 
+import java.io.ObjectOutput;
+
 @TeleOp(name = "RobotMainTeleOp")
 public class RobotMainTeleOp extends LinearOpMode{
 
@@ -32,6 +34,11 @@ public class RobotMainTeleOp extends LinearOpMode{
     private Servo lOuttakeWrist = null;
     private Button rTrigger = new Button();
     private static ElapsedTime masterClock = new ElapsedTime();
+
+    //Classes to organize parts
+    private static class Outtake{
+        private static double currentWristPos = 0;
+    }
 
     public void runOpMode() {
         masterClock.reset();
@@ -59,6 +66,7 @@ public class RobotMainTeleOp extends LinearOpMode{
         MotorYRight.setDirection(DcMotorSimple.Direction.REVERSE);
         extendo.setDirection(DcMotorSimple.Direction.REVERSE);
         BRMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        lOuttakeWrist.setDirection(Servo.Direction.REVERSE);
 
         MotorYLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         MotorYRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -71,7 +79,8 @@ public class RobotMainTeleOp extends LinearOpMode{
         MotorYLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         MotorYRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //Varibales.
+        //Variables
+
 
         waitForStart();
         while (opModeIsActive()){
@@ -107,14 +116,24 @@ public class RobotMainTeleOp extends LinearOpMode{
                 MotorYRight.setPower(0);
             }
 
-            //Outtake claw
+            //Outtake
             if (rTrigger.toggle((int)gamepad2.right_trigger)){
-                outtakeClaw.setPosition(Values.Outtake.ClawOpenPos);
+                outtakeClaw.setPosition(Values.Outtake.ClawClosedPos);
             }
             else{
                 outtakeClaw.setPosition(0);
             }
 
+            if (Outtake.currentWristPos > 1){
+                Outtake.currentWristPos = 1;
+            }
+            else if (Outtake.currentWristPos < 0){
+                Outtake.currentWristPos = 0;
+            }
+
+            Outtake.currentWristPos += gamepad2.right_stick_y*Values.Outtake.speedMultiplyer;
+            rOuttakeWrist.setPosition(Outtake.currentWristPos);
+            lOuttakeWrist.setPosition(Outtake.currentWristPos);
 
             //Telemetry
             telemetry.update();
@@ -152,7 +171,8 @@ public class RobotMainTeleOp extends LinearOpMode{
 
             //Servo Positions
             telemetry.addLine("Servo Positions: ");
-            telemetry.addLine("outtake Claw: " + outtakeClaw.getPosition());
+            telemetry.addLine("Outtake Claw: " + outtakeClaw.getPosition());
+            telemetry.addLine("Outtake Wrist Pos: " + Outtake.currentWristPos);
 
 
             //States
