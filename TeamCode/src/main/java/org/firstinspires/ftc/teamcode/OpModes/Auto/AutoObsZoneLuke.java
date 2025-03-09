@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.OpModes.Auto;
 
-
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -20,8 +19,7 @@ import org.firstinspires.ftc.teamcode.RoadRunnerStuff.MecanumDrive;
 import org.firstinspires.ftc.teamcode.RoadRunnerStuff.Outtake;
 
 // START WITH ROBOT ON A3 WITH RIGHT WHEELS ON COORDINATE LINE
-@Autonomous
-public class AutoObsZoneLuke extends LinearOpMode {
+/*public class AutoObsZoneLuke extends LinearOpMode {
     //Extendo extendo = new Extendo(this);
     Servo wristClawServo = null;
     private DcMotor extendo = null;
@@ -186,7 +184,8 @@ public class AutoObsZoneLuke extends LinearOpMode {
 //        claw.open();
 //        chassis.move(.5, "backward", 60);
 //        chassis.moveMultitask(.5, "right", 130, 0, 1);
-//        */
-
+//
     }
 }
+
+ */

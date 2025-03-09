@@ -1,8 +1,10 @@
 //This is a class written for testing purposes only to control a new claw system
 //This is not to be used for the actual competition
 package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
+import android.renderscript.Sampler;
 import android.text.method.Touch;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,28 +13,13 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.ParallelAction;
-import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
-import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.ftc.Actions;
 
 import org.firstinspires.ftc.teamcode.Hardware.Button;
-import org.firstinspires.ftc.teamcode.Hardware.Robot.MecanumChassis;
-import org.firstinspires.ftc.teamcode.RoadRunnerStuff.MecanumDrive;
-import org.firstinspires.ftc.teamcode.RoadRunnerStuff.ThreeDeadWheelLocalizer;
+import org.firstinspires.ftc.teamcode.OpModes.Values;
 
 @TeleOp(name = "RobotMainTeleOp")
 public class RobotMainTeleOp extends LinearOpMode{
-    private Servo FRotationServo = null;
-    private Servo FWristServo = null;
-    private Servo BWristServo = null;
-    private Servo FClawRotationServo = null;
-    private Servo FClawServo = null;
-    private Servo BRClawServo = null;
-    private Servo BLClawServo = null;
+
     private DcMotor extendo = null;
     private DcMotor MotorYRight = null;
     private DcMotor MotorYLeft = null;
@@ -40,62 +27,38 @@ public class RobotMainTeleOp extends LinearOpMode{
     private DcMotor FLMotor = null;
     private DcMotor BRMotor = null;
     private DcMotor BLMotor = null;
-    private TouchSensor slideStop = null;
-    Button lTrigger = new Button();
-    Button rTrigger = new Button();
-    Button lBumper = new Button();
-    Button rBumper = new Button();
-    Button b = new Button();
-    Button a = new Button();
-    private static ElapsedTime timer1 = new ElapsedTime();
+    private Servo outtakeClaw = null;
+    private Servo rOuttakeWrist = null;
+    private Servo lOuttakeWrist = null;
+    private Button rTrigger = new Button();
     private static ElapsedTime masterClock = new ElapsedTime();
 
-    //Varibles
-    double FRotationServoPos = 0.5024;
-    double FWristServoPos = 0.5;
-
-    double FClawRotationServoPos = 0.3302;
-    double BWristPos = 0.5;
-
-    //Boolean expressions
-    boolean wasPressed1 = false;
-
     public void runOpMode() {
-        Pose2d beginPose = new Pose2d(0, 0, 0);
-        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
         masterClock.reset();
+
 
         //Configured looking from BEHIND of the robot
 
         //Servos
-        FRotationServo = hardwareMap.get(Servo.class, "frontRotation");
-        FWristServo = hardwareMap.get(Servo.class, "frontWrist");
-        FClawRotationServo = hardwareMap.get(Servo.class, "frontClawRotation");
-        FClawServo = hardwareMap.get(Servo.class, "frontClaw");
-        BLClawServo = hardwareMap.get(Servo.class, "backLeftClaw");
-        BRClawServo = hardwareMap.get(Servo.class, "backRightClaw");
-        BWristServo = hardwareMap.get(Servo.class, "backWrist");
-        slideStop = hardwareMap.get(TouchSensor.class, "Button0");
+        outtakeClaw = hardwareMap.get(Servo.class, "outtakeClaw");
+        rOuttakeWrist = hardwareMap.get(Servo.class, "outtakeRightWrist");
+        lOuttakeWrist = hardwareMap.get(Servo.class, "outtakeLeftWrist");
 
         //Motors
         extendo = hardwareMap.get(DcMotor.class, "extendo");
         MotorYLeft = hardwareMap.get(DcMotor.class, "liftRight");
         MotorYRight = hardwareMap.get(DcMotor.class, "liftLeft");
-        FLMotor = hardwareMap.get(DcMotor.class, "backRight");
-        FRMotor = hardwareMap.get(DcMotor.class, "backLeft");
-        BLMotor = hardwareMap.get(DcMotor.class, "frontRight");
-        BRMotor = hardwareMap.get(DcMotor.class, "frontLeft");
+        FLMotor = hardwareMap.get(DcMotor.class, "frontLeft");
+        FRMotor = hardwareMap.get(DcMotor.class, "frontRight");
+        BLMotor = hardwareMap.get(DcMotor.class, "backLeft");
+        BRMotor = hardwareMap.get(DcMotor.class, "backRight");
 
         //Enable encoders
         extendo.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-
-
-        FWristServo.setDirection(Servo.Direction.REVERSE);
         MotorYRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        BRClawServo.setDirection(Servo.Direction.REVERSE);
         extendo.setDirection(DcMotorSimple.Direction.REVERSE);
-        FRMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        BRMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         MotorYLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         MotorYRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -108,33 +71,23 @@ public class RobotMainTeleOp extends LinearOpMode{
         MotorYLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         MotorYRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //FClawServo.setPosition(0.3);
+        //Varibales.
 
         waitForStart();
         while (opModeIsActive()){
             //Drive Train
-            double rx = -gamepad1.left_stick_y;
+            double y = -gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x * 1.1;
-            double y = -gamepad1.right_stick_x;
+            double rx = -gamepad1.right_stick_x;
 
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            FRMotor.setPower((y + x + rx) / denominator);
-            BRMotor.setPower((y - x + rx) / denominator);
-            FLMotor.setPower((y - x - rx) / denominator);
-            BLMotor.setPower((y + x - rx) / denominator);
+            FLMotor.setPower((y + x + rx) / denominator);
+            BLMotor.setPower((y - x + rx) / denominator);
+            FRMotor.setPower((y - x - rx) / denominator);
+            BRMotor.setPower((y + x - rx) / denominator);
 
-            /*if (a.press(gamepad1.a)){
-                TrajectoryActionBuilder moveToRungs = drive.actionBuilder(beginPose)
-                        .splineToConstantHeading(new Vector2d(30, 18),0);
-                Action moveToRungsAction = moveToRungs.build();
-                Actions.runBlocking(
-                        new SequentialAction(
-                                new ParallelAction(
-                                        moveToRungsAction
-                                )));
-            }*/
-
-            //Horizontal Linear Slides
+            //Extend Linear Slides
+            //Horizontal
             if (gamepad1.right_bumper){
                 extendo.setPower(1);
             }
@@ -144,142 +97,24 @@ public class RobotMainTeleOp extends LinearOpMode{
             else {
                 extendo.setPower(0);
             }
-
-            //Reset Claw to transit position
-            if (b.press(gamepad2.b) && !gamepad1.options){
-                FRotationServoPos = 0.5221;
-                BWristPos = 0.155;
-                wasPressed1 = true;
-                rTrigger.changeState(false);
-                timer1.reset();
-            }
-            if (timer1.milliseconds() >= 500 && wasPressed1){
-                FWristServoPos = 0.55;
-            }
-            if (timer1.milliseconds() >= 1000 && wasPressed1){
-                FClawRotationServoPos = 0;
-            }
-            if (timer1.milliseconds() >= 1500 && wasPressed1){
-                FWristServoPos = 0.73;
-            }
-            if (timer1.milliseconds() >= 2000 && wasPressed1){
-                rTrigger.changeState(true);
-            }
-            if (timer1.milliseconds() >= 2500 && wasPressed1){
-                lTrigger.changeState(false);
-            }
-            if (timer1.milliseconds() >= 3000 && wasPressed1){
-                BWristPos = 0.48435;
-            }
-            if (timer1.milliseconds() >= 3500 && wasPressed1){
-                wasPressed1 = false;
-                FRotationServoPos = 0.3302;
-                FWristServoPos = 0.273;
-                FClawRotationServoPos = 0.65;
-            }
-
-            //Set claw to pickup position
-            if (gamepad2.a){
-                wasPressed1 = false;
-                FRotationServoPos = 0.3302;
-                FWristServoPos = 0.273;
-                FClawRotationServoPos = 0.65;
-                BWristPos = 0.5;
-                //rTrigger.changeState(false);
-                //lTrigger.changeState(false);
-            }
-
-            //Set claw to face perpendicular to the wall
-            if (gamepad2.y){
-                wasPressed1 = false;
-                FRotationServoPos = 0.5221;
-                FWristServoPos = 0.38;
-                FClawRotationServoPos = 0.65;
-                BWristPos = 0.5;
-            }
-
-            //Bring claw to ground
-            if (gamepad2.x){
-                wasPressed1 = false;
-                FRotationServoPos = 0.5221;
-                FWristServoPos = 0;
-                FClawRotationServoPos = 0.65;
-                BWristPos = 0.5;
-            }
-
             //Vertical
             if (gamepad2.dpad_up && MotorYRight.getCurrentPosition() < 2220) {
                 MotorYLeft.setPower(1);
                 MotorYRight.setPower(1);
             }
-            else if (!slideStop.isPressed() && gamepad2.dpad_down){
-                MotorYLeft.setPower(-1);
-                MotorYRight.setPower(-1);
-            }
             else{
                 MotorYLeft.setPower(0);
                 MotorYRight.setPower(0);
             }
-            //Rotate Arm
-            //*************************************************************
-            FRotationServoPos += gamepad2.left_stick_x*0.01;
-            if (FRotationServoPos < 0){
-                FRotationServoPos = 0;
-            }
-            if (FRotationServoPos > 1){
-                FRotationServoPos = 1;
-            }
-            FRotationServo.setPosition(FRotationServoPos);
 
-            //*************************************************************
-
-            //Back wrist logic
-            //*************************************************************
-            BWristPos += gamepad2.right_stick_y*0.01;
-            BWristServo.setPosition(BWristPos);
-            //*************************************************************
-
-            //Move Wrist
-            //*************************************************************
-
-            FWristServoPos += -gamepad2.left_stick_y * 0.01;
-            if (FWristServoPos < 0){
-                FWristServoPos = 0;
-            }
-            if (FWristServoPos > 1){
-                FWristServoPos = 1;
-            }
-            FWristServo.setPosition(FWristServoPos);
-            //*************************************************************
-
-            //Claw Open Close Logic: Back and Front Claws
-            //*************************************************************
-            if (lTrigger.toggle((int)gamepad2.left_trigger)){
-                FClawServo.setPosition(0.65);
-            }
-            else{
-                FClawServo.setPosition(0.3);
-            }
-
+            //Outtake claw
             if (rTrigger.toggle((int)gamepad2.right_trigger)){
-                BLClawServo.setPosition(0.25);
-                BRClawServo.setPosition(0.25);
+                outtakeClaw.setPosition(Values.Outtake.ClawOpenPos);
             }
             else{
-                BLClawServo.setPosition(0.43);
-                BRClawServo.setPosition(0.43);
-            }
-            //****************************************************************
-
-            if (lBumper.press(gamepad2.left_bumper) && FClawRotationServoPos < 1){
-                FClawRotationServoPos += 0.325;
+                outtakeClaw.setPosition(0);
             }
 
-            if (rBumper.press(gamepad2.right_bumper) && FClawRotationServoPos > 0){
-                FClawRotationServoPos -= 0.325;
-            }
-
-            FClawRotationServo.setPosition(FClawRotationServoPos);
 
             //Telemetry
             telemetry.update();
@@ -317,23 +152,12 @@ public class RobotMainTeleOp extends LinearOpMode{
 
             //Servo Positions
             telemetry.addLine("Servo Positions: ");
-            telemetry.addLine("Front Rotation Servo: " + String.valueOf(FRotationServo.getPosition()));
-            telemetry.addLine("Front Wrist Servo: " + String.valueOf(FWristServo.getPosition()));
-            telemetry.addLine("Front Claw Rotation Servo: " + String.valueOf(FClawRotationServo.getPosition()));
-            telemetry.addLine("Front Claw: " + String.valueOf(FClawServo.getPosition()));
-            telemetry.addLine("Back Right Claw Servo: " + String.valueOf(BLClawServo.getPosition()));
-            telemetry.addLine("Back Left Claw Servo: " + String.valueOf(BRClawServo.getPosition()) + "\n");
+            telemetry.addLine("outtake Claw: " + outtakeClaw.getPosition());
+
 
             //States
-            telemetry.addLine("Right Bumper State: " + rBumper.getState());
-            telemetry.addLine("Left Bumper State: " + lBumper.getState());
-            telemetry.addLine("Right Trigger State: " + rTrigger.getState());
-            telemetry.addLine("Left Trigger State: " + lTrigger.getState());
-            telemetry.addLine("Slide Stop State: " + slideStop.isPressed());
-            telemetry.addLine("b Button State: " + b.getState() + "\n");
+            telemetry.addLine("States: ");
 
-            //Location Data
-            telemetry.addLine("Location: ");
 
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
