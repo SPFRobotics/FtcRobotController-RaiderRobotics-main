@@ -131,7 +131,7 @@ public class RobotMainTeleOp extends LinearOpMode{
                 Outtake.currentWristPos = 0;
             }
 
-            Outtake.currentWristPos += gamepad2.right_stick_y*Values.Outtake.speedMultiplyer;
+            Outtake.currentWristPos += gamepad2.right_stick_y*Values.Outtake.wristSpeedMultiplyer;
             rOuttakeWrist.setPosition(Outtake.currentWristPos);
             lOuttakeWrist.setPosition(Outtake.currentWristPos);
 
