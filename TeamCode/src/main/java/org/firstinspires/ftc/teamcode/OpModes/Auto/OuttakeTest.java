@@ -21,8 +21,13 @@ public class OuttakeTest extends LinearOpMode {
         Actions.runBlocking(
                 new SequentialAction(
                         outtakeRef.openClaw(),
-                        drive.actionBuilder(beginPose).waitSeconds(5).build(),
-                        outtakeRef.closeClaw()
+                        drive.actionBuilder(beginPose).waitSeconds(0.5).build(),
+                        outtakeRef.closeClaw(),
+                        drive.actionBuilder(beginPose).waitSeconds(0.5).build(),
+                        outtakeRef.preparePlacement(),
+                        drive.actionBuilder(beginPose).waitSeconds(3).build(),
+                        outtakeRef.prepareTransfer(),
+                        drive.actionBuilder(beginPose).waitSeconds(3).build()
                 )
         );
     }
