@@ -34,6 +34,8 @@ public class RobotMainTeleOp extends LinearOpMode{
     private Servo lOuttakeWrist = null;
     private Button rTrigger = new Button();
     private static ElapsedTime masterClock = new ElapsedTime();
+    private double start = 0;
+    private double end = 0;
 
     //Classes to organize parts
     private static class Outtake{
@@ -42,8 +44,6 @@ public class RobotMainTeleOp extends LinearOpMode{
 
     public void runOpMode() {
         masterClock.reset();
-
-
         //Configured looking from BEHIND of the robot
 
         //Servos
@@ -63,7 +63,7 @@ public class RobotMainTeleOp extends LinearOpMode{
         //Enable encoders
         extendo.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        MotorYRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        MotorYLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         extendo.setDirection(DcMotorSimple.Direction.REVERSE);
         BRMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         lOuttakeWrist.setDirection(Servo.Direction.REVERSE);
@@ -84,6 +84,10 @@ public class RobotMainTeleOp extends LinearOpMode{
 
         waitForStart();
         while (opModeIsActive()){
+            start = masterClock.milliseconds();
+
+            for (int i = 0; i < Values.Testing.loopTo; i++){}
+
             //Drive Train
             double y = -gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x * 1.1;
@@ -131,6 +135,19 @@ public class RobotMainTeleOp extends LinearOpMode{
                 Outtake.currentWristPos = 0;
             }
 
+            if (gamepad2.dpad_up){
+                MotorYLeft.setPower(Values.verticalSlide.power);
+                MotorYRight.setPower(Values.verticalSlide.power);
+            }
+            else if (gamepad2.dpad_down){
+                MotorYLeft.setPower(-Values.verticalSlide.power);
+                MotorYRight.setPower(-Values.verticalSlide.power);
+            }
+            else{
+                MotorYLeft.setPower(0);
+                MotorYRight.setPower(0);
+            }
+
             Outtake.currentWristPos += gamepad2.right_stick_y*Values.Outtake.wristSpeedMultiplyer;
             rOuttakeWrist.setPosition(Outtake.currentWristPos);
             lOuttakeWrist.setPosition(Outtake.currentWristPos);
@@ -174,7 +191,6 @@ public class RobotMainTeleOp extends LinearOpMode{
             telemetry.addLine("Outtake Claw: " + outtakeClaw.getPosition());
             telemetry.addLine("Outtake Wrist Pos: " + Outtake.currentWristPos);
 
-
             //States
             telemetry.addLine("States: ");
 
@@ -182,6 +198,8 @@ public class RobotMainTeleOp extends LinearOpMode{
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
             telemetry.addLine("==========================================");
+            end = masterClock.milliseconds();
+            telemetry.addLine("Cycle Time: " + String.valueOf(end - start) + " milliseconds");
         }
 
     }
