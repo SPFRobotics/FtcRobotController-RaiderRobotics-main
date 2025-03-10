@@ -13,7 +13,7 @@ public class SamplePusher {
     private final double REST_POS = 0.5;
     private Servo arm = null;
     public SamplePusher(HardwareMap hardwareMap) {
-        arm = hardwareMap.get(Servo.class, "samplePusher");
+        arm = hardwareMap.get(Servo.class, "sweeper");
         arm.setPosition(REST_POS);
     }
     public class LowerArm implements Action {

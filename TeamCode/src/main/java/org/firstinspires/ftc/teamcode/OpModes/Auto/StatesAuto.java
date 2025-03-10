@@ -20,26 +20,26 @@ import org.firstinspires.ftc.teamcode.RoadRunnerStuff.NewExtendo;
 import org.firstinspires.ftc.teamcode.RoadRunnerStuff.Outtake;
 import org.firstinspires.ftc.teamcode.RoadRunnerStuff.SamplePusher;
 
-// START WITH ROBOT ON A3 WITH RIGHT WHEELS ON COORDINATE LINE
 @Autonomous
 public class StatesAuto extends LinearOpMode {
 
-    // AprilTagDist AprilTagDistance = new AprilTagDist(this);
     @Override
     public void runOpMode() throws InterruptedException
     {
         Pose2d beginPose = new Pose2d(0, 0, 0);
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
-        //Lift lift = new Lift(hardwareMap);
-        //Outtake outtake = new Outtake(hardwareMap);
+        Lift lift = new Lift(hardwareMap);
+        Outtake outtake = new Outtake(hardwareMap);
         //Intake intake = new Intake(hardwareMap);
         SamplePusher samplePusher = new SamplePusher(hardwareMap);
         //NewExtendo extendo = new NewExtendo(hardwareMap);
 
         waitForStart();
         // Movements (in order of execution):
-
-        TrajectoryActionBuilder pushSamplesBack1 = drive.actionBuilder(beginPose)
+        TrajectoryActionBuilder moveToChamber1 = drive.actionBuilder(beginPose)
+                .setReversed(false).splineTo(new Vector2d(32, 15),0);
+        TrajectoryActionBuilder pushSamplesBack1 = moveToChamber1.endTrajectory().fresh()
+                .setReversed(true).splineTo(new Vector2d(28, -2),-Math.PI/2)
                 .setReversed(false).splineTo(new Vector2d(40, -20),0);
         TrajectoryActionBuilder pushSamplesBack2 = pushSamplesBack1.endTrajectory().fresh()
                 .setReversed(true).splineTo(new Vector2d(1, -22),Math.PI);
@@ -51,6 +51,13 @@ public class StatesAuto extends LinearOpMode {
                 .setReversed(false).splineTo(new Vector2d(40, -35),0);
         TrajectoryActionBuilder pushSamplesBack6 = pushSamplesBack5.endTrajectory().fresh()
                 .setReversed(true).splineTo(new Vector2d(1, -35),Math.PI);
+        Action placeSpec1 = new SequentialAction(
+                new ParallelAction(
+                        lift.moveUp(13.8),
+                        new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.5).build(), outtake.preparePlacement()),
+                        moveToChamber1.build()),
+                outtake.openClaw()
+        );
         Action pushSamplesBackAction = new SequentialAction(
                 pushSamplesBack1.build(),
                 samplePusher.lowerArm(),
@@ -69,28 +76,18 @@ public class StatesAuto extends LinearOpMode {
 
 
         // Necessary Actions:
-        /*Action moveLiftTop = lift.moveUp(13.8);
-        Action moveLiftPlace =lift.moveDown(12.6);
-        Action moveLiftBottom = lift.moveDown(0);
+        /*
         Action placeSpec = new SequentialAction(
                 outtake.lowerSpec(),
                 moveLiftPlace,
                 outtake.openClaw()
         );*/
 
-        /*Action prepareIntake =  new SequentialAction(intake.prepareIntake(), outtake.prepareIntake());
-        Action completeTransfer = new SequentialAction(
-                intake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.3).build(),
-                intake.prepareTransfer(),
-                drive.actionBuilder(beginPose).waitSeconds(.6).build(),
-                outtake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.3).build(),
-                intake.openClaw());*/
 
         Actions.runBlocking(
                 new SequentialAction(
-                        pushSamplesBackAction
+                        placeSpec1
+                        //pushSamplesBackAction
                 )
         );
     }
