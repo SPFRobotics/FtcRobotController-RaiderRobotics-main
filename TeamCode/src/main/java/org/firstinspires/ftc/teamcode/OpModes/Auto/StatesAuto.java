@@ -39,7 +39,7 @@ public class StatesAuto extends LinearOpMode {
         TrajectoryActionBuilder moveToChamber1 = drive.actionBuilder(beginPose)
                 .setReversed(false).splineTo(new Vector2d(32, 15),0);
         TrajectoryActionBuilder pushSamplesBack1 = moveToChamber1.endTrajectory().fresh()
-                .setReversed(true).splineTo(new Vector2d(28, -2),-Math.PI/2)
+                .setReversed(true).splineTo(new Vector2d(15, -10),Math.PI)
                 .setReversed(false).splineTo(new Vector2d(40, -20),0);
         TrajectoryActionBuilder pushSamplesBack2 = pushSamplesBack1.endTrajectory().fresh()
                 .setReversed(true).splineTo(new Vector2d(1, -22),Math.PI);
@@ -53,8 +53,8 @@ public class StatesAuto extends LinearOpMode {
                 .setReversed(true).splineTo(new Vector2d(1, -35),Math.PI);
         Action placeSpec1 = new SequentialAction(
                 new ParallelAction(
-                        lift.moveUp(13.8),
-                        new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.5).build(), outtake.preparePlacement()),
+                        lift.moveUp(14),
+                        new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.25).build(), outtake.preparePlacement()),
                         moveToChamber1.build()),
                 outtake.openClaw()
         );
@@ -86,8 +86,11 @@ public class StatesAuto extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        placeSpec1
-                        //pushSamplesBackAction
+                        placeSpec1,
+                        new ParallelAction(
+                        pushSamplesBackAction,
+                        new SequentialAction(outtake.prepareTransfer(), lift.moveDown(0))
+                        )
                 )
         );
     }

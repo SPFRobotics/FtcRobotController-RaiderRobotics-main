@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Outtake {
     private Servo claw = null;
     private Servo wristLeft = null;
-    private Servo wristRight = null;
     private final double OPEN_POS = 0.65;
     private final double CLOSED_POS = 0;
     private final double PLACING_POS = 1;
@@ -19,11 +18,9 @@ public class Outtake {
     public Outtake(HardwareMap hardwareMap) {
         claw = hardwareMap.get(Servo.class, "outtakeClaw");
         wristLeft = hardwareMap.get(Servo.class, "outtakeLeftWrist");
-        wristRight = hardwareMap.get(Servo.class, "outtakeRightWrist");
         wristLeft.setDirection(Servo.Direction.REVERSE);
         claw.setPosition(OPEN_POS);
         wristLeft.setPosition(TRANSFER_POS);
-        wristRight.setPosition(TRANSFER_POS);
     }
     public class CloseClaw implements Action {
         @Override
@@ -50,7 +47,6 @@ public class Outtake {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             wristLeft.setPosition(PLACING_POS);
-            wristRight.setPosition(PLACING_POS);
             return false;
         }
     }
@@ -61,7 +57,6 @@ public class Outtake {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             wristLeft.setPosition(TRANSFER_POS);
-            wristRight.setPosition(TRANSFER_POS);
             return false;
         }
     }

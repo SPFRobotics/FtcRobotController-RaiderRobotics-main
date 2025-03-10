@@ -17,15 +17,15 @@ public class Lift {
     public Lift(HardwareMap hardwareMap) {
         liftLeft = hardwareMap.get(DcMotor.class, "liftLeft");
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         liftRight = hardwareMap.get(DcMotor.class, "liftRight");
         liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftRight.setDirection(DcMotorSimple.Direction.REVERSE);
     }
     public class LiftUp implements Action {
 
         // checks if the lift motor has been powered on
         private boolean initialized = false;
-        private static final int liftMaxMotorCounts = (int)(15.5*(537.7 / (4.409)));
+        private static final int liftMaxMotorCounts = (int)(28*(537.7 / (4.724955)));
         private int encoderTicks;
 
         LiftUp(double height){
@@ -65,7 +65,7 @@ public class Lift {
 
         // checks if the lift motor has been powered on
         private boolean initialized = false;
-        private static final int liftMaxMotorCounts = (int)(15.5*(537.7 / (4.409)));
+        private static final int liftMaxMotorCounts = (int)(28*(537.7 / (4.724955)));
         private int encoderTicks;
         LiftDown(double height){
             encoderTicks = inchToMotorTicks(height);
@@ -105,6 +105,6 @@ public class Lift {
         return new LiftUp(height);
     }
     int inchToMotorTicks(double inches){
-        return (int)(inches*(537.7 / (4.409)));
+        return (int)(inches*(537.7 / (4.724955)));
     }
 }
