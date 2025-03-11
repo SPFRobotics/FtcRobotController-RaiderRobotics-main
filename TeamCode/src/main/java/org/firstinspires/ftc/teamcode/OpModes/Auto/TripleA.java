@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes.Auto;
+/*package org.firstinspires.ftc.teamcode.OpModes.Auto;
 
 
 import com.acmerobotics.roadrunner.Action;
@@ -92,5 +92,5 @@ public class TripleA extends LinearOpMode {
 
 
     }
-}
+}*/
 

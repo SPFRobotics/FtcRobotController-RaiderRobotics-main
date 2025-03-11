@@ -12,8 +12,10 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.configuration.ServoHubConfiguration;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.ftccommon.internal.manualcontrol.parameters.ServoChannelParameters;
 import org.firstinspires.ftc.teamcode.Hardware.Button;
 import org.firstinspires.ftc.teamcode.OpModes.Values;
 
@@ -30,9 +32,9 @@ public class RobotMainTeleOp extends LinearOpMode{
     private DcMotor BRMotor = null;
     private DcMotor BLMotor = null;
     private Servo outtakeClaw = null;
-    private Servo rOuttakeWrist = null;
-    private Servo lOuttakeWrist = null;
+    private Servo outtakeWrist = null;
     private Button rTrigger = new Button();
+    private ServoHubConfiguration servoHubConfig = new ServoHubConfiguration();
     private static ElapsedTime masterClock = new ElapsedTime();
     private double start = 0;
     private double end = 0;
@@ -48,9 +50,7 @@ public class RobotMainTeleOp extends LinearOpMode{
 
         //Servos
         outtakeClaw = hardwareMap.get(Servo.class, "outtakeClaw");
-        rOuttakeWrist = hardwareMap.get(Servo.class, "outtakeRightWrist");
-        lOuttakeWrist = hardwareMap.get(Servo.class, "outtakeLeftWrist");
-
+        outtakeWrist = hardwareMap.get(Servo.class, "outtakeWrist");
         //Motors
         extendo = hardwareMap.get(DcMotor.class, "extendo");
         MotorYLeft = hardwareMap.get(DcMotor.class, "liftRight");
@@ -66,7 +66,7 @@ public class RobotMainTeleOp extends LinearOpMode{
         MotorYLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         extendo.setDirection(DcMotorSimple.Direction.REVERSE);
         BRMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        lOuttakeWrist.setDirection(Servo.Direction.REVERSE);
+        outtakeWrist.setDirection(Servo.Direction.REVERSE);
 
         MotorYLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         MotorYRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -79,8 +79,9 @@ public class RobotMainTeleOp extends LinearOpMode{
         MotorYLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         MotorYRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //Variables
 
+
+        //Variables
 
         waitForStart();
         while (opModeIsActive()){
@@ -149,8 +150,7 @@ public class RobotMainTeleOp extends LinearOpMode{
             }
 
             Outtake.currentWristPos += gamepad2.right_stick_y*Values.Outtake.wristSpeedMultiplyer;
-            rOuttakeWrist.setPosition(Outtake.currentWristPos);
-            lOuttakeWrist.setPosition(Outtake.currentWristPos);
+            outtakeWrist.setPosition(Outtake.currentWristPos);
 
             //Telemetry
             telemetry.update();
@@ -193,6 +193,8 @@ public class RobotMainTeleOp extends LinearOpMode{
 
             //States
             telemetry.addLine("States: ");
+
+            telemetry.addLine(String.valueOf(servoHubConfig.getServos()));
 
 
             telemetry.addLine("==========================================");
