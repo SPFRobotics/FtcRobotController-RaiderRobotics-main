@@ -9,79 +9,63 @@ import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.OpModes.Values;
+
 public class Intake {
     private Servo wrist = null;
     private Servo claw = null;
     private Servo clawRotation = null;
     private Servo armRotation = null;
-    private final double CLAW_CLOSED_POS = 0.6;
-    private final double CLAW_OPEN_POS = 0.3;
-    private final double ARM_ROTATION_POS = 0.5221;
-    private final double CLAW_ROTATION_INTAKE =0.65;
-    private final double CLAW_ROTATION_GROUND_INTAKE =0.15;
-    private final double CLAW_ROTATION_TRANSFER =0;
-    private final double WRIST_TRANSFER_POS = 0.7;
-    private final double WRIST_INTAKE_POS = 0.35;
-    private final double WRIST_GROUND_INTAKE_POS = 0.2;
+
     public Intake(HardwareMap hardwareMap){
-        armRotation = hardwareMap.get(Servo.class, "frontRotation");
-        wrist = hardwareMap.get(Servo.class, "frontWrist");
-        clawRotation = hardwareMap.get(Servo.class, "frontClawRotation");
-        claw = hardwareMap.get(Servo.class, "frontClaw");
+        wrist = hardwareMap.get(Servo.class, "intakeWrist");
+        clawRotation = hardwareMap.get(Servo.class, "intakeRotation");
+        claw = hardwareMap.get(Servo.class, "intakeClaw");
         wrist.setDirection(Servo.Direction.REVERSE);
 
         // Initialize positions
-        claw.setPosition(CLAW_OPEN_POS);
-        armRotation.setPosition(ARM_ROTATION_POS);
-        clawRotation.setPosition(CLAW_ROTATION_TRANSFER);
-        wrist.setPosition(WRIST_TRANSFER_POS);
+        claw.setPosition(Values.Intake.ClawOpenPos);
+        clawRotation.setPosition(Values.Intake.rotationTransferPos);
+        wrist.setPosition(Values.Intake.wristTransferPos);
     }
     public class PrepareIntake implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            clawRotation.setPosition(CLAW_ROTATION_INTAKE);
-            wrist.setPosition(WRIST_INTAKE_POS);
+            claw.setPosition(Values.Intake.ClawOpenPos);
+            clawRotation.setPosition(Values.Intake.rotationIntakePos);
+            wrist.setPosition(Values.Intake.wristIntakePos);
             return false;
         }
     }
-    public class PrepareTransfer implements Action {
+    public class Transfer implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            clawRotation.setPosition(CLAW_ROTATION_TRANSFER);
-            wrist.setPosition(WRIST_TRANSFER_POS);
+            clawRotation.setPosition(Values.Intake.rotationTransferPos);
+            wrist.setPosition(Values.Intake.wristTransferPos);
             return false;
         }
     }
     public class CloseClaw implements Action{
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            claw.setPosition(CLAW_CLOSED_POS);
+            claw.setPosition(Values.Intake.ClawClosedPos);
             return false;
         }
     }
     public class OpenClaw implements Action{
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            claw.setPosition(CLAW_OPEN_POS);
+            claw.setPosition(Values.Intake.ClawOpenPos);
             return false;
         }
     }
-    public class PrepareGroundIntake implements Action {
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            clawRotation.setPosition(CLAW_ROTATION_GROUND_INTAKE);
-            wrist.setPosition(WRIST_GROUND_INTAKE_POS);
-            return false;
-        }
-    }
+
     public Action prepareIntake(){
         return new PrepareIntake();
     }
-    public Action prepareGroundIntake(){
-        return new PrepareIntake();
-    }
-    public Action prepareTransfer(){
-        return new PrepareTransfer();
+
+    public Action transfer(){
+        return new Transfer();
     }
     public Action closeClaw(){
         return new CloseClaw();

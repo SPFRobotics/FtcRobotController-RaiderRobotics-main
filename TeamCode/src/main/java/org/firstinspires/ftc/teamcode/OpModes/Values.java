@@ -21,4 +21,14 @@ public class Values {
     public static class Testing{
         public static int loopTo = 0;
     }
+    @Config
+    public static class Intake{
+        public static double ClawOpenPos = 0;
+        public static double ClawClosedPos = 0.5;
+        public static double wristTransferPos = 0;
+        public static double wristIntakePos = 0.5;
+        public static double rotationIntakePos = 1;
+        public static double rotationTransferPos = 0;
+
+    }
 }
