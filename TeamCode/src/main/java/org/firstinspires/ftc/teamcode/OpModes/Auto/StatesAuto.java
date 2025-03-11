@@ -37,7 +37,7 @@ public class StatesAuto extends LinearOpMode {
         waitForStart();
         // Movements (in order of execution):
         TrajectoryActionBuilder moveToChamber1 = drive.actionBuilder(beginPose)
-                .setReversed(false).splineTo(new Vector2d(32, 15),0);
+                .setReversed(false).splineTo(new Vector2d(34, 15),0);
         TrajectoryActionBuilder pushSamplesBack1 = moveToChamber1.endTrajectory().fresh()
                 .setReversed(true).splineTo(new Vector2d(15, -10),Math.PI)
                 .setReversed(false).splineTo(new Vector2d(40, -20),0);
@@ -53,9 +53,9 @@ public class StatesAuto extends LinearOpMode {
                 .setReversed(true).splineTo(new Vector2d(1, -35),Math.PI);
         Action placeSpec1 = new SequentialAction(
                 new ParallelAction(
-                        lift.moveUp(14),
-                        new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.25).build(), outtake.preparePlacement()),
+                        lift.moveUp(13.5),
                         moveToChamber1.build()),
+                drive.actionBuilder(beginPose).waitSeconds(0.2).build(),
                 outtake.openClaw()
         );
         Action pushSamplesBackAction = new SequentialAction(
@@ -86,6 +86,7 @@ public class StatesAuto extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
+                        outtake.closeClaw(),
                         placeSpec1,
                         new ParallelAction(
                         pushSamplesBackAction,

@@ -9,18 +9,20 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Outtake {
     private Servo claw = null;
-    private Servo wristLeft = null;
+    private Servo wrist = null;
     private final double OPEN_POS = 0.65;
     private final double CLOSED_POS = 0;
+    private final double PREPARE_PLACEMENT_POS = 0.8;
     private final double PLACING_POS = 1;
     private final double TRANSFER_POS = 0;
 
     public Outtake(HardwareMap hardwareMap) {
         claw = hardwareMap.get(Servo.class, "outtakeClaw");
-        wristLeft = hardwareMap.get(Servo.class, "outtakeLeftWrist");
-        wristLeft.setDirection(Servo.Direction.REVERSE);
-        claw.setPosition(OPEN_POS);
-        wristLeft.setPosition(TRANSFER_POS);
+        wrist = hardwareMap.get(Servo.class, "outtakeWrist");
+        wrist.setDirection(Servo.Direction.REVERSE);
+        claw.setDirection(Servo.Direction.REVERSE);
+        claw.setPosition(CLOSED_POS);
+        wrist.setPosition(PREPARE_PLACEMENT_POS);
     }
     public class CloseClaw implements Action {
         @Override
@@ -46,7 +48,7 @@ public class Outtake {
     public class PreparePlacement implements Action{
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            wristLeft.setPosition(PLACING_POS);
+            wrist.setPosition(PREPARE_PLACEMENT_POS);
             return false;
         }
     }
@@ -56,13 +58,24 @@ public class Outtake {
     public class PrepareTransfer implements Action{
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            wristLeft.setPosition(TRANSFER_POS);
+            wrist.setPosition(TRANSFER_POS);
             return false;
         }
     }
     public Action prepareTransfer(){
         return new PrepareTransfer();
     }
+    public class SwingToPlace implements Action{
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            wrist.setPosition(PLACING_POS);
+            return false;
+        }
+    }
+    public Action swingToPlace(){
+        return new SwingToPlace();
+    }
+
 
 
 }

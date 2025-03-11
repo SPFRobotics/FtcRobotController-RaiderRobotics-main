@@ -20,6 +20,8 @@ public class Lift {
         liftRight = hardwareMap.get(DcMotor.class, "liftRight");
         liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        liftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
     public class LiftUp implements Action {
 
@@ -31,6 +33,7 @@ public class Lift {
         LiftUp(double height){
             encoderTicks = inchToMotorTicks(height);
         }
+
 
 
         // actions are formatted via telemetry packets as below

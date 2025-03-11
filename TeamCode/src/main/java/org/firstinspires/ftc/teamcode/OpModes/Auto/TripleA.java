@@ -67,7 +67,7 @@ public class TripleA extends LinearOpMode {
         Action lmoveLiftPlace = lift.moveDown(12);
 
         Action placeSpec = new SequentialAction(
-                outtake.lowerSpec(),
+                //outtake.lowerSpec(),
                 lmoveLiftPlace,
                 outtake.openClaw()
         );

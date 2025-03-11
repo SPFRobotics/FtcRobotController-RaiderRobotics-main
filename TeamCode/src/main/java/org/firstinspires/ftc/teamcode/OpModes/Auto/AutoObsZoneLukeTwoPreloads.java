@@ -116,9 +116,9 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
 
 
         Action completeTransfer = new SequentialAction(
-                intake.closeClaw(),
+                //intake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.3).build(),
-                intake.prepareTransfer(),
+                //intake.prepareTransfer(),
                 drive.actionBuilder(beginPose).waitSeconds(.6).build(),
                 outtake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.3).build(),
@@ -126,7 +126,7 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
         Action completeTransfer2 = new SequentialAction(
                 intake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.3).build(),
-                intake.prepareTransfer(),
+                //intake.prepareTransfer(),
                 drive.actionBuilder(beginPose).waitSeconds(.6).build(),
                 outtake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.3).build(),
@@ -134,7 +134,7 @@ public class AutoObsZoneLukeTwoPreloads extends LinearOpMode {
         Action completeTransfer3 = new SequentialAction(
                 intake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.3).build(),
-                intake.prepareTransfer(),
+                //intake.prepareTransfer(),
                 drive.actionBuilder(beginPose).waitSeconds(.6).build(),
                 outtake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(.3).build(),

@@ -25,10 +25,12 @@ public class Values {
     public static class Intake{
         public static double ClawOpenPos = 0;
         public static double ClawClosedPos = 0.5;
-        public static double wristTransferPos = 0;
-        public static double wristIntakePos = 0.5;
+        public static double wristLeftTransferPos = 0;
+        public static double wristLeftIntakePos = 0.5;
+        public static double wristRightTransferPos = 0;
+        public static double wristRightIntakePos = 0.5;
         public static double rotationIntakePos = 1;
-        public static double rotationTransferPos = 0;
+        public static double rotationTransferPos = rotationIntakePos;
 
     }
 }
