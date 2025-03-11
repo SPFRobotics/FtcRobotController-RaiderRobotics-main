@@ -37,7 +37,7 @@ public class StatesAuto extends LinearOpMode {
         waitForStart();
         // Movements (in order of execution):
         TrajectoryActionBuilder moveToChamber1 = drive.actionBuilder(beginPose)
-                .setReversed(false).splineTo(new Vector2d(34, 15),0);
+                .setReversed(false).splineTo(new Vector2d(35, 15),0);
         TrajectoryActionBuilder pushSamplesBack1 = moveToChamber1.endTrajectory().fresh()
                 .setReversed(true).splineTo(new Vector2d(15, -10),Math.PI)
                 .setReversed(false).splineTo(new Vector2d(40, -20),0);
