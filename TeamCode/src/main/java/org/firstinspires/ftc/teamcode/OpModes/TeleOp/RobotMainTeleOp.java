@@ -14,6 +14,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.configuration.ServoHubConfiguration;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.revrobotics.servohub.*;
+import com.revrobotics.servohub.config.ServoHubConfig;
 
 import org.firstinspires.ftc.ftccommon.internal.manualcontrol.parameters.ServoChannelParameters;
 import org.firstinspires.ftc.teamcode.Hardware.Button;
@@ -33,9 +35,13 @@ public class RobotMainTeleOp extends LinearOpMode{
     private DcMotor BLMotor = null;
     private Servo outtakeClaw = null;
     private Servo outtakeWrist = null;
+    private Servo intakeClaw = null;
+    private Servo rIntakeWrist = null;
+    private Servo lIntakeWrist = null;
+    private Servo intakeRotation = null;
     private Button rTrigger = new Button();
-    private ServoHubConfiguration servoHubConfig = new ServoHubConfiguration();
     private static ElapsedTime masterClock = new ElapsedTime();
+
     private double start = 0;
     private double end = 0;
 
@@ -65,8 +71,9 @@ public class RobotMainTeleOp extends LinearOpMode{
 
         MotorYLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         extendo.setDirection(DcMotorSimple.Direction.REVERSE);
-        BRMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         outtakeWrist.setDirection(Servo.Direction.REVERSE);
+        BRMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        FRMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         MotorYLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         MotorYRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -78,8 +85,6 @@ public class RobotMainTeleOp extends LinearOpMode{
         extendo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         MotorYLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         MotorYRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
 
         //Variables
 
@@ -193,8 +198,6 @@ public class RobotMainTeleOp extends LinearOpMode{
 
             //States
             telemetry.addLine("States: ");
-
-            telemetry.addLine(String.valueOf(servoHubConfig.getServos()));
 
 
             telemetry.addLine("==========================================");
