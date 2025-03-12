@@ -55,28 +55,28 @@ public class StatesAuto extends LinearOpMode {
                 .setReversed(false).splineTo(new Vector2d(4, -35),0);
 
         TrajectoryActionBuilder moveToChamber2 = pushSamplesBack7.endTrajectory().fresh()
-                .setReversed(false).splineTo(new Vector2d(35, 15),0);
+                .setReversed(false).splineTo(new Vector2d(35, 13),0);
         TrajectoryActionBuilder moveToCorner1 = moveToChamber2.endTrajectory().fresh()
                 .setReversed(true).splineTo(new Vector2d(10, -25),Math.PI)
                 .waitSeconds(.5)
                 .setReversed(true).splineTo(new Vector2d(4, -25),Math.PI);
 
         TrajectoryActionBuilder moveToChamber3 = moveToCorner1.endTrajectory().fresh()
-                .setReversed(false).splineTo(new Vector2d(35, 15),0);
+                .setReversed(false).splineTo(new Vector2d(35, 11),0);
         TrajectoryActionBuilder moveToCorner2 = moveToChamber3.endTrajectory().fresh()
                 .setReversed(true).splineTo(new Vector2d(10, -25),Math.PI)
                 .waitSeconds(.5)
                 .setReversed(true).splineTo(new Vector2d(4, -25),Math.PI);
 
         TrajectoryActionBuilder moveToChamber4 = moveToCorner2.endTrajectory().fresh()
-                .setReversed(false).splineTo(new Vector2d(35, 15),0);
+                .setReversed(false).splineTo(new Vector2d(35, 9),0);
         TrajectoryActionBuilder moveToCorner3 = moveToChamber4.endTrajectory().fresh()
                 .setReversed(true).splineTo(new Vector2d(10, -25),Math.PI)
                 .waitSeconds(.5)
                 .setReversed(true).splineTo(new Vector2d(4, -25),Math.PI);
 
         TrajectoryActionBuilder moveToChamber5 = moveToCorner3.endTrajectory().fresh()
-                .setReversed(false).splineTo(new Vector2d(35, 15),0);
+                .setReversed(false).splineTo(new Vector2d(35, 7),0);
         TrajectoryActionBuilder moveToCorner4 = moveToChamber5.endTrajectory().fresh()
                 .setReversed(true).splineTo(new Vector2d(5, -35),Math.PI);
         // RoadRunner Actions are weird. If the same action is ran twice, RoadRunner thinks "Oh I already ran this" and doesn't run
@@ -120,30 +120,46 @@ public class StatesAuto extends LinearOpMode {
         Action completeTransfer1 = new SequentialAction(
                 outtake.prepareTransfer(),
                 intake.prepareIntake(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 intake.closeClaw(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 intake.transfer(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 outtake.closeClaw(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 intake.openClaw());
         Action completeTransfer2 = new SequentialAction(
                 outtake.prepareTransfer(),
                 intake.prepareIntake(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 intake.closeClaw(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 intake.transfer(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 outtake.closeClaw(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 intake.openClaw());
         Action completeTransfer3 = new SequentialAction(
                 outtake.prepareTransfer(),
                 intake.prepareIntake(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 intake.closeClaw(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 intake.transfer(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 outtake.closeClaw(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 intake.openClaw());
         Action completeTransfer4 = new SequentialAction(
                 outtake.prepareTransfer(),
                 intake.prepareIntake(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 intake.closeClaw(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 intake.transfer(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 outtake.closeClaw(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 intake.openClaw());
         Action pushSamplesBackAction = new SequentialAction(
                 pushSamplesBack1.build(),

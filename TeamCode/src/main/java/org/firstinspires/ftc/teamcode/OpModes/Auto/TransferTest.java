@@ -38,9 +38,13 @@ public class TransferTest extends LinearOpMode {
         Action completeTransfer = new SequentialAction(
                 outtake.prepareTransfer(),
                 intake.prepareIntake(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 intake.closeClaw(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 intake.transfer(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 outtake.closeClaw(),
+                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
                 intake.openClaw());
 
 
