@@ -30,7 +30,7 @@ public class StatesAuto extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
         Lift lift = new Lift(hardwareMap);
         Outtake outtake = new Outtake(hardwareMap);
-        //Intake intake = new Intake(hardwareMap);
+        Intake intake = new Intake(hardwareMap);
         SamplePusher samplePusher = new SamplePusher(hardwareMap);
         //NewExtendo extendo = new NewExtendo(hardwareMap);
 
@@ -51,6 +51,36 @@ public class StatesAuto extends LinearOpMode {
                 .setReversed(false).splineTo(new Vector2d(40, -35),0);
         TrajectoryActionBuilder pushSamplesBack6 = pushSamplesBack5.endTrajectory().fresh()
                 .setReversed(true).splineTo(new Vector2d(1, -35),Math.PI);
+        TrajectoryActionBuilder pushSamplesBack7 = pushSamplesBack6.endTrajectory().fresh()
+                .setReversed(false).splineTo(new Vector2d(4, -35),0);
+
+        TrajectoryActionBuilder moveToChamber2 = pushSamplesBack7.endTrajectory().fresh()
+                .setReversed(false).splineTo(new Vector2d(35, 15),0);
+        TrajectoryActionBuilder moveToCorner1 = moveToChamber2.endTrajectory().fresh()
+                .setReversed(true).splineTo(new Vector2d(10, -25),Math.PI)
+                .waitSeconds(.5)
+                .setReversed(true).splineTo(new Vector2d(4, -25),Math.PI);
+
+        TrajectoryActionBuilder moveToChamber3 = moveToCorner1.endTrajectory().fresh()
+                .setReversed(false).splineTo(new Vector2d(35, 15),0);
+        TrajectoryActionBuilder moveToCorner2 = moveToChamber3.endTrajectory().fresh()
+                .setReversed(true).splineTo(new Vector2d(10, -25),Math.PI)
+                .waitSeconds(.5)
+                .setReversed(true).splineTo(new Vector2d(4, -25),Math.PI);
+
+        TrajectoryActionBuilder moveToChamber4 = moveToCorner2.endTrajectory().fresh()
+                .setReversed(false).splineTo(new Vector2d(35, 15),0);
+        TrajectoryActionBuilder moveToCorner3 = moveToChamber4.endTrajectory().fresh()
+                .setReversed(true).splineTo(new Vector2d(10, -25),Math.PI)
+                .waitSeconds(.5)
+                .setReversed(true).splineTo(new Vector2d(4, -25),Math.PI);
+
+        TrajectoryActionBuilder moveToChamber5 = moveToCorner3.endTrajectory().fresh()
+                .setReversed(false).splineTo(new Vector2d(35, 15),0);
+        TrajectoryActionBuilder moveToCorner4 = moveToChamber5.endTrajectory().fresh()
+                .setReversed(true).splineTo(new Vector2d(5, -35),Math.PI);
+        // RoadRunner Actions are weird. If the same action is ran twice, RoadRunner thinks "Oh I already ran this" and doesn't run
+        // Make multiple identical actions instead
         Action placeSpec1 = new SequentialAction(
                 new ParallelAction(
                         lift.moveUp(13.5),
@@ -58,6 +88,63 @@ public class StatesAuto extends LinearOpMode {
                 drive.actionBuilder(beginPose).waitSeconds(0.2).build(),
                 outtake.openClaw()
         );
+        Action placeSpec2 = new SequentialAction(
+                new ParallelAction(
+                        lift.moveUp(13.5),
+                        moveToChamber2.build()),
+                drive.actionBuilder(beginPose).waitSeconds(0.2).build(),
+                outtake.openClaw()
+        );
+        Action placeSpec3 = new SequentialAction(
+                new ParallelAction(
+                        lift.moveUp(13.5),
+                        moveToChamber3.build()),
+                drive.actionBuilder(beginPose).waitSeconds(0.2).build(),
+                outtake.openClaw()
+        );
+        Action placeSpec4 = new SequentialAction(
+                new ParallelAction(
+                        lift.moveUp(13.5),
+                        moveToChamber4.build()),
+                drive.actionBuilder(beginPose).waitSeconds(0.2).build(),
+                outtake.openClaw()
+        );
+        Action placeSpec5 = new SequentialAction(
+                new ParallelAction(
+                        lift.moveUp(13.5),
+                        moveToChamber5.build()),
+                drive.actionBuilder(beginPose).waitSeconds(0.2).build(),
+                outtake.openClaw()
+        );
+
+        Action completeTransfer1 = new SequentialAction(
+                outtake.prepareTransfer(),
+                intake.prepareIntake(),
+                intake.closeClaw(),
+                intake.transfer(),
+                outtake.closeClaw(),
+                intake.openClaw());
+        Action completeTransfer2 = new SequentialAction(
+                outtake.prepareTransfer(),
+                intake.prepareIntake(),
+                intake.closeClaw(),
+                intake.transfer(),
+                outtake.closeClaw(),
+                intake.openClaw());
+        Action completeTransfer3 = new SequentialAction(
+                outtake.prepareTransfer(),
+                intake.prepareIntake(),
+                intake.closeClaw(),
+                intake.transfer(),
+                outtake.closeClaw(),
+                intake.openClaw());
+        Action completeTransfer4 = new SequentialAction(
+                outtake.prepareTransfer(),
+                intake.prepareIntake(),
+                intake.closeClaw(),
+                intake.transfer(),
+                outtake.closeClaw(),
+                intake.openClaw());
         Action pushSamplesBackAction = new SequentialAction(
                 pushSamplesBack1.build(),
                 samplePusher.lowerArm(),
@@ -70,7 +157,25 @@ public class StatesAuto extends LinearOpMode {
                 pushSamplesBack5.build(),
                 samplePusher.lowerArm(),
                 pushSamplesBack6.build(),
-                samplePusher.raiseArm()
+                samplePusher.raiseArm(),
+                pushSamplesBack7.build()
+        );
+        Action transferAndPlace = new SequentialAction(
+                completeTransfer1,
+                placeSpec2,
+                moveToCorner1.build(),
+
+                completeTransfer2,
+                placeSpec3,
+                moveToCorner2.build(),
+
+                completeTransfer3,
+                placeSpec4,
+                moveToCorner3.build(),
+
+                completeTransfer3,
+                placeSpec5,
+                moveToCorner4.build()
         );
 
 
