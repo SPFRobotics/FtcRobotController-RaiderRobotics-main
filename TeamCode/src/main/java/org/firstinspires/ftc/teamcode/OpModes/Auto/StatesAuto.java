@@ -160,22 +160,25 @@ public class StatesAuto extends LinearOpMode {
                 samplePusher.raiseArm(),
                 pushSamplesBack7.build()
         );
-        Action transferAndPlace = new SequentialAction(
+        Action transferAndPlace1 = new SequentialAction(
                 completeTransfer1,
                 placeSpec2,
-                moveToCorner1.build(),
-
+                new ParallelAction(outtake.prepareTransfer(),lift.moveDown(0), moveToCorner1.build())
+        );
+        Action transferAndPlace2 = new SequentialAction(
                 completeTransfer2,
                 placeSpec3,
-                moveToCorner2.build(),
-
+                new ParallelAction(outtake.prepareTransfer(),lift.moveDown(0), moveToCorner2.build())
+        );
+        Action transferAndPlace3 = new SequentialAction(
                 completeTransfer3,
                 placeSpec4,
-                moveToCorner3.build(),
-
-                completeTransfer3,
+                new ParallelAction(outtake.prepareTransfer(),lift.moveDown(0), moveToCorner3.build())
+        );
+        Action transferAndPlace4 = new SequentialAction(
+                completeTransfer4,
                 placeSpec5,
-                moveToCorner4.build()
+                new ParallelAction(outtake.prepareTransfer(),lift.moveDown(0), moveToCorner4.build())
         );
 
 
@@ -194,9 +197,13 @@ public class StatesAuto extends LinearOpMode {
                         outtake.closeClaw(),
                         placeSpec1,
                         new ParallelAction(
-                        pushSamplesBackAction,
-                        new SequentialAction(outtake.prepareTransfer(), lift.moveDown(0))
-                        )
+                            pushSamplesBackAction,
+                            new SequentialAction(outtake.prepareTransfer(), lift.moveDown(0))
+                        ),
+                        transferAndPlace1,
+                        transferAndPlace2,
+                        transferAndPlace3,
+                        transferAndPlace4
                 )
         );
     }
