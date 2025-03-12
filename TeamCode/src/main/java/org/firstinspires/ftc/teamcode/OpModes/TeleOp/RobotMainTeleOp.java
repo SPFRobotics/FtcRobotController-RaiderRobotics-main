@@ -14,8 +14,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.configuration.ServoHubConfiguration;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.revrobotics.servohub.*;
-import com.revrobotics.servohub.config.ServoHubConfig;
 
 import org.firstinspires.ftc.ftccommon.internal.manualcontrol.parameters.ServoChannelParameters;
 import org.firstinspires.ftc.teamcode.Hardware.Button;
