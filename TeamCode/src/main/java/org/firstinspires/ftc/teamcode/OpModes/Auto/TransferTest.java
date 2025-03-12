@@ -23,8 +23,6 @@ import org.firstinspires.ftc.teamcode.RoadRunnerStuff.Outtake;
 public class TransferTest extends LinearOpMode {
 
     //Extendo extendo = new Extendo(this);
-    private DcMotor extendo = null;
-    Servo wristClawServo = null;
     // AprilTagDist AprilTagDistance = new AprilTagDist(this);
     @Override
     public void runOpMode() throws InterruptedException
@@ -33,27 +31,22 @@ public class TransferTest extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
         Outtake outtake = new Outtake(hardwareMap);
         Intake intake = new Intake(hardwareMap);
-        extendo = hardwareMap.get(DcMotor.class, "extendo");
-        extendo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         waitForStart();
         // Movements (in order of execution):
-        Action moveBack = drive.actionBuilder(beginPose).lineToX(-5).build();
         //Action prepareIntake =  new ParallelAction(intake.prepareIntake(), outtake.prepareIntake());
         Action completeTransfer = new SequentialAction(
+                outtake.prepareTransfer(),
+                intake.prepareIntake(),
                 intake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.3).build(),
-                //intake.prepareTransfer(),
-                drive.actionBuilder(beginPose).waitSeconds(.6).build(),
+                intake.transfer(),
                 outtake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(.25).build(),
                 intake.openClaw());
+
 
         Actions.runBlocking(
                 new SequentialAction(
                         //prepareIntake,
-                        drive.actionBuilder(beginPose).waitSeconds(2).build(),
-                        moveBack,
                         completeTransfer,
                         drive.actionBuilder(beginPose).waitSeconds(5).build()
                 )
