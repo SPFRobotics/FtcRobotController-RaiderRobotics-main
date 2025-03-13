@@ -23,7 +23,7 @@ public class Intake {
         wristRight = hardwareMap.get(Servo.class, "intakeRightWrist");
         clawRotation = hardwareMap.get(Servo.class, "intakeClawRotation");
         claw = hardwareMap.get(Servo.class, "intakeClaw");
-        wristLeft.setDirection(Servo.Direction.REVERSE);
+        wristRight.setDirection(Servo.Direction.REVERSE);
 
         // Initialize positions
         claw.setPosition(Values.Intake.ClawOpenPos);

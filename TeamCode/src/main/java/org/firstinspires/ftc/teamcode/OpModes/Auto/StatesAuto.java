@@ -116,7 +116,6 @@ public class StatesAuto extends LinearOpMode {
                 drive.actionBuilder(beginPose).waitSeconds(0.2).build(),
                 outtake.openClaw()
         );
-
         Action completeTransfer1 = new SequentialAction(
                 outtake.prepareTransfer(),
                 intake.prepareIntake(),
