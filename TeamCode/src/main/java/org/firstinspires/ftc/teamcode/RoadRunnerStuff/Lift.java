@@ -48,8 +48,9 @@ public class Lift {
 
             // checks lift's current position
             double pos = liftLeft.getCurrentPosition();
+            double pos1 = liftRight.getCurrentPosition();
             packet.put("liftPos", pos);
-            if (pos < encoderTicks && pos < liftMaxMotorCounts) {
+            if ((pos < encoderTicks && pos1 < encoderTicks) && pos < liftMaxMotorCounts) {
                 // true causes the action to rerun
                 return true;
             } else {
@@ -87,8 +88,9 @@ public class Lift {
 
             // checks lift's current position
             double pos = liftLeft.getCurrentPosition();
+            double pos1 = liftRight.getCurrentPosition();
             packet.put("liftPos", pos);
-            if (pos > encoderTicks && pos > 0) {
+            if ((pos > encoderTicks&& pos1> encoderTicks) && pos > 0) {
                 // true causes the action to rerun
                 return true;
             } else {

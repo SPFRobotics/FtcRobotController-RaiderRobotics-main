@@ -16,14 +16,13 @@ public class Intake {
     private Servo wristRight = null;
     private Servo claw = null;
     private Servo clawRotation = null;
-    private Servo armRotation = null;
 
     public Intake(HardwareMap hardwareMap){
         wristLeft = hardwareMap.get(Servo.class, "intakeLeftWrist");
         wristRight = hardwareMap.get(Servo.class, "intakeRightWrist");
         clawRotation = hardwareMap.get(Servo.class, "intakeClawRotation");
         claw = hardwareMap.get(Servo.class, "intakeClaw");
-        wristRight.setDirection(Servo.Direction.REVERSE);
+        wristLeft.setDirection(Servo.Direction.REVERSE);
 
         // Initialize positions
         claw.setPosition(Values.Intake.ClawOpenPos);
@@ -35,6 +34,7 @@ public class Intake {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             claw.setPosition(Values.Intake.ClawOpenPos);
+            clawRotation.setPosition(Values.Intake.rotationTransferPos);
             wristLeft.setPosition(Values.Intake.wristLeftIntakePos);
             wristRight.setPosition(Values.Intake.wristRightIntakePos);
             return false;

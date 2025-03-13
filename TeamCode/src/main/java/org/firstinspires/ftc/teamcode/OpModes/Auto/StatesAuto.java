@@ -37,7 +37,7 @@ public class StatesAuto extends LinearOpMode {
         waitForStart();
         // Movements (in order of execution):
         TrajectoryActionBuilder moveToChamber1 = drive.actionBuilder(beginPose)
-                .setReversed(false).splineTo(new Vector2d(35, 15),0);
+                .setReversed(false).splineTo(new Vector2d(36, 15),0);
         TrajectoryActionBuilder pushSamplesBack1 = moveToChamber1.endTrajectory().fresh()
                 .setReversed(true).splineTo(new Vector2d(15, -10),Math.PI)
                 .setReversed(false).splineTo(new Vector2d(40, -20),0);
@@ -55,28 +55,28 @@ public class StatesAuto extends LinearOpMode {
                 .setReversed(false).splineTo(new Vector2d(4, -35),0);
 
         TrajectoryActionBuilder moveToChamber2 = pushSamplesBack7.endTrajectory().fresh()
-                .setReversed(false).splineTo(new Vector2d(35, 13),0);
+                .setReversed(false).splineTo(new Vector2d(36, 13),0);
         TrajectoryActionBuilder moveToCorner1 = moveToChamber2.endTrajectory().fresh()
                 .setReversed(true).splineTo(new Vector2d(10, -25),Math.PI)
                 .waitSeconds(.5)
                 .setReversed(true).splineTo(new Vector2d(4, -25),Math.PI);
 
         TrajectoryActionBuilder moveToChamber3 = moveToCorner1.endTrajectory().fresh()
-                .setReversed(false).splineTo(new Vector2d(35, 11),0);
+                .setReversed(false).splineTo(new Vector2d(36, 11),0);
         TrajectoryActionBuilder moveToCorner2 = moveToChamber3.endTrajectory().fresh()
                 .setReversed(true).splineTo(new Vector2d(10, -25),Math.PI)
                 .waitSeconds(.5)
                 .setReversed(true).splineTo(new Vector2d(4, -25),Math.PI);
 
         TrajectoryActionBuilder moveToChamber4 = moveToCorner2.endTrajectory().fresh()
-                .setReversed(false).splineTo(new Vector2d(35, 9),0);
+                .setReversed(false).splineTo(new Vector2d(36, 9),0);
         TrajectoryActionBuilder moveToCorner3 = moveToChamber4.endTrajectory().fresh()
                 .setReversed(true).splineTo(new Vector2d(10, -25),Math.PI)
                 .waitSeconds(.5)
                 .setReversed(true).splineTo(new Vector2d(4, -25),Math.PI);
 
         TrajectoryActionBuilder moveToChamber5 = moveToCorner3.endTrajectory().fresh()
-                .setReversed(false).splineTo(new Vector2d(35, 7),0);
+                .setReversed(false).splineTo(new Vector2d(36, 7),0);
         TrajectoryActionBuilder moveToCorner4 = moveToChamber5.endTrajectory().fresh()
                 .setReversed(true).splineTo(new Vector2d(5, -35),Math.PI);
         // RoadRunner Actions are weird. If the same action is ran twice, RoadRunner thinks "Oh I already ran this" and doesn't run
@@ -85,7 +85,7 @@ public class StatesAuto extends LinearOpMode {
                 new ParallelAction(
                         lift.moveUp(13.5),
                         moveToChamber1.build()),
-                drive.actionBuilder(beginPose).waitSeconds(0.2).build(),
+                drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
                 outtake.openClaw()
         );
         Action placeSpec2 = new SequentialAction(
@@ -213,7 +213,7 @@ public class StatesAuto extends LinearOpMode {
                         placeSpec1,
                         new ParallelAction(
                             pushSamplesBackAction,
-                            new SequentialAction(outtake.prepareTransfer(), lift.moveDown(0))
+                            new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(1).build(), outtake.prepareTransfer(), lift.moveDown(0))
                         ),
                         transferAndPlace1,
                         transferAndPlace2,
