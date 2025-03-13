@@ -52,28 +52,22 @@ public class StatesAuto extends LinearOpMode {
         TrajectoryActionBuilder pushSamplesBack6 = pushSamplesBack5.endTrajectory().fresh()
                 .setReversed(true).splineTo(new Vector2d(1, -35),Math.PI);
         TrajectoryActionBuilder pushSamplesBack7 = pushSamplesBack6.endTrajectory().fresh()
-                .setReversed(false).splineTo(new Vector2d(4, -35),0);
+                .setReversed(false).splineTo(new Vector2d(2, -35),0);
 
         TrajectoryActionBuilder moveToChamber2 = pushSamplesBack7.endTrajectory().fresh()
                 .setReversed(false).splineTo(new Vector2d(36, 13),0);
         TrajectoryActionBuilder moveToCorner1 = moveToChamber2.endTrajectory().fresh()
-                .setReversed(true).splineTo(new Vector2d(10, -25),Math.PI)
-                .waitSeconds(.5)
-                .setReversed(true).splineTo(new Vector2d(4, -25),Math.PI);
+                .setReversed(true).splineTo(new Vector2d(2, -25),Math.PI);
 
         TrajectoryActionBuilder moveToChamber3 = moveToCorner1.endTrajectory().fresh()
                 .setReversed(false).splineTo(new Vector2d(36, 11),0);
         TrajectoryActionBuilder moveToCorner2 = moveToChamber3.endTrajectory().fresh()
-                .setReversed(true).splineTo(new Vector2d(10, -25),Math.PI)
-                .waitSeconds(.5)
-                .setReversed(true).splineTo(new Vector2d(4, -25),Math.PI);
+                .setReversed(true).splineTo(new Vector2d(2, -25),Math.PI);
 
         TrajectoryActionBuilder moveToChamber4 = moveToCorner2.endTrajectory().fresh()
                 .setReversed(false).splineTo(new Vector2d(36, 9),0);
         TrajectoryActionBuilder moveToCorner3 = moveToChamber4.endTrajectory().fresh()
-                .setReversed(true).splineTo(new Vector2d(10, -25),Math.PI)
-                .waitSeconds(.5)
-                .setReversed(true).splineTo(new Vector2d(4, -25),Math.PI);
+                .setReversed(true).splineTo(new Vector2d(2, -25),Math.PI);
 
         TrajectoryActionBuilder moveToChamber5 = moveToCorner3.endTrajectory().fresh()
                 .setReversed(false).splineTo(new Vector2d(36, 7),0);
@@ -89,77 +83,77 @@ public class StatesAuto extends LinearOpMode {
                 outtake.openClaw()
         );
         Action placeSpec2 = new SequentialAction(
-                new ParallelAction(
-                        lift.moveUp(13.5),
-                        moveToChamber2.build()),
+                moveToChamber2.build(),
                 drive.actionBuilder(beginPose).waitSeconds(0.2).build(),
                 outtake.openClaw()
         );
         Action placeSpec3 = new SequentialAction(
-                new ParallelAction(
-                        lift.moveUp(13.5),
-                        moveToChamber3.build()),
+                moveToChamber3.build(),
                 drive.actionBuilder(beginPose).waitSeconds(0.2).build(),
                 outtake.openClaw()
         );
         Action placeSpec4 = new SequentialAction(
-                new ParallelAction(
-                        lift.moveUp(13.5),
-                        moveToChamber4.build()),
+                moveToChamber4.build(),
                 drive.actionBuilder(beginPose).waitSeconds(0.2).build(),
                 outtake.openClaw()
         );
         Action placeSpec5 = new SequentialAction(
-                new ParallelAction(
-                        lift.moveUp(13.5),
-                        moveToChamber5.build()),
+                moveToChamber5.build(),
                 drive.actionBuilder(beginPose).waitSeconds(0.2).build(),
                 outtake.openClaw()
         );
         Action completeTransfer1 = new SequentialAction(
                 outtake.prepareTransfer(),
                 intake.prepareIntake(),
-                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
+                drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
                 intake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
+                drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
                 intake.transfer(),
-                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
+                drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
                 outtake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
-                intake.openClaw());
+                drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
+                intake.openClaw(),
+                lift.moveUp(13.5)
+        );
         Action completeTransfer2 = new SequentialAction(
                 outtake.prepareTransfer(),
                 intake.prepareIntake(),
-                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
+                drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
                 intake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
+                drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
                 intake.transfer(),
-                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
+                drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
                 outtake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
-                intake.openClaw());
+                drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
+                intake.openClaw(),
+                lift.moveUp(13.5)
+        );
         Action completeTransfer3 = new SequentialAction(
                 outtake.prepareTransfer(),
                 intake.prepareIntake(),
-                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
+                drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
                 intake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
+                drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
                 intake.transfer(),
-                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
+                drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
                 outtake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
-                intake.openClaw());
+                drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
+                intake.openClaw(),
+                lift.moveUp(13.5)
+        );
         Action completeTransfer4 = new SequentialAction(
                 outtake.prepareTransfer(),
                 intake.prepareIntake(),
-                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
+                drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
                 intake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
+                drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
                 intake.transfer(),
-                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
+                drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
                 outtake.closeClaw(),
-                drive.actionBuilder(beginPose).waitSeconds(0.1).build(),
-                intake.openClaw());
+                drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
+                intake.openClaw(),
+                lift.moveUp(13.5)
+        );
         Action pushSamplesBackAction = new SequentialAction(
                 pushSamplesBack1.build(),
                 samplePusher.lowerArm(),
@@ -176,24 +170,44 @@ public class StatesAuto extends LinearOpMode {
                 pushSamplesBack7.build()
         );
         Action transferAndPlace1 = new SequentialAction(
-                completeTransfer1,
-                placeSpec2,
-                new ParallelAction(outtake.prepareTransfer(),lift.moveDown(0), moveToCorner1.build())
+                new ParallelAction(
+                        completeTransfer1,
+                        new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.5).build(),placeSpec2)
+                ),
+                new ParallelAction(
+                        moveToCorner1.build(),
+                        new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(1).build(), outtake.prepareTransfer(), lift.moveDown(0))
+                )
         );
         Action transferAndPlace2 = new SequentialAction(
-                completeTransfer2,
-                placeSpec3,
-                new ParallelAction(outtake.prepareTransfer(),lift.moveDown(0), moveToCorner2.build())
+                new ParallelAction(
+                        completeTransfer2,
+                        new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.5).build(),placeSpec3)
+                ),
+                new ParallelAction(
+                        moveToCorner2.build(),
+                        new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(1).build(), outtake.prepareTransfer(), lift.moveDown(0))
+                )
         );
         Action transferAndPlace3 = new SequentialAction(
-                completeTransfer3,
-                placeSpec4,
-                new ParallelAction(outtake.prepareTransfer(),lift.moveDown(0), moveToCorner3.build())
+                new ParallelAction(
+                        completeTransfer3,
+                        new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.5).build(),placeSpec4)
+                ),
+                new ParallelAction(
+                        moveToCorner3.build(),
+                        new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(1).build(), outtake.prepareTransfer(), lift.moveDown(0))
+                )
         );
         Action transferAndPlace4 = new SequentialAction(
-                completeTransfer4,
-                placeSpec5,
-                new ParallelAction(outtake.prepareTransfer(),lift.moveDown(0), moveToCorner4.build())
+                new ParallelAction(
+                        completeTransfer4,
+                        new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.5).build(),placeSpec5)
+                ),
+                new ParallelAction(
+                        moveToCorner4.build(),
+                        new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(1).build(), outtake.prepareTransfer(), lift.moveDown(0))
+                )
         );
 
 
