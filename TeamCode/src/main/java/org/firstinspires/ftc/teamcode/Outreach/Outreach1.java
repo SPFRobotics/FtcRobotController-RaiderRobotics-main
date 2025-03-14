@@ -23,10 +23,10 @@ public class Outreach1 extends LinearOpMode{
     private DcMotor leftBack = null;
 
     public void runOpMode(){
-        rightFront = hardwareMap.get(DcMotor.class, "Motor1");
-        leftFront = hardwareMap.get(DcMotor.class, "Motor0");
-        rightBack = hardwareMap.get(DcMotor.class, "Motor3");
-        leftBack = hardwareMap.get(DcMotor.class, "Motor2");
+        rightFront = hardwareMap.get(DcMotor.class, "FrontRight");
+        leftFront = hardwareMap.get(DcMotor.class, "FrontLeft");
+        rightBack = hardwareMap.get(DcMotor.class, "BackRight");
+        leftBack = hardwareMap.get(DcMotor.class, "BackLeft");
 
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
