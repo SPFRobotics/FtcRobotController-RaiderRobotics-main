@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Outtake {
     private Servo claw = null;
     private Servo wrist = null;
-    private final double OPEN_POS = 0.65;
+    private final double OPEN_POS = 0.25;
     private final double CLOSED_POS = 0;
     private final double PREPARE_PLACEMENT_POS = 0.9;
     private final double TRANSFER_POS = 0.18;
