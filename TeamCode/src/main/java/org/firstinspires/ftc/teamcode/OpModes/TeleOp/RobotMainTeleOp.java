@@ -42,7 +42,7 @@ public class RobotMainTeleOp extends LinearOpMode{
     private Button a = new Button();
     private Button b = new Button();
     private Button yButton = new Button();
-    private Button lBumper = new Button();
+    //private Button lBumper = new Button();
     private  Button rBumper = new Button();
     private static ElapsedTime transferTime = new ElapsedTime();
     private static ElapsedTime masterClock = new ElapsedTime();
@@ -52,14 +52,14 @@ public class RobotMainTeleOp extends LinearOpMode{
 
     //Classes to organize parts
     private static class Outtake{
-        private static double wristPos = 1;
+        private static double wristPos = 0.38;
     }
     private static class Intake{
         private static double wristPos = 0;
         private static double clawRotationPos = 0;
         private static double wristTransfer = 0;
         private static double wall = 0.161;
-        private static double ground = 0.350;
+        private static double ground = 0.360;
     }
 
     public void runOpMode() {
@@ -141,17 +141,17 @@ public class RobotMainTeleOp extends LinearOpMode{
 
             //Outtake==================================================
             if (rTrigger.toggle((int)gamepad2.right_trigger)){
-                outtakeClaw.setPosition(Values.Outtake.ClawClosedPos);
-            }
-            else{
                 outtakeClaw.setPosition(Values.Outtake.ClawOpenPos);
             }
-
-            if (Outtake.wristPos > 1){
-                Outtake.wristPos = 1;
+            else{
+                outtakeClaw.setPosition(Values.Outtake.ClawClosedPos);
             }
-            else if (Outtake.wristPos < 0){
-                Outtake.wristPos = 0;
+
+            if (Outtake.wristPos < 0.38){
+                Outtake.wristPos = 0.38;
+            }
+            else if (Outtake.wristPos > 1){
+                Outtake.wristPos = 1;
             }
             //=========================================================
 
@@ -193,31 +193,46 @@ public class RobotMainTeleOp extends LinearOpMode{
 
             //Special Function Buttons
             if (a.press(gamepad2.a)){
+                transferTime.reset();
                 wasPressed1 = true;
+                rTrigger.changeState(false);
+                Outtake.wristPos = 0.6866;
+            }
+            if (wasPressed1 && transferTime.milliseconds() >= 250){
                 Intake.wristPos = Intake.wristTransfer;
-                rBumper.changeState(true);
+                rBumper.changeState(false);
+            }
+            if (wasPressed1 && transferTime.milliseconds() >= 650){
+                rTrigger.changeState(true);
+            }
+            if (wasPressed1 && transferTime.milliseconds() >= 1000){
+                lTrigger.changeState(false);
+            }
+            if (wasPressed1 && transferTime.milliseconds() >= 1250){
+                Outtake.wristPos =0.38;
+                wasPressed1 = false;
             }
 
-            if (b.press(gamepad2.b)){
+            if (b.press(gamepad2.b) && !wasPressed1){
                 Intake.wristPos = Intake.wall;
             }
 
-            if (yButton.press(gamepad2.y)){
+            if (yButton.press(gamepad2.y) && !wasPressed1){
                 Intake.wristPos = Intake.ground;
             }
 
             if (!wasPressed1) {
                 Outtake.wristPos += gamepad2.right_stick_y * Values.Outtake.wristSpeedMultiplyer;
-                outtakeWrist.setPosition(Outtake.wristPos);
                 Intake.wristPos += gamepad2.left_stick_y * Values.Intake.wristSpeedMultiplyer;
-                lIntakeWrist.setPosition(Intake.wristPos);
-                rIntakeWrist.setPosition(Intake.wristPos);
-                intakeRotation.setPosition(Intake.clawRotationPos);
             }
+            outtakeWrist.setPosition(Outtake.wristPos);
+            lIntakeWrist.setPosition(Intake.wristPos);
+            rIntakeWrist.setPosition(Intake.wristPos);
+            intakeRotation.setPosition(Intake.clawRotationPos);
 
             //Telemetry
             telemetry.update();
-            telemetry.addLine("Remember, after all of this, we are the first Raider Robotics team to make it to states in 3 entire years... GO KICK THEIR ASS!!!!");
+            telemetry.addLine("Remember, after all of this, we are the first Raider Robotics team to make it to states in 3 entire years... GO KICK THEIR ASS!!!!\n\n");
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
             telemetry.addLine("==========================================");
