@@ -40,7 +40,7 @@ public class StatesAuto extends LinearOpMode {
                 .strafeTo(new Vector2d(36.5, 19));
         TrajectoryActionBuilder pushSamplesBack1 = moveToChamber1.endTrajectory().fresh()
                 .splineToConstantHeading(new Vector2d(20, -5),0)
-                .splineToConstantHeading(new Vector2d(40, -21),0);
+                .splineToConstantHeading(new Vector2d(40, -24),0);
         TrajectoryActionBuilder pushSamplesBack2 = pushSamplesBack1.endTrajectory().fresh()
                 .splineToConstantHeading(new Vector2d(12, -22),0)
                 .turn(-Math.PI/4).turn(Math.PI/4);
@@ -50,10 +50,10 @@ public class StatesAuto extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(12, -32),0)
                 .turn(-Math.PI/4).turn(Math.PI/4)
                 .strafeTo(new Vector2d(2.5, -32));
-        /*TrajectoryActionBuilder pushSamplesBack5 = pushSamplesBack4.endTrajectory().fresh()
+        TrajectoryActionBuilder pushSamplesBack5 = pushSamplesBack4.endTrajectory().fresh()
                 .setReversed(false).splineTo(new Vector2d(40, -30),0);
         TrajectoryActionBuilder pushSamplesBack6 = pushSamplesBack5.endTrajectory().fresh()
-                .setReversed(true).splineTo(new Vector2d(2, -30),Math.PI);*/
+                .setReversed(true).splineTo(new Vector2d(2, -30),Math.PI);
 
         TrajectoryActionBuilder moveToChamber2 = pushSamplesBack4.endTrajectory().fresh()
                 .strafeTo(new Vector2d(37, 15));
@@ -170,6 +170,10 @@ public class StatesAuto extends LinearOpMode {
                 pushSamplesBack3.build(),
                 samplePusher.lowerArm(),
                 pushSamplesBack4.build(),
+                samplePusher.raiseArm(),
+                pushSamplesBack5.build(),
+                samplePusher.lowerArm(),
+                pushSamplesBack6.build(),
                 samplePusher.raiseArm()
         );
         Action transferAndPlace1 = new SequentialAction(
@@ -230,10 +234,10 @@ public class StatesAuto extends LinearOpMode {
                         new ParallelAction(
                             pushSamplesBackAction,
                             new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(1).build(), lift.moveDown(0))
-                        ),
-                        transferAndPlace1,
+                        )
+                        /*transferAndPlace1,
                         transferAndPlace2,
-                        transferAndPlace3
+                        transferAndPlace3*/
                 )
         );
     }
