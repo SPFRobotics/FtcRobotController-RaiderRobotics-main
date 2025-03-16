@@ -39,12 +39,10 @@ public class RobotMainTeleOp extends LinearOpMode{
     private Servo rIntakeWrist = null;
     private Servo lIntakeWrist = null;
     private Servo intakeRotation = null;
-    private AnalogInput outtakeClawPos = null;
-    private AnalogInput outtakeWristPos = null;
-    private AnalogInput intakeClawPos = null;
-    private AnalogInput intakeClawWristPos = null;
     private Button rTrigger = new Button();
     private Button lTrigger = new Button();
+    private Button a = new Button();
+    private static ElapsedTime transferTime = new ElapsedTime();
     private static ElapsedTime masterClock = new ElapsedTime();
 
     private double start = 0;
@@ -55,7 +53,7 @@ public class RobotMainTeleOp extends LinearOpMode{
         private static double wristPos = 0;
     }
     private static class Intake{
-        private static double wristPos = 0;
+        private static double wristPos = 0.5;
     }
 
     public void runOpMode() {
@@ -84,12 +82,14 @@ public class RobotMainTeleOp extends LinearOpMode{
 
         MotorYLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         extendo.setDirection(DcMotorSimple.Direction.REVERSE);
-        outtakeWrist.setDirection(Servo.Direction.REVERSE);
+        outtakeClaw.setDirection(Servo.Direction.REVERSE);
+        //outtakeWrist.setDirection(Servo.Direction.REVERSE);
+        intakeClaw.setDirection(Servo.Direction.REVERSE);
         BRMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         FRMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         FLMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        intakeClaw.setDirection(Servo.Direction.REVERSE);
+        //intakeClaw.setDirection(Servo.Direction.REVERSE);
         lIntakeWrist.setDirection(Servo.Direction.REVERSE);
 
         MotorYLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -103,7 +103,8 @@ public class RobotMainTeleOp extends LinearOpMode{
         MotorYLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         MotorYRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //Variables
+        //Boolean Expressions
+        boolean wasPressed1 = false;
 
         waitForStart();
         while (opModeIsActive()){
@@ -122,7 +123,7 @@ public class RobotMainTeleOp extends LinearOpMode{
 
             //Extend Linear Slides
             //Horizontal
-            /*if (gamepad1.right_bumper){
+            if (gamepad1.right_bumper){
                 extendo.setPower(1);
             }
             else if (gamepad1.left_bumper){
@@ -130,18 +131,18 @@ public class RobotMainTeleOp extends LinearOpMode{
             }
             else {
                 extendo.setPower(0);
-            }*/
+            }
 
             //Outtake==================================================
             if (rTrigger.toggle((int)gamepad2.right_trigger)){
                 outtakeClaw.setPosition(Values.Outtake.ClawClosedPos);
             }
             else{
-                outtakeClaw.setPosition(0);
+                outtakeClaw.setPosition(Values.Outtake.ClawOpenPos);
             }
 
-            if (Outtake.wristPos > 1){
-                Outtake.wristPos = 1;
+            if (Outtake.wristPos > 0.547){
+                Outtake.wristPos = 0.547;
             }
             else if (Outtake.wristPos < 0){
                 Outtake.wristPos = 0;
@@ -150,14 +151,21 @@ public class RobotMainTeleOp extends LinearOpMode{
 
            //Intake====================================================
            if (lTrigger.toggle((int)gamepad2.left_trigger)){
-               intakeClaw.setPosition(0.5);
+               intakeClaw.setPosition(Values.Intake.ClawClosedPos);
            }
            else{
                intakeClaw.setPosition(Values.Intake.ClawOpenPos);
            }
+
+            if (Intake.wristPos > 0.537){
+                Intake.wristPos = 0.537;
+            }
+            else if (Intake.wristPos < 0){
+                Intake.wristPos = 0;
+            }
            //==========================================================
 
-            /*if (gamepad2.dpad_up){
+            if (gamepad2.dpad_up){
                 MotorYLeft.setPower(Values.verticalSlide.power);
                 MotorYRight.setPower(Values.verticalSlide.power);
             }
@@ -168,7 +176,16 @@ public class RobotMainTeleOp extends LinearOpMode{
             if (!gamepad2.dpad_down && !gamepad2.dpad_up){
                 MotorYLeft.setPower(0);
                 MotorYRight.setPower(0);
-            }*/
+            }
+
+            //Special Function Buttons
+            if (a.press(gamepad2.a)){
+                wasPressed1 = true;
+                intakeClaw.setPosition();
+            }
+            else if (){
+
+            }
 
             Outtake.wristPos += gamepad2.right_stick_y*Values.Outtake.wristSpeedMultiplyer;
             outtakeWrist.setPosition(Outtake.wristPos);
@@ -215,7 +232,11 @@ public class RobotMainTeleOp extends LinearOpMode{
             telemetry.addLine("Outtake Claw: " + outtakeClaw.getPosition());
             telemetry.addLine("Outtake Wrist Pos: " + Outtake.wristPos);
             telemetry.addLine("Intake Wrist Pos: " + Intake.wristPos);
-            telemetry.addLine("Intake Claw: " + outtakeClaw.getPosition());
+            telemetry.addLine("Intake Claw: " + intakeClaw.getPosition());
+            telemetry.addLine("Outtake Wrist Voltage: " + outtakeWristPos.getVoltage());
+            telemetry.addLine("Intake Wrist Voltage: " + intakeWristPos.getVoltage());
+            telemetry.addLine("Outtake Claw Voltage: " + outtakeClawPos.getVoltage());
+            telemetry.addLine("Intake Claw Voltage: " + intakeClawPos.getVoltage());
 
             //States
             telemetry.addLine("States: ");
