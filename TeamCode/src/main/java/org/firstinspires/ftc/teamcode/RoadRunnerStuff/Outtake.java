@@ -12,8 +12,8 @@ public class Outtake {
     private Servo wrist = null;
     private final double OPEN_POS = 0.25;
     private final double CLOSED_POS = 0;
-    private final double PREPARE_PLACEMENT_POS = 0.9;
-    private final double TRANSFER_POS = 0.18;
+    private final double PREPARE_PLACEMENT_POS = 0.4;
+    private final double TRANSFER_POS = 0.68;
 
     public Outtake(HardwareMap hardwareMap) {
         claw = hardwareMap.get(Servo.class, "outtakeClaw");
