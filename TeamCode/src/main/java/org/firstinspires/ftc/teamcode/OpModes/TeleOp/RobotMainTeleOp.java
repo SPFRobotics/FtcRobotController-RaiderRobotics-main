@@ -1,5 +1,3 @@
-//This is a class written for testing purposes only to control a new claw system
-//This is not to be used for the actual competition
 package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 import android.renderscript.Sampler;
 import android.text.method.Touch;
@@ -22,7 +20,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Button;
 import org.firstinspires.ftc.teamcode.OpModes.Values;
 
 import java.io.ObjectOutput;
-/*
+
 @TeleOp(name = "RobotMainTeleOp")
 public class RobotMainTeleOp extends LinearOpMode{
 
@@ -42,6 +40,8 @@ public class RobotMainTeleOp extends LinearOpMode{
     private Button rTrigger = new Button();
     private Button lTrigger = new Button();
     private Button a = new Button();
+    private Button lBumper = new Button();
+    private  Button rBumper = new Button();
     private static ElapsedTime transferTime = new ElapsedTime();
     private static ElapsedTime masterClock = new ElapsedTime();
 
@@ -50,10 +50,11 @@ public class RobotMainTeleOp extends LinearOpMode{
 
     //Classes to organize parts
     private static class Outtake{
-        private static double wristPos = 0;
+        private static double wristPos = 1;
     }
     private static class Intake{
-        private static double wristPos = 0.5;
+        private static double wristPos = 0;
+        private static double clawRotationPos = 0;
     }
 
     public void runOpMode() {
@@ -141,8 +142,8 @@ public class RobotMainTeleOp extends LinearOpMode{
                 outtakeClaw.setPosition(Values.Outtake.ClawOpenPos);
             }
 
-            if (Outtake.wristPos > 0.547){
-                Outtake.wristPos = 0.547;
+            if (Outtake.wristPos > 1){
+                Outtake.wristPos = 1;
             }
             else if (Outtake.wristPos < 0){
                 Outtake.wristPos = 0;
@@ -178,20 +179,25 @@ public class RobotMainTeleOp extends LinearOpMode{
                 MotorYRight.setPower(0);
             }
 
+            if (lBumper.press(gamepad2.left_bumper)){
+                Intake.clawRotationPos += 0.25;
+            }
+
             //Special Function Buttons
-            if (a.press(gamepad2.a)){
+            /*if (a.press(gamepad2.a)){
                 wasPressed1 = true;
-                intakeClaw.setPosition();
+
             }
             else if (){
 
-            }
+            }*/
 
             Outtake.wristPos += gamepad2.right_stick_y*Values.Outtake.wristSpeedMultiplyer;
             outtakeWrist.setPosition(Outtake.wristPos);
             Intake.wristPos += gamepad2.left_stick_y*Values.Intake.wristSpeedMultiplyer;
             lIntakeWrist.setPosition(Intake.wristPos);
             rIntakeWrist.setPosition(Intake.wristPos);
+            intakeRotation.setPosition(Intake.clawRotationPos);
 
             //Telemetry
             telemetry.update();
@@ -233,10 +239,6 @@ public class RobotMainTeleOp extends LinearOpMode{
             telemetry.addLine("Outtake Wrist Pos: " + Outtake.wristPos);
             telemetry.addLine("Intake Wrist Pos: " + Intake.wristPos);
             telemetry.addLine("Intake Claw: " + intakeClaw.getPosition());
-            telemetry.addLine("Outtake Wrist Voltage: " + outtakeWristPos.getVoltage());
-            telemetry.addLine("Intake Wrist Voltage: " + intakeWristPos.getVoltage());
-            telemetry.addLine("Outtake Claw Voltage: " + outtakeClawPos.getVoltage());
-            telemetry.addLine("Intake Claw Voltage: " + intakeClawPos.getVoltage());
 
             //States
             telemetry.addLine("States: ");
@@ -251,4 +253,3 @@ public class RobotMainTeleOp extends LinearOpMode{
 
     }
 }
-*/
