@@ -37,9 +37,9 @@ public class StatesAuto extends LinearOpMode {
         waitForStart();
         // Movements (in order of execution):
         TrajectoryActionBuilder moveToChamber1 = drive.actionBuilder(beginPose)
-                .strafeTo(new Vector2d(36, 17));
+                .strafeTo(new Vector2d(36.5, 19));
         TrajectoryActionBuilder pushSamplesBack1 = moveToChamber1.endTrajectory().fresh()
-                .splineToConstantHeading(new Vector2d(15, -10),0)
+                .splineToConstantHeading(new Vector2d(20, -5),0)
                 .splineToConstantHeading(new Vector2d(40, -21),0);
         TrajectoryActionBuilder pushSamplesBack2 = pushSamplesBack1.endTrajectory().fresh()
                 .splineToConstantHeading(new Vector2d(12, -22),0)
@@ -56,12 +56,12 @@ public class StatesAuto extends LinearOpMode {
                 .setReversed(true).splineTo(new Vector2d(2, -30),Math.PI);*/
 
         TrajectoryActionBuilder moveToChamber2 = pushSamplesBack4.endTrajectory().fresh()
-                .strafeTo(new Vector2d(46, 19));
+                .strafeTo(new Vector2d(37, 15));
         TrajectoryActionBuilder moveToCorner1 = moveToChamber2.endTrajectory().fresh()
-                .strafeTo(new Vector2d(2, -24));
+                .splineToConstantHeading(new Vector2d(2, -24),0);
 
         TrajectoryActionBuilder moveToChamber3 = moveToCorner1.endTrajectory().fresh()
-                .splineToConstantHeading(new Vector2d(36, 11),0);
+                .strafeTo(new Vector2d(36, 11));
         TrajectoryActionBuilder moveToCorner2 = moveToChamber3.endTrajectory().fresh()
                 .splineToConstantHeading(new Vector2d(2, -24),0);
 
@@ -85,16 +85,19 @@ public class StatesAuto extends LinearOpMode {
         );
         Action placeSpec2 = new SequentialAction(
                 new ParallelAction(new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.5).build(),outtake.preparePlacement()),moveToChamber2.build()),
+
                 lift.moveUp(12.5),
                 outtake.openClaw()
         );
         Action placeSpec3 = new SequentialAction(
                 new ParallelAction(new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.5).build(),outtake.preparePlacement()),moveToChamber3.build()),
+
                 lift.moveUp(12.5),
                 outtake.openClaw()
         );
         Action placeSpec4 = new SequentialAction(
                 new ParallelAction(new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(0.5).build(),outtake.preparePlacement()),moveToChamber4.build()),
+
                 lift.moveUp(12.5),
                 outtake.openClaw()
         );
@@ -105,6 +108,7 @@ public class StatesAuto extends LinearOpMode {
         );
         Action completeTransfer1 = new SequentialAction(
                 intake.prepareIntake(),
+                intake.openClaw(),
                 outtake.openClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
                 outtake.prepareTransfer(),
@@ -133,6 +137,7 @@ public class StatesAuto extends LinearOpMode {
                 lift.moveUp(8));
         Action completeTransfer3 = new SequentialAction(
                 intake.prepareIntake(),
+                intake.openClaw(),
                 outtake.openClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
                 outtake.prepareTransfer(),
@@ -226,7 +231,9 @@ public class StatesAuto extends LinearOpMode {
                             pushSamplesBackAction,
                             new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(1).build(), lift.moveDown(0))
                         ),
-                        transferAndPlace1
+                        transferAndPlace1,
+                        transferAndPlace2,
+                        transferAndPlace3
                 )
         );
     }
