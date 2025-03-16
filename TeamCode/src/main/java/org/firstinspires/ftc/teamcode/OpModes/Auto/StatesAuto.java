@@ -48,12 +48,11 @@ public class StatesAuto extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(40, -32),0);
         TrajectoryActionBuilder pushSamplesBack4 = pushSamplesBack3.endTrajectory().fresh()
                 .splineToConstantHeading(new Vector2d(12, -32),0)
-                .turn(-Math.PI/4).turn(Math.PI/4)
-                .strafeTo(new Vector2d(2.5, -32));
+                .turn(-Math.PI/4).turn(Math.PI/4);
         TrajectoryActionBuilder pushSamplesBack5 = pushSamplesBack4.endTrajectory().fresh()
-                .setReversed(false).splineTo(new Vector2d(40, -36),0);
+                .setReversed(false).splineTo(new Vector2d(40, -40),0);
         TrajectoryActionBuilder pushSamplesBack6 = pushSamplesBack5.endTrajectory().fresh()
-                .setReversed(true).splineTo(new Vector2d(2, -36),Math.PI);
+                .setReversed(true).splineTo(new Vector2d(2, -40),Math.PI);
 
         TrajectoryActionBuilder moveToChamber2 = pushSamplesBack4.endTrajectory().fresh()
                 .strafeTo(new Vector2d(37, 15));
@@ -162,10 +161,7 @@ public class StatesAuto extends LinearOpMode {
                 samplePusher.raiseArm(),
                 pushSamplesBack5.build(),
                 samplePusher.lowerArm(),
-                new ParallelAction(pushSamplesBack6.build(),
-                        intake.prepareIntake(),
-                        intake.openClaw(),
-                        outtake.openClaw()),
+                pushSamplesBack6.build(),
                 samplePusher.raiseArm()
         );
         Action transferAndPlace1 = new SequentialAction(
@@ -229,8 +225,8 @@ public class StatesAuto extends LinearOpMode {
                         new ParallelAction(
                             pushSamplesBackAction,
                             new SequentialAction(drive.actionBuilder(beginPose).waitSeconds(1).build(), lift.moveDown(0))
-                        ),
-                        transferAndPlace1
+                        )//,
+                        //transferAndPlace1
                 )
         );
     }
