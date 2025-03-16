@@ -5,7 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 public class Values {
     @Config
     public static class Outtake{
-        public static double ClawClosedPos = 0.65;
+        public static double ClawClosedPos = 0.25;
         public static double ClawOpenPos = 0;
         public static double wristSpeedMultiplyer = 0.05;
         public static double rOuttakeWrist = 0;
