@@ -13,6 +13,11 @@ public class Values {
     }
 
     @Config
+    public static class Testing{
+        public static int time = 0;
+    }
+
+    @Config
     public static class verticalSlide{
         public static double power = 1;
     }
@@ -27,7 +32,7 @@ public class Values {
         public static double wristRightIntakePos = 0.3;
         public static double rotationIntakePos = 0;
         public static double rotationTransferPos = 0;
-        public static double wristSpeedMultiplyer = 0.1;
+        public static double wristSpeedMultiplyer = 0.05;
 
     }
 }
