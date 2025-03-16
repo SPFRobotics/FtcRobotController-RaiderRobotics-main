@@ -37,6 +37,7 @@ public class RobotMainTeleOp extends LinearOpMode{
     private Servo rIntakeWrist = null;
     private Servo lIntakeWrist = null;
     private Servo intakeRotation = null;
+    private Servo sweeper = null;
     private Button rTrigger = new Button();
     private Button lTrigger = new Button();
     private Button a = new Button();
@@ -44,6 +45,7 @@ public class RobotMainTeleOp extends LinearOpMode{
     private Button yButton = new Button();
     //private Button lBumper = new Button();
     private  Button rBumper = new Button();
+    private Button leftThumbStick = new Button();
     private static ElapsedTime transferTime = new ElapsedTime();
     private static ElapsedTime masterClock = new ElapsedTime();
 
@@ -81,6 +83,7 @@ public class RobotMainTeleOp extends LinearOpMode{
         rIntakeWrist = hardwareMap.get(Servo.class, "intakeRightWrist");
         lIntakeWrist = hardwareMap.get(Servo.class, "intakeLeftWrist");
         intakeRotation = hardwareMap.get(Servo.class, "intakeClawRotation");
+        sweeper = hardwareMap.get(Servo.class, "sweeper");
 
 
         //Enable encoders
@@ -209,7 +212,7 @@ public class RobotMainTeleOp extends LinearOpMode{
                 lTrigger.changeState(false);
             }
             if (wasPressed1 && transferTime.milliseconds() >= 1250){
-                Outtake.wristPos =0.38;
+                Outtake.wristPos = 0.38;
                 wasPressed1 = false;
             }
 
@@ -219,6 +222,13 @@ public class RobotMainTeleOp extends LinearOpMode{
 
             if (yButton.press(gamepad2.y) && !wasPressed1){
                 Intake.wristPos = Intake.ground;
+            }
+
+            if (leftThumbStick.toggle(gamepad2.left_stick_button) && !wasPressed1){
+                sweeper.setPosition(0.975);
+            }
+            else{
+                sweeper.setPosition(0.5);
             }
 
             if (!wasPressed1) {
