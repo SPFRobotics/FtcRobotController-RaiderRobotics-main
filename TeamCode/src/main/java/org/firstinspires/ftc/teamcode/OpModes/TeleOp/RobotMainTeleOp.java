@@ -43,7 +43,7 @@ public class RobotMainTeleOp extends LinearOpMode{
     private Button a = new Button();
     private Button b = new Button();
     private Button yButton = new Button();
-    //private Button lBumper = new Button();
+    private Button lBumper = new Button();
     private  Button rBumper = new Button();
     private Button leftThumbStick = new Button();
     private static ElapsedTime transferTime = new ElapsedTime();
@@ -88,6 +88,8 @@ public class RobotMainTeleOp extends LinearOpMode{
 
         //Enable encoders
         extendo.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        MotorYRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        MotorYLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         MotorYLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         extendo.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -101,8 +103,8 @@ public class RobotMainTeleOp extends LinearOpMode{
         //intakeClaw.setDirection(Servo.Direction.REVERSE);
         lIntakeWrist.setDirection(Servo.Direction.REVERSE);
 
-        MotorYLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        MotorYRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //MotorYLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //MotorYRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         FRMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BRMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -187,11 +189,18 @@ public class RobotMainTeleOp extends LinearOpMode{
                 MotorYRight.setPower(0);
             }
 
-            if (rBumper.toggle(gamepad2.right_bumper)){
-                Intake.clawRotationPos = 0.50;
+            if (rBumper.press(gamepad2.right_bumper)){
+                Intake.clawRotationPos += 0.25;
             }
-            else{
+            else if (lBumper.press(gamepad2.left_bumper)){
+                Intake.clawRotationPos -= 0.25;
+            }
+
+            if (Intake.clawRotationPos < 0){
                 Intake.clawRotationPos = 0;
+            }
+            else if (Intake.clawRotationPos > 1){
+                Intake.clawRotationPos = 1;
             }
 
             //Special Function Buttons
@@ -200,6 +209,12 @@ public class RobotMainTeleOp extends LinearOpMode{
                 wasPressed1 = true;
                 rTrigger.changeState(false);
                 Outtake.wristPos = 0.6866;
+                /*MotorYRight.setTargetPosition(100);
+                MotorYLeft.setTargetPosition(100);
+                MotorYLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                MotorYRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                MotorYRight.setPower(1);
+                MotorYLeft.setPower(1);*/
             }
             if (wasPressed1 && transferTime.milliseconds() >= 250){
                 Intake.wristPos = Intake.wristTransfer;
@@ -218,13 +233,14 @@ public class RobotMainTeleOp extends LinearOpMode{
 
             if (b.press(gamepad2.b) && !wasPressed1){
                 Intake.wristPos = Intake.wall;
+                Intake.clawRotationPos = 0;
             }
 
             if (yButton.press(gamepad2.y) && !wasPressed1){
                 Intake.wristPos = Intake.ground;
             }
 
-            if (leftThumbStick.toggle(gamepad2.left_stick_button) && !wasPressed1){
+            if (leftThumbStick.toggle(gamepad1.left_stick_button) && !wasPressed1){
                 sweeper.setPosition(0.975);
             }
             else{
@@ -242,7 +258,7 @@ public class RobotMainTeleOp extends LinearOpMode{
 
             //Telemetry
             telemetry.update();
-            telemetry.addLine("Remember, after all of this, we are the first Raider Robotics team to make it to states in 3 entire years... GO KICK THEIR ASS!!!!\n\n");
+            //telemetry.addLine("Remember, after all of this, we are the first Raider Robotics team to make it to states in 3 entire years... GO KICK THEIR ASS!!!!\n\n");
             telemetry.addLine("==========================================");
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
             telemetry.addLine("==========================================");

@@ -32,7 +32,7 @@ public class Values {
         public static double wristRightIntakePos = 0.3;
         public static double rotationIntakePos = 0;
         public static double rotationTransferPos = 0;
-        public static double wristSpeedMultiplyer = 0.05;
+        public static double wristSpeedMultiplyer = 0.025;
 
     }
 }
