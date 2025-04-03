@@ -21,6 +21,8 @@ import org.firstinspires.ftc.teamcode.OpModes.Values;
 
 @TeleOp(name="ManavTELEOP", group="Linear Opmode")
 
+
+
 public class ManavTELEOP extends LinearOpMode {
     // FL = Front Left
     // BL= Back Left
@@ -31,6 +33,10 @@ public class ManavTELEOP extends LinearOpMode {
     private DcMotor motorBL = null;
     private DcMotor motorBR = null;
 
+    @Override
+    public void waitForStart() {
+
+    }
 
     public void runOpMode() {
 
@@ -41,6 +47,8 @@ public class ManavTELEOP extends LinearOpMode {
 
         motorBR.setDirection(DcMotorSimple.Direction.REVERSE);
         motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        waitForStart();
 
         while (opModeIsActive()) {
 
