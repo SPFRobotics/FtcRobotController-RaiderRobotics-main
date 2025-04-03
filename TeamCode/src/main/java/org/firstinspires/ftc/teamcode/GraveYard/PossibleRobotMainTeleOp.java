@@ -1,5 +1,5 @@
 
-package org.firstinspires.ftc.teamcode.testing;
+package org.firstinspires.ftc.teamcode.GraveYard;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -17,56 +17,50 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import java.text.DecimalFormat;
 
 @Disabled
-@TeleOp(name="NewRobotTeleOp")
-public class NewRobotTeleOp extends LinearOpMode {
 
-    private DcMotor FRMotor = null;
-    private DcMotor FLMotor = null;
-    private DcMotor BRMotor = null;
-    private DcMotor BLMotor = null;
-    private Servo FRotationServo = null;
-    private Servo FWristServo = null;
-    private Servo FClawRotationServo = null;
-    private Servo FClawServo = null;
+
+@TeleOp(name="PossibleRobotMainTeleOp")
+public class PossibleRobotMainTeleOp extends LinearOpMode {
+
+    private DcMotor RightFrontMotor = null;
+    private DcMotor LeftFrontMotor = null;
+    private DcMotor RightBackMotor = null;
+    private DcMotor LeftBackMotor = null;
+    private Servo RotationServo = null;
+    private Servo WristServo = null;
+    private Servo ClawRotationServo = null;
+    private Servo ClawServo = null;
     private DcMotor extendo = null;
-    private DcMotor MotorYLeft = null;
-    private DcMotor MotorYRight = null;
+    private DcMotor MotorY = null;
     private IMU imu = null;
+    private DcMotor craneMotorY = null;
     private int sliderotation;
     Button LTrigger= new Button();
     Button LBumper= new Button();
     DecimalFormat df = new DecimalFormat("#.000");
 
     public void runOpMode() {
-        extendo = hardwareMap.get(DcMotor.class, "extendo");
-        MotorYLeft = hardwareMap.get(DcMotor.class, "liftRight");
-        MotorYRight = hardwareMap.get(DcMotor.class, "liftLeft");
-        FLMotor = hardwareMap.get(DcMotor.class, "backRight");
-        FRMotor = hardwareMap.get(DcMotor.class, "frontLeft");
-        BLMotor = hardwareMap.get(DcMotor.class, "frontRight");
-        BRMotor = hardwareMap.get(DcMotor.class, "backLeft");
-
-
-        FRotationServo = hardwareMap.get(Servo.class, "Servo0");
-        FWristServo = hardwareMap.get(Servo.class, "Servo3");
-        FClawRotationServo = hardwareMap.get(Servo.class, "Servo2");
-        FClawServo = hardwareMap.get(Servo.class, "Servo3");
+        RightFrontMotor = hardwareMap.get(DcMotor.class, "frontRight");
+        LeftFrontMotor = hardwareMap.get(DcMotor.class, "frontLeft");
+        RightBackMotor = hardwareMap.get(DcMotor.class, "backRight");
+        LeftBackMotor = hardwareMap.get(DcMotor.class, "backLeft");
+        RotationServo = hardwareMap.get(Servo.class, "Servo0");
+        WristServo = hardwareMap.get(Servo.class, "Servo1");
+        ClawRotationServo = hardwareMap.get(Servo.class, "Servo2");
+        ClawServo = hardwareMap.get(Servo.class, "Servo3");
+        extendo = hardwareMap.get(DcMotor.class, "Motor0");
+        MotorY = hardwareMap.get(DcMotor.class, "Motor1");
         sliderotation = 537;
 
 
 //Both Left Motors are Set in Reverse
-        FLMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        BLMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        MotorYLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        MotorYRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LeftFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        LeftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 //Setting default if no power is brake
-        FRMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        FLMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        BRMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        BLMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        MotorYLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        MotorYRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        RightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        LeftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        RightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        LeftBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         double RotationServoPos = 0.5276;
         double WristServoPos = 1;
 
@@ -80,38 +74,32 @@ public class NewRobotTeleOp extends LinearOpMode {
         if (isStopRequested()) return;
         waitForStart();
         while (opModeIsActive()) {
-            double y = gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x * -1.1;
-            double rx = gamepad1.right_stick_x;
-
             if (gamepad1.options) {
                 imu.resetYaw();
             }
             double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
             // Rotate the movement direction counter to the bot's rotation
-            double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-            double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double LeftFrontPower = (y + x + rx) / denominator;
-            double LeftBackPower = (y - x + rx) / denominator;
-            double RightFrontPower = (y - x - rx) / denominator;
-            double RightBackPower = (y + x - rx) / denominator;
-            FRMotor.setPower(RightFrontPower);
-            FLMotor.setPower(LeftFrontPower);
-            BRMotor.setPower(RightBackPower);
-            BLMotor.setPower(LeftBackPower);
+
+            double y = gamepad1.left_stick_y;
+            double x = gamepad1.left_stick_x * -1.1;
+            double rx = gamepad1.right_stick_x;
+
+            LeftBackMotor.setPower(y + x + rx);
+            LeftBackMotor.setPower(y - x + rx);
+            RightFrontMotor.setPower(y - x - rx);
+            RightBackMotor.setPower(y + x - rx);
 //Open Claw
-            if (LTrigger.toggle((int) gamepad1.left_trigger)) {
-                FClawServo.setPosition(0.6);
+            if (LTrigger.press((int) gamepad1.left_trigger)) {
+                ClawServo.setPosition(0.6);
             } else {
-                FClawServo.setPosition(0.3);
+                ClawServo.setPosition(0.3);
             }
 //Reset Claw to default pos
             if (gamepad1.b) {
                 RotationServoPos = 0.5276;
                 WristServoPos = 0.5;
-                FClawRotationServo.setPosition(0.47);
-                FClawServo.setPosition(0.3);
+                ClawRotationServo.setPosition(0.47);
+                ClawServo.setPosition(0.3);
             }
 
             //Set claw to efficent position
@@ -119,11 +107,10 @@ public class NewRobotTeleOp extends LinearOpMode {
                 RotationServoPos = 0.79;
                 WristServoPos = 0.273;
             }
-
+// ara likes to touch little matt gregovs
             //Extend Extendo
             extendo.setPower(gamepad2.left_stick_y);
-            MotorYLeft.setPower(gamepad2.right_stick_y);
-            MotorYRight.setPower(gamepad2.right_stick_y);
+            MotorY.setPower(gamepad2.right_stick_y);
 
             //Rotate Arm
             //*************************************************************
@@ -134,7 +121,7 @@ public class NewRobotTeleOp extends LinearOpMode {
             } else if (WristServoPos < 0) {
                 RotationServoPos = 0;
             }
-            FRotationServo.setPosition(RotationServoPos);
+            RotationServo.setPosition(RotationServoPos);
             //*************************************************************
 
             //Move Wrist
@@ -146,14 +133,14 @@ public class NewRobotTeleOp extends LinearOpMode {
             } else if (WristServoPos < 0) {
                 WristServoPos = 0;
             }
-            FWristServo.setPosition(WristServoPos);
+            WristServo.setPosition(WristServoPos);
             //*************************************************************
             //Rotate Claw Logic
             //*************************************
-            if (LBumper.toggle(gamepad1.left_bumper)) {
-                FClawRotationServo.setPosition(0.15);
+            if (LBumper.press(gamepad1.left_bumper)) {
+                ClawRotationServo.setPosition(0.15);
             } else {
-                FClawRotationServo.setPosition(0.47);
+                ClawRotationServo.setPosition(0.47);
             }
 
             //***********************************************************
@@ -161,38 +148,38 @@ public class NewRobotTeleOp extends LinearOpMode {
             //*************************************
 
             if(gamepad2.dpad_up){
-                MotorYLeft.setPower(1);
+                MotorY.setPower(1);
             }
 
             else if (!gamepad2.dpad_up){
-                MotorYLeft.setPower(0);
+                MotorY.setPower(0);
 
             }
 
             if (gamepad2.dpad_up){
-                MotorYLeft.setTargetPosition(sliderotation * 10);
+                MotorY.setTargetPosition(sliderotation * 10);
 
             }
 
             else if (!gamepad2.dpad_up){
-                MotorYLeft.setTargetPosition(0);
+                MotorY.setTargetPosition(0);
             }
 
             if(gamepad2.dpad_down){
-                MotorYLeft.setPower(-1);
+                MotorY.setPower(-1);
             }
 
             else if(gamepad2.dpad_down){
-                MotorYLeft.setPower(0);
+                MotorY.setPower(0);
             }
 
             if (gamepad2.dpad_down){
-                MotorYLeft.setTargetPosition(sliderotation * -1);
+                MotorY.setTargetPosition(sliderotation * -1);
 
             }
 
             if (gamepad2.dpad_down){
-                MotorYLeft.setTargetPosition(0);
+                MotorY.setTargetPosition(0);
 
             }
             telemetry.update();
@@ -201,12 +188,14 @@ public class NewRobotTeleOp extends LinearOpMode {
             telemetry.addLine(String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)) + String.valueOf((int)(Math.random() * 2)));
             telemetry.addLine("==========================================");
             telemetry.addLine("MOTOR PWR:");
-            telemetry.addLine("FR Motor PWR: " + FRMotor.getPower());
-            telemetry.addLine("FL Motor PWR: " + FLMotor.getPower());
-            telemetry.addLine("BR Motor PWR: " + BRMotor.getPower());
-            telemetry.addLine("BL Motor PWR: " + BLMotor.getPower());
-            telemetry.addLine("Wrist Pos: " + FWristServo.getPosition());
+            telemetry.addLine("FR Motor PWR: " + RightFrontMotor.getPower());
+            telemetry.addLine("FL Motor PWR: " + LeftFrontMotor.getPower());
+            telemetry.addLine("BR Motor PWR: " + RightBackMotor.getPower());
+            telemetry.addLine("BL Motor PWR: " + LeftBackMotor.getPower());
+            telemetry.addLine("Vertical Slide: " + craneMotorY.getPower());
+            telemetry.addLine("Wrist Pos: " + WristServo.getPosition());
             telemetry.addLine("Extendo: " + extendo.getPower() + "\n");
+            telemetry.addLine("Vertical Slide Pos: " + craneMotorY);
             //telemetry.addLine("Extendo Pos: " + extendoXPos + "\n");
             telemetry.addLine("Pitch: " + imu.getRobotYawPitchRollAngles().getPitch(AngleUnit.DEGREES));
             telemetry.addLine("Roll: " + imu.getRobotYawPitchRollAngles().getRoll(AngleUnit.DEGREES));

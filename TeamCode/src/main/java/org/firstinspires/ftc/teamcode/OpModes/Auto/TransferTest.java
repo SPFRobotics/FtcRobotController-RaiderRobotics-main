@@ -31,27 +31,30 @@ public class TransferTest extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
         Outtake outtake = new Outtake(hardwareMap);
         Intake intake = new Intake(hardwareMap);
+        Lift lift = new Lift(hardwareMap);
 
         waitForStart();
         // Movements (in order of execution):
         //Action prepareIntake =  new ParallelAction(intake.prepareIntake(), outtake.prepareIntake());
         Action completeTransfer = new SequentialAction(
-                outtake.prepareTransfer(),
                 intake.prepareIntake(),
                 outtake.openClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
+                outtake.prepareTransfer(),
                 intake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
                 intake.transfer(),
                 drive.actionBuilder(beginPose).waitSeconds(0.5).build(),
                 outtake.closeClaw(),
                 drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
-                intake.openClaw());
+                intake.openClaw(),
+                lift.moveUp(8));
 
 
         Actions.runBlocking(
                 new SequentialAction(
                         //prepareIntake,
+                        intake.openClaw(), drive.actionBuilder(beginPose).waitSeconds(0.25).build(),
                         completeTransfer,
                         drive.actionBuilder(beginPose).waitSeconds(5).build()
                 )

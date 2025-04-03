@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode.OpModes.Auto;
 
 import android.graphics.Color;
 import android.util.Size;
